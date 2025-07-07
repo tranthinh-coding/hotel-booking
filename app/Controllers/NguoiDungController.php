@@ -10,7 +10,7 @@ class NguoiDungController
         $danhSachNguoiDung = \HotelBooking\Models\NguoiDung::all();
 
         // Trả về view danh sách người dùng
-        return view('NguoiDung.index', ['danhSachNguoiDung' => $danhSachNguoiDung]);
+        return view('NguoiDung.index', compact('danhSachNguoiDung'));
     }
 
     public function show($id)
