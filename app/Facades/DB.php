@@ -2,10 +2,11 @@
 
 namespace HotelBooking\Facades;
 
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASSWORD', '');
-define('DB_NAME', 'hotel_booking');
+define('DB_HOST', getenv('DB_HOST'));
+define('DB_PORT', getenv('DB_PORT'));
+define('DB_USER', getenv('DB_USERNAME'));
+define('DB_PASSWORD', getenv('DB_PASSWORD'));
+define('DB_NAME', getenv('DB_DATABASE'));
 
 class DB
 {
@@ -30,7 +31,7 @@ class DB
     {
         if (!self::$connection) {
             try {
-                self::$connection = new \mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+                self::$connection = new \mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT);
                 if (self::$connection->connect_error) {
                     die("Connection failed: " . self::$connection->connect_error);
                 }
