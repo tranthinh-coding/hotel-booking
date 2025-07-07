@@ -40,6 +40,8 @@ if (!function_exists('view')) {
     function view(string $view, array $data = []): void
     {
         extract($data);
+
+        $view = str_replace('.', '/', $view);
         $viewPath = __DIR__ . '/../Views/' . $view . '.php';
         if (file_exists($viewPath)) {
             require $viewPath;
