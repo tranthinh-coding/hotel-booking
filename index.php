@@ -1,40 +1,32 @@
 <?php
 
-// Load global helper functions
-require_once __DIR__ . '/app/Functions/functions.php';
-
-// PSR-4 autoloader for HotelBooking namespace
-spl_autoload_register(function ($class) {
+// 1) PSR-4 Autoloader
+spl_autoload_register(function(string $class) {
     $prefix = 'HotelBooking\\';
-    $prefixLen = strlen($prefix);
-    if (strncmp($prefix, $class, $prefixLen) !== 0) {
+    if (strncmp($prefix, $class, strlen($prefix)) !== 0) {
         return;
     }
-    $relative = substr($class, $prefixLen);
-    $relativePath = str_replace('\\', '/', $relative) . '.php';
-    // Try in app/ then root
+
+    $relative = str_replace('\\', '/', substr($class, strlen($prefix))) . '.php';
+    $baseDir  = __DIR__;
+
+    // try in Facades/, app/
     $candidates = [
-        __DIR__ . '/app/' . $relativePath,
-        __DIR__ . '/' . $relativePath,
+        "$baseDir/Facades/$relative",
+        "$baseDir/app/$relative",
+        "$baseDir/$relative",
     ];
+
     foreach ($candidates as $file) {
         if (file_exists($file)) {
-            require $file;
+            require_once $file;
             return;
         }
     }
 });
 
-// Determine controller class with namespace
-$controllerName = get('controller', 'HomeController');
-$controller = 'HotelBooking\\Controllers\\' . $controllerName;
-$action = get('action', 'index');
+use HotelBooking\Kernel;
 
-if (class_exists($controller) && method_exists($controller, $action)) {
-    $controllerInstance = new $controller();
-    $controllerInstance->$action();
-} else {
-    // Handle error: controller or action not found
-    http_response_code(404);
-    echo "Controller or action not found.";
-}
+$kernel = new Kernel();
+
+$kernel->start();
