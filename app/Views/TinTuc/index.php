@@ -1,4 +1,4 @@
-<?php include_once 'app/Views/layouts/app.php'; ?>
+<?php include_once 'app/Views../layouts/app.php'; ?>
 
 <div class="min-h-screen bg-gradient-to-br from-cyan-50 via-blue-50 to-teal-50">
     <div class="container mx-auto px-4 py-8">

@@ -11,6 +11,7 @@ ob_start();
                 <h1 class="text-3xl font-bold text-gray-800 mb-2">Quản lý tài khoản</h1>
                 <p class="text-gray-600">Quản lý thông tin và phân quyền người dùng</p>
             </div>
+            <?php if (auth_can_crud()): ?>
             <div class="flex items-center space-x-4">
                 <a href="/tai-khoan/create" 
                    class="bg-gradient-to-r from-ocean-600 to-seafoam-600 hover:from-ocean-700 hover:to-seafoam-700 text-white px-6 py-3 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg">
@@ -18,6 +19,7 @@ ob_start();
                     Thêm tài khoản
                 </a>
             </div>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -236,18 +238,20 @@ ob_start();
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <div class="flex items-center justify-end space-x-2">
                                         <a href="/tai-khoan/<?= $taiKhoan->id ?>" 
-                                           class="text-ocean-600 hover:text-ocean-700 p-2 rounded-lg hover:bg-ocean-50">
+                                           class="text-ocean-600 hover:text-ocean-700 p-2 rounded-lg hover:bg-ocean-50" title="Xem chi tiết">
                                             <i class="fas fa-eye"></i>
                                         </a>
+                                        <?php if (auth_can_crud()): ?>
                                         <a href="/tai-khoan/<?= $taiKhoan->id ?>/edit" 
-                                           class="text-blue-600 hover:text-blue-700 p-2 rounded-lg hover:bg-blue-50">
+                                           class="text-blue-600 hover:text-blue-700 p-2 rounded-lg hover:bg-blue-50" title="Chỉnh sửa">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         <?php if (($taiKhoan->phan_quyen ?? '') !== 'admin'): ?>
                                             <button onclick="deleteUser(<?= $taiKhoan->id ?>)" 
-                                                    class="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50">
+                                                    class="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50" title="Xóa">
                                                 <i class="fas fa-trash"></i>
                                             </button>
+                                        <?php endif; ?>
                                         <?php endif; ?>
                                     </div>
                                 </td>

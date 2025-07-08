@@ -363,5 +363,5 @@ document.querySelector('form').addEventListener('submit', function(e) {
 
 <?php
 $content = ob_get_clean();
-include __DIR__ . '/../layouts/app.php';
+include __DIR__ . '/layouts/app.php';
 ?>

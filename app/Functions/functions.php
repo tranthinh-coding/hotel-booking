@@ -321,3 +321,54 @@ if (!function_exists('layout')) {
         view($layout, $data);
     }
 }
+
+if (!function_exists('auth_is_admin')) {
+    /**
+     * Check if the current user is an admin.
+     *
+     * @return bool
+     */
+    function auth_is_admin(): bool
+    {
+        $role = session_get('user_role');
+        return $role === 'Quản lý' || $role === 'Admin';
+    }
+}
+
+if (!function_exists('auth_is_nhan_vien')) {
+    /**
+     * Check if the current user is staff (nhân viên) or higher.
+     *
+     * @return bool
+     */
+    function auth_is_nhan_vien(): bool
+    {
+        $role = session_get('user_role');
+        return $role === 'Nhân viên' || $role === 'Quản lý' || $role === 'Admin';
+    }
+}
+
+if (!function_exists('auth_is_khach_hang')) {
+    /**
+     * Check if the current user is a customer.
+     *
+     * @return bool
+     */
+    function auth_is_khach_hang(): bool
+    {
+        $role = session_get('user_role');
+        return $role === 'Khách hàng';
+    }
+}
+
+if (!function_exists('auth_can_crud')) {
+    /**
+     * Check if the current user can perform CRUD operations.
+     *
+     * @return bool
+     */
+    function auth_can_crud(): bool
+    {
+        return auth_is_nhan_vien() || auth_is_admin();
+    }
+}

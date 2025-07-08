@@ -11,6 +11,7 @@ ob_start();
                 <h1 class="text-3xl font-bold text-gray-800 mb-2">Quản lý hóa đơn</h1>
                 <p class="text-gray-600">Theo dõi và quản lý tất cả hóa đơn đặt phòng</p>
             </div>
+            <?php if (auth_can_crud()): ?>
             <div class="flex items-center space-x-4">
                 <a href="/hoa-don/create" 
                    class="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 py-3 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg">
@@ -18,6 +19,7 @@ ob_start();
                     Tạo hóa đơn
                 </a>
             </div>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -280,17 +282,19 @@ ob_start();
                                            title="Xem chi tiết">
                                             <i class="fas fa-eye"></i>
                                         </a>
+                                        <?php if (auth_can_crud()): ?>
                                         <a href="/hoa-don/<?= $hoaDon->id ?>/edit" 
                                            class="text-blue-600 hover:text-blue-700 p-2 rounded-lg hover:bg-blue-50"
                                            title="Chỉnh sửa">
                                             <i class="fas fa-edit"></i>
                                         </a>
+                                        <?php endif; ?>
                                         <a href="/hoa-don/<?= $hoaDon->id ?>/print" 
                                            class="text-purple-600 hover:text-purple-700 p-2 rounded-lg hover:bg-purple-50"
                                            title="In hóa đơn">
                                             <i class="fas fa-print"></i>
                                         </a>
-                                        <?php if (($hoaDon->trang_thai ?? '') !== 'paid'): ?>
+                                        <?php if (auth_can_crud() && ($hoaDon->trang_thai ?? '') !== 'paid'): ?>
                                             <button onclick="deleteInvoice(<?= $hoaDon->id ?>)" 
                                                     class="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50"
                                                     title="Xóa">

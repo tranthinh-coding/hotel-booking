@@ -9,12 +9,12 @@ class TaiKhoanController
     public function index()
     {
         $taiKhoans = TaiKhoan::all();
-        view('TaiKhoan.index', ['taiKhoans' => $taiKhoans]);
+        view('TaiKhoan/index', ['taiKhoans' => $taiKhoans]);
     }
 
     public function create()
     {
-        view('TaiKhoan.create');
+        view('TaiKhoan/create');
     }
 
     public function store()

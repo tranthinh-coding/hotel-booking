@@ -9,12 +9,20 @@ ob_start();
             <i class="fas fa-bed text-ocean-600 mr-2"></i>
             Danh sách phòng
         </h1>
-        <p class="text-gray-600">Quản lý thông tin các phòng nghỉ tại khách sạn</p>
+        <p class="text-gray-600">Khám phá các loại phòng nghỉ tuyệt vời tại khách sạn của chúng tôi</p>
     </div>
-    <a href="/phong/create" class="bg-gradient-to-r from-ocean-600 to-seafoam-600 text-white px-6 py-3 rounded-lg hover:from-ocean-700 hover:to-seafoam-700 transition-all transform hover:scale-105 inline-flex items-center shadow-lg">
-        <i class="fas fa-plus mr-2"></i>
-        Thêm phòng mới
-    </a>
+    <div>
+        <?php if (auth_can_crud()): ?>
+        <a href="/phong/create" class="bg-gradient-to-r from-ocean-600 to-seafoam-600 text-white px-6 py-3 rounded-lg hover:from-ocean-700 hover:to-seafoam-700 transition-all transform hover:scale-105 inline-flex items-center shadow-lg mr-3">
+            <i class="fas fa-plus mr-2"></i>
+            Thêm phòng mới
+        </a>
+        <?php endif; ?>
+        <a href="/search-rooms" class="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all transform hover:scale-105 inline-flex items-center shadow-lg">
+            <i class="fas fa-search mr-2"></i>
+            Tìm kiếm phòng
+        </a>
+    </div>
 </div>
 
 <?php if (empty($phongs)): ?>
@@ -22,11 +30,11 @@ ob_start();
         <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <i class="fas fa-bed text-4xl text-gray-400"></i>
         </div>
-        <h3 class="text-2xl font-semibold text-gray-800 mb-2">Chưa có phòng nào</h3>
-        <p class="text-gray-600 mb-6">Hãy thêm phòng đầu tiên để bắt đầu quản lý</p>
-        <a href="/phong/create" class="bg-ocean-600 text-white px-6 py-3 rounded-lg hover:bg-ocean-700 transition-colors inline-flex items-center">
-            <i class="fas fa-plus mr-2"></i>
-            Thêm phòng đầu tiên
+        <h3 class="text-2xl font-semibold text-gray-800 mb-2">Hiện tại chưa có phòng nào</h3>
+        <p class="text-gray-600 mb-6">Vui lòng quay lại sau hoặc liên hệ với chúng tôi để biết thêm thông tin</p>
+        <a href="/contact" class="bg-ocean-600 text-white px-6 py-3 rounded-lg hover:bg-ocean-700 transition-colors inline-flex items-center">
+            <i class="fas fa-phone mr-2"></i>
+            Liên hệ ngay
         </a>
     </div>
 <?php else: ?>
@@ -64,18 +72,26 @@ ob_start();
                         <a href="/phong/show/<?= $phong->ma_phong ?>" 
                            class="flex-1 bg-ocean-100 text-ocean-700 px-4 py-2 rounded-lg hover:bg-ocean-200 transition-colors text-center">
                             <i class="fas fa-eye mr-1"></i>
-                            Xem
+                            Xem chi tiết
                         </a>
+                        <?php if (auth_can_crud()): ?>
                         <a href="/phong/edit/<?= $phong->ma_phong ?>" 
                            class="flex-1 bg-seafoam-100 text-seafoam-700 px-4 py-2 rounded-lg hover:bg-seafoam-200 transition-colors text-center">
                             <i class="fas fa-edit mr-1"></i>
-                            Sửa
+                            Chỉnh sửa
                         </a>
                         <button onclick="confirmDelete(<?= $phong->ma_phong ?>, '<?= htmlspecialchars($phong->ten_phong) ?>')" 
                                 class="flex-1 bg-red-100 text-red-700 px-4 py-2 rounded-lg hover:bg-red-200 transition-colors">
                             <i class="fas fa-trash mr-1"></i>
                             Xóa
                         </button>
+                        <?php else: ?>
+                        <a href="/contact" 
+                           class="flex-1 bg-green-100 text-green-700 px-4 py-2 rounded-lg hover:bg-green-200 transition-colors text-center">
+                            <i class="fas fa-calendar-check mr-1"></i>
+                            Đặt phòng
+                        </a>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>

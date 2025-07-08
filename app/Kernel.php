@@ -8,6 +8,7 @@ class Kernel
 {
     public function start()
     {
+        $this->startSession();
         $this->loadHelpers();
         $this->loadRoutes();
 
@@ -41,5 +42,12 @@ class Kernel
     public function loadRoutes()
     {
         require_once __DIR__ . '/../router.php';
+    }
+
+    public function startSession()
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
     }
 }

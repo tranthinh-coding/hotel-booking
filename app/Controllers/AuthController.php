@@ -50,10 +50,10 @@ class AuthController
         flash_set('success', 'Đăng nhập thành công');
         
         // Redirect based on role
-        if ($user->phan_quyen === 'admin' || $user->phan_quyen === 'nhan_vien') {
+        if (in_array($user->phan_quyen, ['Quản lý', 'Lễ tân'])) {
             redirect('/admin/dashboard');
         } else {
-            redirect('/dashboard');
+            redirect('/');
         }
     }
 
@@ -132,7 +132,7 @@ class AuthController
             'sdt' => $data['sdt'],
             'mail' => $data['mail'],
             'mat_khau' => password_hash($data['mat_khau'], PASSWORD_DEFAULT),
-            'phan_quyen' => 'khach_hang' // Default role
+            'phan_quyen' => 'Khách hàng' // Default role
         ];
 
         $taiKhoan = new TaiKhoan();

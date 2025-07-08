@@ -9,7 +9,7 @@ class PhongController
     public function index()
     {
         $phongs = Phong::all();
-        view('Phong.index', ['phongs' => $phongs]);
+        view('Phong/index', ['phongs' => $phongs]);
     }
 
     public function create()
