@@ -3,20 +3,23 @@
 namespace HotelBooking\Models;
 
 /**
- * @property string $ma_phong
+ * @property int $ma_phong
  * @property string $ten_phong
- * @property string $loai_phong
- * @property float $gia_phong
+ * @property string $mo_ta
+ * @property string $trang_thai
+ * @property int $gia
  */
 class Phong extends Model
 {
     protected $table = 'phong';
+    protected $primaryKey = 'ma_phong';
 
     protected $attributes = [
         'ma_phong',
         'ten_phong',
-        'loai_phong',
-        'gia_phong',
+        'mo_ta',
+        'trang_thai',
+        'gia',
     ];
 
 }
