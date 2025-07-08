@@ -140,7 +140,7 @@ class AuthController
 
         clear_old_input();
         flash_set('success', 'Đăng ký thành công! Vui lòng đăng nhập');
-        redirect('/login');
+        redirect('/');
     }
 
     public function logout()

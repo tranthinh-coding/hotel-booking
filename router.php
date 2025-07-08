@@ -24,16 +24,16 @@ Route::get('/home', 'HotelBooking\Controllers\HomeController', 'index');
 // ===== AUTHENTICATION ROUTES =====
 
 // Đăng nhập & Đăng ký
-Route::get('/login', 'HotelBooking\Controllers\AuthController', 'showLogin');
+Route::get('/login', 'HotelBooking\Controllers\AuthController', 'showLoginForm');
 Route::post('/login', 'HotelBooking\Controllers\AuthController', 'login');
-Route::get('/register', 'HotelBooking\Controllers\AuthController', 'showRegister');
+Route::get('/register', 'HotelBooking\Controllers\AuthController', 'showRegisterForm');
 Route::post('/register', 'HotelBooking\Controllers\AuthController', 'register');
 Route::post('/logout', 'HotelBooking\Controllers\AuthController', 'logout');
 
 // Profile & Đổi mật khẩu
 Route::get('/profile', 'HotelBooking\Controllers\AuthController', 'profile');
 Route::post('/profile', 'HotelBooking\Controllers\AuthController', 'updateProfile');
-Route::get('/change-password', 'HotelBooking\Controllers\AuthController', 'showChangePassword');
+Route::get('/change-password', 'HotelBooking\Controllers\AuthController', 'showChangePasswordForm');
 Route::post('/change-password', 'HotelBooking\Controllers\AuthController', 'changePassword');
 
 // Quên mật khẩu & Đặt lại mật khẩu

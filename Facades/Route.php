@@ -16,8 +16,29 @@ class Route
 
     private static function normalizeUri(string $uri): string
     {
+        // Parse URL to get path only (remove query string)
         $path = parse_url($uri, PHP_URL_PATH) ?: '';
-        return trim($path, '/');
+        
+        // Ensure leading slash, remove trailing slash (except for root)
+        $path = '/' . ltrim($path, '/');
+        return $path === '/' ? '/' : rtrim($path, '/');
+    }
+
+    private static function buildRouteKey(string $prefix, string $uri): string
+    {
+        // Normalize both prefix and uri
+        $prefix = trim($prefix, '/');
+        $uri = trim($uri, '/');
+        
+        // Build final path
+        if (empty($prefix)) {
+            $path = '/' . $uri;
+        } else {
+            $path = '/' . $prefix . '/' . $uri;
+        }
+        
+        // Normalize final result
+        return $path === '/' ? '/' : rtrim($path, '/');
     }
 
     /**
@@ -26,15 +47,14 @@ class Route
     public static function group(string $uriPrefix, callable $callback): void
     {
         $prev = self::$prefix;
-        // ensure no double slashes
-        self::$prefix = self::normalizeUri($prev . '/' . $uriPrefix);
+        self::$prefix = trim($uriPrefix, '/');
         $callback();
         self::$prefix = $prev;
     }
 
     public static function get(string $uri, string $controller, string $method): void
     {
-        $routeKey = self::normalizeUri(self::$prefix . '/' . $uri);
+        $routeKey = self::buildRouteKey(self::$prefix, $uri);
         self::$routes['GET'][$routeKey] = [
             'controller' => $controller,
             'method'     => $method,
@@ -43,7 +63,7 @@ class Route
 
     public static function post(string $uri, string $controller, string $method): void
     {
-        $routeKey = self::normalizeUri(self::$prefix . '/' . $uri);
+        $routeKey = self::buildRouteKey(self::$prefix, $uri);
         self::$routes['POST'][$routeKey] = [
             'controller' => $controller,
             'method'     => $method,
@@ -52,7 +72,7 @@ class Route
 
     public static function put(string $uri, string $controller, string $method): void
     {
-        $routeKey = self::normalizeUri(self::$prefix . '/' . $uri);
+        $routeKey = self::buildRouteKey(self::$prefix, $uri);
         self::$routes['PUT'][$routeKey] = [
             'controller' => $controller,
             'method'     => $method,
@@ -61,7 +81,7 @@ class Route
 
     public static function delete(string $uri, string $controller, string $method): void
     {
-        $routeKey = self::normalizeUri(self::$prefix . '/' . $uri);
+        $routeKey = self::buildRouteKey(self::$prefix, $uri);
         self::$routes['DELETE'][$routeKey] = [
             'controller' => $controller,
             'method'     => $method,
