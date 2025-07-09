@@ -2,27 +2,23 @@
 
 namespace HotelBooking\Controllers\Admin;
 
-require_once __DIR__ . '/../../Functions/functions.php';
-
 use HotelBooking\Models\Phong;
 use HotelBooking\Models\TaiKhoan;
 use HotelBooking\Models\DanhGia;
+use HotelBooking\Enums\PhanQuyen;
 
 class AdminController
 {
     public function dashboard()
     {
         // Check admin access
-        session_start_if_not_started();
         if (!isset($_SESSION['user_id'])) {
-            header('Location: /login');
-            exit;
+            redirect('/login');
         }
 
         $user = TaiKhoan::find($_SESSION['user_id']);
-        if (!$user || !in_array($user->phan_quyen, ['Quản lý', 'Lễ tân'])) {
-            header('Location: /');
-            exit;
+        if (!$user || !PhanQuyen::isAdmin($user->phan_quyen)) {
+            redirect('/');
         }
 
         // Get dashboard statistics
@@ -31,7 +27,7 @@ class AdminController
         $totalReviews = count(DanhGia::all());
         $totalBookings = 0; // TODO: Implement when HoaDon model is ready
 
-        view('admin/dashboard', [
+        view('Admin.Dashboard/index', [
             'totalRooms' => $totalRooms,
             'totalUsers' => $totalUsers,
             'totalReviews' => $totalReviews,
@@ -43,59 +39,53 @@ class AdminController
     // Quản lý tài khoản
     public function taiKhoanIndex()
     {
-        session_start_if_not_started();
         if (!isset($_SESSION['user_id'])) {
-            header('Location: /login');
-            exit;
+            redirect('/login');
         }
 
         $user = TaiKhoan::find($_SESSION['user_id']);
-        if (!$user || !in_array($user->phan_quyen, ['Quản lý', 'Lễ tân'])) {
-            header('Location: /');
-            exit;
+        if (!$user || !PhanQuyen::isAdmin($user->phan_quyen)) {
+            redirect('/');
         }
 
         $taiKhoans = TaiKhoan::all();
-        view('admin/tai-khoan/index', ['taiKhoans' => $taiKhoans]);
+        view('Admin.TaiKhoan/index', ['taiKhoans' => $taiKhoans]);
     }
 
     public function taiKhoanCreate()
     {
-        session_start_if_not_started();
         if (!isset($_SESSION['user_id'])) {
-            header('Location: /login');
-            exit;
+            redirect('/login');
         }
 
         $user = TaiKhoan::find($_SESSION['user_id']);
-        if (!$user || !in_array($user->phan_quyen, ['Quản lý', 'Lễ tân'])) {
-            header('Location: /');
-            exit;
+        if (!$user || !PhanQuyen::isAdmin($user->phan_quyen)) {
+            redirect('/');
         }
 
-        view('admin/tai-khoan/create', []);
+        view('Admin.TaiKhoan/create', []);
     }
 
     public function taiKhoanStore()
     {
-        session_start_if_not_started();
         if (!isset($_SESSION['user_id'])) {
-            header('Location: /login');
-            exit;
+            redirect('/login');
         }
 
         $user = TaiKhoan::find($_SESSION['user_id']);
-        if (!$user || !in_array($user->phan_quyen, ['Quản lý', 'Lễ tân'])) {
-            header('Location: /');
-            exit;
+        if (!$user || !PhanQuyen::isAdmin($user->phan_quyen)) {
+            redirect('/');
         }
 
         $data = [
-            'ho_ten' => $_POST['ho_ten'] ?? '',
-            'mail' => $_POST['mail'] ?? '',
-            'so_cccd' => $_POST['so_cccd'] ?? '',
-            'sdt' => $_POST['sdt'] ?? '',
-            'phan_quyen' => $_POST['phan_quyen'] ?? 'Khách hàng'
+            'ho_ten' => post('ho_ten', ''),
+            'mail' => post('mail', ''),
+            'so_cccd' => post('so_cccd', ''),
+            'sdt' => post('sdt', ''),
+            'phan_quyen' => post(
+                'phan_quyen',
+                PhanQuyen::KHACH_HANG
+            )
         ];
 
         if (!empty($_POST['mat_khau'])) {
@@ -109,43 +99,40 @@ class AdminController
 
     public function taiKhoanEdit($id)
     {
-        session_start_if_not_started();
         if (!isset($_SESSION['user_id'])) {
-            header('Location: /login');
-            exit;
+            redirect('/login');
         }
 
         $user = TaiKhoan::find($_SESSION['user_id']);
-        if (!$user || !in_array($user->phan_quyen, ['Quản lý', 'Lễ tân'])) {
-            header('Location: /');
-            exit;
+        if (!$user || !PhanQuyen::isAdmin($user->phan_quyen)) {
+            redirect('/');
         }
 
         $taiKhoan = TaiKhoan::find($id);
-        view('admin/tai-khoan/edit', ['taiKhoan' => $taiKhoan]);
+        view('Admin.TaiKhoan/edit', ['taiKhoan' => $taiKhoan]);
     }
 
     public function taiKhoanUpdate($id)
     {
-        session_start_if_not_started();
         if (!isset($_SESSION['user_id'])) {
-            header('Location: /login');
-            exit;
+            redirect('/login');
         }
 
         $user = TaiKhoan::find($_SESSION['user_id']);
-        if (!$user || !in_array($user->phan_quyen, ['Quản lý', 'Lễ tân'])) {
-            header('Location: /');
-            exit;
+        if (!$user || !PhanQuyen::isAdmin($user->phan_quyen)) {
+            redirect('/');
         }
 
         $taiKhoan = TaiKhoan::find($id);
         $data = [
-            'ho_ten' => $_POST['ho_ten'] ?? $taiKhoan->ho_ten,
-            'mail' => $_POST['mail'] ?? $taiKhoan->mail,
-            'so_cccd' => $_POST['so_cccd'] ?? $taiKhoan->so_cccd,
-            'sdt' => $_POST['sdt'] ?? $taiKhoan->sdt,
-            'phan_quyen' => $_POST['phan_quyen'] ?? $taiKhoan->phan_quyen
+            'ho_ten' => post('ho_ten', $taiKhoan->ho_ten),
+            'mail' => post('mail', $taiKhoan->mail),
+            'so_cccd' => post('so_cccd', $taiKhoan->so_cccd),
+            'sdt' => post('sdt', $taiKhoan->sdt),
+            'phan_quyen' => post(
+                'phan_quyen',
+                $taiKhoan->phan_quyen
+            )
         ];
 
         if (!empty($_POST['mat_khau'])) {
@@ -159,16 +146,13 @@ class AdminController
 
     public function taiKhoanDestroy($id)
     {
-        session_start_if_not_started();
         if (!isset($_SESSION['user_id'])) {
-            header('Location: /login');
-            exit;
+            redirect('/login');
         }
 
         $user = TaiKhoan::find($_SESSION['user_id']);
-        if (!$user || !in_array($user->phan_quyen, ['Quản lý', 'Lễ tân'])) {
-            header('Location: /');
-            exit;
+        if (!$user || !PhanQuyen::isAdmin($user->phan_quyen)) {
+            redirect('/');
         }
 
         $taiKhoan = TaiKhoan::find($id);
@@ -179,3 +163,5 @@ class AdminController
         redirect('/admin/tai-khoan');
     }
 }
+
+

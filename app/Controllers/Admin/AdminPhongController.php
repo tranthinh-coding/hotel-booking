@@ -2,11 +2,10 @@
 
 namespace HotelBooking\Controllers\Admin;
 
-require_once __DIR__ . '/../../Functions/functions.php';
-
 use HotelBooking\Models\Phong;
-use HotelBooking\Models\DanhMucPhong;
+use HotelBooking\Models\LoaiPhong;
 use HotelBooking\Models\TaiKhoan;
+use HotelBooking\Enums\PhanQuyen;
 
 class AdminPhongController
 {
@@ -17,113 +16,86 @@ class AdminPhongController
 
     private function checkAdminAccess()
     {
-        session_start_if_not_started();
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: /login');
-            exit;
+        if (auth_guest()) {
+            redirect('/login');
         }
 
-        $user = TaiKhoan::find($_SESSION['user_id']);
-        if (!$user || !in_array($user->phan_quyen, ['Quản lý', 'Lễ tân'])) {
-            header('Location: /');
-            exit;
+        $user = user();
+        if (!$user || !PhanQuyen::isAdmin($user->phan_quyen)) {
+            redirect('/');
         }
     }
 
     public function index()
     {
         $phongs = Phong::all();
-        $title = 'Quản lý phòng - Ocean Pearl Hotel';
-        
-        // Capture the content
-        ob_start();
-        include __DIR__ . '/../../Views/admin/phong/index.php';
-        $content = ob_get_clean();
-        
-        include __DIR__ . '/../../Views/layouts/admin.php';
+        view('Admin.Phong/index', ['phongs' => $phongs]);
     }
 
     public function create()
     {
-        $danhMucPhongs = DanhMucPhong::all();
-        $title = 'Thêm phòng mới - Ocean Pearl Hotel';
-        
-        // Capture the content
-        ob_start();
-        include __DIR__ . '/../../Views/admin/phong/create.php';
-        $content = ob_get_clean();
-        
-        include __DIR__ . '/../../Views/layouts/admin.php';
+        $loaiPhongs = LoaiPhong::all();
+        view('Admin.Phong/create', ['loaiPhongs' => $loaiPhongs]);
     }
 
     public function store()
     {
         $data = [
-            'ten_phong' => $_POST['ten_phong'] ?? '',
-            'mo_ta' => $_POST['mo_ta'] ?? '',
-            'gia' => $_POST['gia'] ?? 0,
-            'ma_danh_muc' => $_POST['ma_danh_muc'] ?? null,
-            'so_khach_toi_da' => $_POST['so_khach_toi_da'] ?? 2,
-            'trang_thai' => $_POST['trang_thai'] ?? 'Còn trống'
-        ];
+            'ten_phong' => post('ten_phong', ''),
+            'mo_ta' => post('mo_ta', ''),
+            'gia' => post('gia', 0),
+            'ma_loai_phong' => post('ma_loai_phong', null),
+            'so_khach_toi_da' => post('so_khach_toi_da', 2),
+            'trang_thai' => post('trang_thai', \HotelBooking\Enums\TrangThaiPhong::CON_TRONG
+        )];
 
         Phong::create($data);
-        header('Location: /admin/phong?success=created');
-        exit;
+        redirect('/admin/phong?success=created');
     }
 
     public function edit($id)
     {
         $phong = Phong::find($id);
-        $danhMucPhongs = DanhMucPhong::all();
+        $loaiPhongs = LoaiPhong::all();
         
         if (!$phong) {
-            header('Location: /admin/phong?error=notfound');
-            exit;
+            redirect('/admin/phong?error=notfound');
         }
 
-        $title = 'Chỉnh sửa phòng - Ocean Pearl Hotel';
-        
-        // Capture the content
-        ob_start();
-        include __DIR__ . '/../../Views/admin/phong/edit.php';
-        $content = ob_get_clean();
-        
-        include __DIR__ . '/../../Views/layouts/admin.php';
+        view('Admin.Phong/edit', ['phong' => $phong, 'loaiPhongs' => $loaiPhongs]);
     }
 
     public function update($id)
     {
         $phong = Phong::find($id);
         if (!$phong) {
-            header('Location: /admin/phong?error=notfound');
-            exit;
+            redirect('/admin/phong?error=notfound');
         }
 
         $data = [
-            'ten_phong' => $_POST['ten_phong'] ?? $phong->ten_phong,
-            'mo_ta' => $_POST['mo_ta'] ?? $phong->mo_ta,
-            'gia' => $_POST['gia'] ?? $phong->gia,
-            'ma_danh_muc' => $_POST['ma_danh_muc'] ?? $phong->ma_danh_muc,
-            'so_khach_toi_da' => $_POST['so_khach_toi_da'] ?? $phong->so_khach_toi_da,
-            'trang_thai' => $_POST['trang_thai'] ?? $phong->trang_thai
-        ];
+            'ten_phong' => post('ten_phong', $phong->ten_phong),
+            'mo_ta' => post('mo_ta', $phong->mo_ta),
+            'gia' => post('gia', $phong->gia),
+            'ma_loai_phong' => post('ma_loai_phong', $phong->ma_loai_phong),
+            'so_khach_toi_da' => post('so_khach_toi_da', $phong->so_khach_toi_da),
+            'trang_thai' => post('trang_thai', $phong->trang_thai
+        )];
 
         $phong->update($data);
-        header('Location: /admin/phong?success=updated');
-        exit;
+        redirect('/admin/phong?success=updated');
     }
 
     public function destroy($id)
     {
         $phong = Phong::find($id);
         if (!$phong) {
-            header('Location: /admin/phong?error=notfound');
-            exit;
+            redirect('/admin/phong?error=notfound');
         }
 
         $phong->delete();
-        header('Location: /admin/phong?success=deleted');
-        exit;
+        redirect('/admin/phong?success=deleted');
     }
 }
+
+
+

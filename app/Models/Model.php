@@ -84,6 +84,18 @@ abstract class Model
         return static::query()->whereRaw($expr);
     }
 
+    // Where clause
+    public static function where($column, $operator = '=', $value = null)
+    {
+        // If only 2 parameters, assume operator is '='
+        if (func_num_args() === 2) {
+            $value = $operator;
+            $operator = '=';
+        }
+        
+        return static::query()->where($column, $operator, $value);
+    }
+
     // Create a new record
     public static function create(array $data)
     {

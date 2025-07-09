@@ -229,29 +229,114 @@ if (!function_exists('flash_set')) {
     /**
      * Set a flash message.
      *
-     * @param string $type
-     * @param string $message
+     * @param string $key
+     * @param mixed $value
      */
-    function flash_set(string $type, string $message): void
+    function flash_set(string $key, $value): void
     {
-        session_set("flash_{$type}", $message);
+        session_start_if_not_started();
+        if (!isset($_SESSION['_flash'])) {
+            $_SESSION['_flash'] = [];
+        }
+        $_SESSION['_flash'][$key] = $value;
     }
 }
 
 if (!function_exists('flash_get')) {
     /**
-     * Get and remove a flash message.
+     * Get a flash message and remove it.
      *
-     * @param string $type
-     * @return string|null
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
      */
-    function flash_get(string $type): ?string
+    function flash_get(string $key, $default = null)
     {
-        $message = session_get("flash_{$type}");
-        if ($message) {
-            session_remove("flash_{$type}");
+        session_start_if_not_started();
+        if (isset($_SESSION['_flash'][$key])) {
+            $value = $_SESSION['_flash'][$key];
+            unset($_SESSION['_flash'][$key]);
+            return $value;
         }
-        return $message;
+        return $default;
+    }
+}
+
+if (!function_exists('flash_has')) {
+    /**
+     * Check if a flash message exists.
+     *
+     * @param string $key
+     * @return bool
+     */
+    function flash_has(string $key): bool
+    {
+        session_start_if_not_started();
+        return isset($_SESSION['_flash'][$key]);
+    }
+}
+
+if (!function_exists('flash_keep')) {
+    /**
+     * Keep a flash message for the next request.
+     *
+     * @param string $key
+     */
+    function flash_keep(string $key): void
+    {
+        session_start_if_not_started();
+        if (isset($_SESSION['_flash'][$key])) {
+            $value = $_SESSION['_flash'][$key];
+            flash_set($key, $value);
+        }
+    }
+}
+
+if (!function_exists('flash_success')) {
+    /**
+     * Set a success flash message.
+     *
+     * @param string $message
+     */
+    function flash_success(string $message): void
+    {
+        flash_set('success', $message);
+    }
+}
+
+if (!function_exists('flash_error')) {
+    /**
+     * Set an error flash message.
+     *
+     * @param string $message
+     */
+    function flash_error(string $message): void
+    {
+        flash_set('error', $message);
+    }
+}
+
+if (!function_exists('flash_warning')) {
+    /**
+     * Set a warning flash message.
+     *
+     * @param string $message
+     */
+    function flash_warning(string $message): void
+    {
+        flash_set('warning', $message);
+    }
+}
+
+if (!function_exists('flash_info')) {
+    /**
+     * Set an info flash message.
+     *
+     * @param string $message
+     */
+    function flash_info(string $message): void
+    {
+        flash_set('info', $message);
     }
 }
 
@@ -263,112 +348,297 @@ if (!function_exists('old')) {
      * @param mixed $default
      * @return mixed
      */
-    function old(string $key, $default = '')
+    function old(string $key, $default = null)
     {
-        return session_get("old_{$key}", $default);
+        session_start_if_not_started();
+        if (isset($_SESSION['_old_input'][$key])) {
+            return $_SESSION['_old_input'][$key];
+        }
+        return $default;
+    }
+}
+
+if (!function_exists('old_set')) {
+    /**
+     * Set old input values.
+     *
+     * @param array $data
+     */
+    function old_set(array $data): void
+    {
+        session_start_if_not_started();
+        $_SESSION['_old_input'] = $data;
+    }
+}
+
+if (!function_exists('old_clear')) {
+    /**
+     * Clear old input values.
+     */
+    function old_clear(): void
+    {
+        session_start_if_not_started();
+        unset($_SESSION['_old_input']);
     }
 }
 
 if (!function_exists('set_old_input')) {
     /**
-     * Set old input values.
+     * Set old input values from $_POST automatically.
      */
     function set_old_input(): void
     {
-        foreach ($_POST as $key => $value) {
-            session_set("old_{$key}", $value);
-        }
+        session_start_if_not_started();
+        $_SESSION['_old_input'] = $_POST;
     }
 }
 
 if (!function_exists('clear_old_input')) {
     /**
-     * Clear old input values.
+     * Clear old input values (alias for old_clear).
      */
     function clear_old_input(): void
     {
-        foreach ($_SESSION as $key => $value) {
-            if (strpos($key, 'old_') === 0) {
-                session_remove($key);
-            }
+        old_clear();
+    }
+}
+
+if (!function_exists('set_error')) {
+    /**
+     * Set a validation error.
+     *
+     * @param string $field
+     * @param string $message
+     */
+    function set_error(string $field, string $message): void
+    {
+        session_start_if_not_started();
+        if (!isset($_SESSION['_errors'])) {
+            $_SESSION['_errors'] = [];
         }
+        $_SESSION['_errors'][$field] = $message;
     }
 }
 
-if (!function_exists('layout')) {
+if (!function_exists('set_errors')) {
     /**
-     * Render a view with layout.
+     * Set multiple validation errors.
      *
-     * @param string $view
-     * @param array $data
-     * @param string $layout
+     * @param array $errors
      */
-    function layout(string $view, array $data = [], string $layout = 'layouts.app'): void
+    function set_errors(array $errors): void
     {
-        // Start output buffering for content
-        ob_start();
-        
-        // Render the view content
-        view($view, $data);
-        
-        // Get the content
-        $content = ob_get_clean();
-        
-        // Add content to data
-        $data['content'] = $content;
-        
-        // Render the layout
-        view($layout, $data);
+        session_start_if_not_started();
+        $_SESSION['_errors'] = $errors;
     }
 }
 
-if (!function_exists('auth_is_admin')) {
+if (!function_exists('get_error')) {
     /**
-     * Check if the current user is an admin.
+     * Get a validation error and remove it.
+     *
+     * @param string $field
+     * @param string $default
+     * @return string
+     */
+    function get_error(string $field, string $default = ''): string
+    {
+        session_start_if_not_started();
+        if (isset($_SESSION['_errors'][$field])) {
+            $error = $_SESSION['_errors'][$field];
+            unset($_SESSION['_errors'][$field]);
+            return $error;
+        }
+        return $default;
+    }
+}
+
+if (!function_exists('has_error')) {
+    /**
+     * Check if a validation error exists.
+     *
+     * @param string $field
+     * @return bool
+     */
+    function has_error(string $field): bool
+    {
+        session_start_if_not_started();
+        return isset($_SESSION['_errors'][$field]);
+    }
+}
+
+if (!function_exists('get_errors')) {
+    /**
+     * Get all validation errors.
+     *
+     * @return array
+     */
+    function get_errors(): array
+    {
+        session_start_if_not_started();
+        return $_SESSION['_errors'] ?? [];
+    }
+}
+
+if (!function_exists('has_errors')) {
+    /**
+     * Check if any validation errors exist.
      *
      * @return bool
      */
-    function auth_is_admin(): bool
+    function has_errors(): bool
     {
-        $role = session_get('user_role');
-        return $role === 'Quản lý' || $role === 'Admin';
+        session_start_if_not_started();
+        return !empty($_SESSION['_errors']);
     }
 }
 
-if (!function_exists('auth_is_nhan_vien')) {
+if (!function_exists('clear_errors')) {
     /**
-     * Check if the current user is staff (nhân viên) or higher.
-     *
-     * @return bool
+     * Clear all validation errors.
      */
-    function auth_is_nhan_vien(): bool
+    function clear_errors(): void
     {
-        $role = session_get('user_role');
-        return $role === 'Nhân viên' || $role === 'Quản lý' || $role === 'Admin';
+        session_start_if_not_started();
+        unset($_SESSION['_errors']);
     }
 }
 
-if (!function_exists('auth_is_khach_hang')) {
+if (!function_exists('validate_required')) {
     /**
-     * Check if the current user is a customer.
+     * Validate that a field is required.
      *
+     * @param string $field
+     * @param mixed $value
+     * @param string $message
      * @return bool
      */
-    function auth_is_khach_hang(): bool
+    function validate_required(string $field, $value, ?string $message = null): bool
     {
-        $role = session_get('user_role');
-        return $role === 'Khách hàng';
+        if (empty($value) && $value !== '0') {
+            $message = $message ?: ucfirst($field) . ' là bắt buộc.';
+            set_error($field, $message);
+            return false;
+        }
+        return true;
     }
 }
 
-if (!function_exists('auth_can_crud')) {
+if (!function_exists('validate_email')) {
     /**
-     * Check if the current user can perform CRUD operations.
+     * Validate email format.
      *
+     * @param string $field
+     * @param string $value
+     * @param string $message
      * @return bool
      */
-    function auth_can_crud(): bool
+    function validate_email(string $field, string $value, ?string $message = null): bool
     {
-        return auth_is_nhan_vien() || auth_is_admin();
+        if (!empty($value) && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+            $message = $message ?: 'Email không đúng định dạng.';
+            set_error($field, $message);
+            return false;
+        }
+        return true;
+    }
+}
+
+if (!function_exists('validate_min_length')) {
+    /**
+     * Validate minimum length.
+     *
+     * @param string $field
+     * @param string $value
+     * @param int $min
+     * @param string $message
+     * @return bool
+     */
+    function validate_min_length(string $field, string $value, int $min, ?string $message = null): bool
+    {
+        if (!empty($value) && strlen($value) < $min) {
+            $message = $message ?: ucfirst($field) . " phải có ít nhất {$min} ký tự.";
+            set_error($field, $message);
+            return false;
+        }
+        return true;
+    }
+}
+
+if (!function_exists('validate_confirmed')) {
+    /**
+     * Validate that two fields match.
+     *
+     * @param string $field
+     * @param string $value
+     * @param string $confirmField
+     * @param string $confirmValue
+     * @param string $message
+     * @return bool
+     */
+    function validate_confirmed(string $field, string $value, string $confirmField, string $confirmValue, ?string $message = null): bool
+    {
+        if ($value !== $confirmValue) {
+            $message = $message ?: 'Xác nhận không khớp.';
+            set_error($confirmField, $message);
+            return false;
+        }
+        return true;
+    }
+}
+
+if (!function_exists('with_old_input')) {
+    /**
+     * Store current POST data as old input and redirect with errors.
+     *
+     * @param string $url
+     */
+    function with_old_input(string $url): void
+    {
+        old_set($_POST);
+        redirect($url);
+    }
+}
+
+if (!function_exists('csrf_token')) {
+    /**
+     * Generate CSRF token.
+     *
+     * @return string
+     */
+    function csrf_token(): string
+    {
+        session_start_if_not_started();
+        if (!isset($_SESSION['_csrf_token'])) {
+            $_SESSION['_csrf_token'] = bin2hex(random_bytes(32));
+        }
+        return $_SESSION['_csrf_token'];
+    }
+}
+
+if (!function_exists('csrf_check')) {
+    /**
+     * Check CSRF token.
+     *
+     * @param string $token
+     * @return bool
+     */
+    function csrf_check(string $token): bool
+    {
+        session_start_if_not_started();
+        return isset($_SESSION['_csrf_token']) && hash_equals($_SESSION['_csrf_token'], $token);
+    }
+}
+
+if (!function_exists('csrf_field')) {
+    /**
+     * Generate CSRF hidden input field.
+     *
+     * @return string
+     */
+    function csrf_field(): string
+    {
+        $token = csrf_token();
+        return '<input type="hidden" name="_token" value="' . htmlspecialchars($token) . '">';
     }
 }

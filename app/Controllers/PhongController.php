@@ -9,12 +9,12 @@ class PhongController
     public function index()
     {
         $phongs = Phong::all();
-        view('Phong/index', ['phongs' => $phongs]);
+        view('Client.Phong.index', ['phongs' => $phongs]);
     }
 
     public function create()
     {
-        view('Phong.create');
+        view('Admin.Phong.create');
     }
 
     public function store()
@@ -41,7 +41,7 @@ class PhongController
             echo "Phòng không tồn tại";
             return;
         }
-        view('Phong.show', ['phong' => $phong]);
+        view('Client.Phong.show', ['phong' => $phong]);
     }
 
     public function edit($id)
@@ -52,7 +52,7 @@ class PhongController
             echo "Phòng không tồn tại";
             return;
         }
-        view('Phong.edit', ['phong' => $phong]);
+        view('Admin.Phong.edit', ['phong' => $phong]);
     }
 
     public function update($id)
@@ -88,3 +88,6 @@ class PhongController
         redirect('/phong');
     }
 }
+
+
+

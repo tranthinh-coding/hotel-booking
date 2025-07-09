@@ -2,61 +2,105 @@
 
 namespace HotelBooking\Models;
 
-use HotelBooking\Facades\DB;
-
 /**
- * @property int $ma_phong
+ * @property string $ma_phong
  * @property string $ten_phong
- * @property string $mo_ta
- * @property string $trang_thai
- * @property int $gia
- * @property int $ma_danh_muc
- * @property int $so_khach_toi_da
+ * @property string $loai_phong
+ * @property float $gia_phong
  */
 class Phong extends Model
 {
     protected $table = 'phong';
-    protected $primaryKey = 'ma_phong';
 
     protected $attributes = [
         'ma_phong',
         'ten_phong',
-        'mo_ta',
-        'trang_thai',
-        'gia',
-        'ma_danh_muc',
-        'so_khach_toi_da',
+        'loai_phong',
+        'gia_phong',
     ];
 
-    public static function searchAvailable($checkin, $checkout, $guests, $room_type = null)
+    /**
+     * Tìm kiếm phòng khả dụng theo khoảng thời gian
+     * 
+     * @param string $checkin Ngày checkin (Y-m-d)
+     * @param string $checkout Ngày checkout (Y-m-d) 
+     * @param int $guests Số lượng khách (hiện tại chưa dùng)
+     * @param string $roomType Loại phòng (tùy chọn)
+     * @return array Danh sách phòng khả dụng
+     */
+    public static function searchAvailable($checkin, $checkout, $guests = 1, $roomType = '')
     {
-        // Start with all available rooms
-        $instance = new static();
-        $queryBuilder = DB::table($instance->table)->where('trang_thai', '=', 'Còn trống');
+        // Validate input dates
+        if (empty($checkin) || empty($checkout)) {
+            return static::all();
+        }
+
+        // Convert to proper date format
+        $checkinDate = date('Y-m-d', strtotime($checkin));
+        $checkoutDate = date('Y-m-d', strtotime($checkout));
+
+        // Validate date range
+        if ($checkinDate >= $checkoutDate) {
+            return [];
+        }
+
+        // Get all rooms first
+        $query = static::query();
         
-        if ($guests) {
-            $queryBuilder = $queryBuilder->where('so_khach_toi_da', '>=', intval($guests));
+        // Filter by room type if specified
+        if (!empty($roomType)) {
+            $query = $query->where('loai_phong', '=', $roomType);
         }
         
-        if ($room_type) {
-            $queryBuilder = $queryBuilder->where('ma_danh_muc', '=', intval($room_type));
+        $allRooms = $query->get();
+
+        // Get all conflicting bookings for the requested period
+        $conflictingBookings = HoaDonPhong::getConflictingBookings($checkinDate, $checkoutDate);
+        
+        // Get room IDs that are booked during the requested period
+        $bookedRoomIds = [];
+        foreach ($conflictingBookings as $booking) {
+            $bookedRoomIds[] = $booking['ma_phong'];
         }
         
-        // Get the results
-        $rows = $queryBuilder->get();
-        
-        $results = [];
-        foreach ($rows as $row) {
-            $model = new static();
-            $model->data = $row;
-            $results[] = $model;
+        // Filter out booked rooms
+        $availableRooms = [];
+        foreach ($allRooms as $room) {
+            // Handle both array and object returns from query
+            if (is_array($room)) {
+                $roomId = $room['ma_phong'];
+            } elseif (is_object($room) && isset($room->ma_phong)) {
+                $roomId = $room->ma_phong;
+            } elseif (is_object($room) && method_exists($room, '__get')) {
+                $roomId = $room->__get('ma_phong');
+            } else {
+                continue; // Skip invalid entries
+            }
+            
+            if (!in_array($roomId, $bookedRoomIds)) {
+                $availableRooms[] = $room;
+            }
         }
-        
-        return $results;
+
+        return $availableRooms;
     }
 
-    public function danhMucPhong()
+    /**
+     * Kiểm tra phòng có khả dụng trong khoảng thời gian không
+     * 
+     * @param int $roomId ID phòng
+     * @param string $checkin Ngày checkin 
+     * @param string $checkout Ngày checkout
+     * @return bool
+     */
+    public static function isAvailable($roomId, $checkin, $checkout)
     {
-        return DanhMucPhong::find($this->ma_danh_muc);
+        $checkinDate = date('Y-m-d', strtotime($checkin));
+        $checkoutDate = date('Y-m-d', strtotime($checkout));
+        
+        $conflictingBookings = HoaDonPhong::getConflictingBookings($checkinDate, $checkoutDate);
+        $bookedRoomIds = array_column($conflictingBookings, 'ma_phong');
+        
+        return !in_array($roomId, $bookedRoomIds);
     }
 }
