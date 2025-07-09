@@ -1,129 +1,96 @@
-<?php include_once '../layouts/admin.php'; ?>
+<?php
+$title = 'Tạo Loại phòng mới - Ocean Pearl Hotel Admin';
+$pageTitle = 'Tạo Loại phòng mới';
+ob_start();
+?>
 
-<div class="container-fluid px-4">
-    <h1 class="mt-4">Tạo Loại phòng mới</h1>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a href="/admin/dashboard">Dashboard</a></li>
-        <li class="breadcrumb-item"><a href="/admin/loaiphong">Loại phòng</a></li>
-        <li class="breadcrumb-item active">Tạo mới</li>
-    </ol>
+<div class="space-y-6">
+    <!-- Breadcrumb -->
+    <nav class="text-sm text-gray-500">
+        <a href="/admin/dashboard" class="hover:text-gray-700">Dashboard</a>
+        <span class="mx-2">/</span>
+        <a href="/admin/loai-phong" class="hover:text-gray-700">Loại phòng</a>
+        <span class="mx-2">/</span>
+        <span class="text-gray-900">Tạo mới</span>
+    </nav>
 
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Thông tin Loại phòng</h5>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Form -->
+        <div class="lg:col-span-2">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">Thông tin Loại phòng</h3>
+                    <p class="text-sm text-gray-500 mt-1">Nhập thông tin cơ bản cho loại phòng mới</p>
                 </div>
-                <div class="card-body">
-                    <form action="/admin/loaiphong/store" method="POST" enctype="multipart/form-data">
-                        <div class="mb-3">
-                            <label for="ten_loai" class="form-label">Tên loại phòng *</label>
-                            <input type="text" class="form-control" id="ten_loai" name="ten_loai" 
-                                   placeholder="VD: Phòng Standard, Deluxe, Suite..." required>
+                
+                <div class="p-6">
+                    <form action="/admin/loai-phong" method="POST" enctype="multipart/form-data" class="space-y-6">
+                        <div>
+                            <label for="ten" class="block text-sm font-medium text-gray-700 mb-2">
+                                Tên loại phòng <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" 
+                                   id="ten" 
+                                   name="ten" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                                   placeholder="VD: Phòng Standard, Deluxe, Suite..." 
+                                   required>
+                            <p class="mt-1 text-sm text-gray-500">Tên loại phòng sẽ hiển thị trên website</p>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="gia_phong" class="form-label">Giá phòng/đêm (VNĐ) *</label>
-                                    <input type="number" class="form-control" id="gia_phong" name="gia_phong" 
-                                           placeholder="800000" min="0" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="dien_tich" class="form-label">Diện tích (m²)</label>
-                                    <input type="number" class="form-control" id="dien_tich" name="dien_tich" 
-                                           placeholder="25" min="0">
-                                </div>
-                            </div>
+                        <div>
+                            <label for="mo_ta" class="block text-sm font-medium text-gray-700 mb-2">
+                                Mô tả
+                            </label>
+                            <textarea id="mo_ta" 
+                                      name="mo_ta" 
+                                      rows="4" 
+                                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                                      placeholder="Mô tả chi tiết về loại phòng này, các đặc điểm nổi bật..."></textarea>
+                            <p class="mt-1 text-sm text-gray-500">Mô tả sẽ giúp khách hàng hiểu rõ hơn về loại phòng</p>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="suc_chua" class="form-label">Sức chứa (người)</label>
-                                    <input type="number" class="form-control" id="suc_chua" name="suc_chua" 
-                                           placeholder="2" min="1" max="10">
+                        <div>
+                            <label for="hinh_anh" class="block text-sm font-medium text-gray-700 mb-2">
+                                Hình ảnh đại diện
+                            </label>
+                            <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-gray-400 transition-colors">
+                                <div class="space-y-1 text-center">
+                                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                    <div class="flex text-sm text-gray-600">
+                                        <label for="hinh_anh" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                            <span>Tải lên hình ảnh</span>
+                                            <input id="hinh_anh" name="hinh_anh" type="file" class="sr-only" accept="image/*">
+                                        </label>
+                                        <p class="pl-1">hoặc kéo thả</p>
+                                    </div>
+                                    <p class="text-xs text-gray-500">PNG, JPG, GIF tối đa 10MB</p>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="trang_thai" class="form-label">Trạng thái</label>
-                                    <select class="form-select" id="trang_thai" name="trang_thai">
-                                        <option value="active" selected>Hoạt động</option>
-                                        <option value="inactive">Không hoạt động</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="mo_ta" class="form-label">Mô tả</label>
-                            <textarea class="form-control" id="mo_ta" name="mo_ta" rows="4" 
-                                      placeholder="Mô tả chi tiết về loại phòng..."></textarea>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="tien_nghi" class="form-label">Tiện nghi</label>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="wifi" name="tien_nghi[]" value="wifi">
-                                        <label class="form-check-label" for="wifi">Wi-Fi miễn phí</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="dieu_hoa" name="tien_nghi[]" value="dieu_hoa">
-                                        <label class="form-check-label" for="dieu_hoa">Điều hòa</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="tv" name="tien_nghi[]" value="tv">
-                                        <label class="form-check-label" for="tv">TV màn hình phẳng</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="minibar" name="tien_nghi[]" value="minibar">
-                                        <label class="form-check-label" for="minibar">Minibar</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="ban_cong" name="tien_nghi[]" value="ban_cong">
-                                        <label class="form-check-label" for="ban_cong">Ban công</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="bep_nho" name="tien_nghi[]" value="bep_nho">
-                                        <label class="form-check-label" for="bep_nho">Bếp nhỏ</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="phong_tam_rieng" name="tien_nghi[]" value="phong_tam_rieng">
-                                        <label class="form-check-label" for="phong_tam_rieng">Phòng tắm riêng</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="may_say_toc" name="tien_nghi[]" value="may_say_toc">
-                                        <label class="form-check-label" for="may_say_toc">Máy sấy tóc</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="room_service" name="tien_nghi[]" value="room_service">
-                                        <label class="form-check-label" for="room_service">Room service 24/7</label>
-                                    </div>
+                            
+                            <!-- Image Preview -->
+                            <div id="image-preview" class="mt-4 hidden">
+                                <div class="relative">
+                                    <img id="preview-image" class="w-full h-48 object-cover rounded-lg border border-gray-200" />
+                                    <button type="button" onclick="removeImage()" class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="hinh_anh" class="form-label">Hình ảnh</label>
-                            <input type="file" class="form-control" id="hinh_anh" name="hinh_anh[]" multiple accept="image/*">
-                            <div class="form-text">Chọn nhiều hình ảnh để tạo gallery cho loại phòng</div>
-                        </div>
-
-                        <div class="d-flex justify-content-between">
-                            <a href="/admin/loaiphong" class="btn btn-secondary">
-                                <i class="fas fa-arrow-left"></i> Quay lại
+                        <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+                            <a href="/admin/loai-phong" 
+                               class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                                <i class="fas fa-arrow-left mr-2"></i>Quay lại
                             </a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save"></i> Tạo loại phòng
+                            <button type="submit" 
+                                    class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                <i class="fas fa-save mr-2"></i>Tạo loại phòng
                             </button>
                         </div>
                     </form>
@@ -131,34 +98,34 @@
             </div>
         </div>
 
-        <div class="col-lg-4">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Preview</h5>
+        <!-- Preview -->
+        <div class="lg:col-span-1">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 sticky top-4">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        <i class="fas fa-eye mr-2 text-blue-600"></i>Xem trước
+                    </h3>
                 </div>
-                <div class="card-body">
-                    <div id="preview-card" class="card">
-                        <div class="card-body">
-                            <h6 id="preview-ten" class="card-title">Tên loại phòng</h6>
-                            <p id="preview-gia" class="text-success fw-bold">0 VNĐ/đêm</p>
-                            <p id="preview-thongtin" class="text-muted">Diện tích: 0m² | Sức chứa: 0 người</p>
-                            <p id="preview-mota" class="card-text">Mô tả sẽ hiển thị ở đây...</p>
+                
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <div>
+                            <h4 id="preview-ten" class="text-lg font-semibold text-gray-900">Tên loại phòng</h4>
+                        </div>
+                        
+                        <div id="preview-hinh-anh" class="w-full h-32 bg-gray-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300">
+                            <p class="text-gray-500 text-sm">Chưa có hình ảnh</p>
+                            <img id="preview-img" class="w-full h-full object-cover rounded-lg hidden" />
+                        </div>
+                        
+                        <div>
+                            <p id="preview-mota" class="text-gray-600 text-sm">Mô tả sẽ hiển thị ở đây...</p>
+                        </div>
+                        
+                        <div class="text-xs text-gray-500 pt-2 border-t">
+                            <p><i class="fas fa-info-circle mr-1"></i>Preview sẽ cập nhật khi bạn nhập thông tin</p>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="card mt-3">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Hướng dẫn</h5>
-                </div>
-                <div class="card-body">
-                    <ul class="list-unstyled">
-                        <li><i class="fas fa-info-circle text-info"></i> Tên loại phòng nên ngắn gọn và dễ nhớ</li>
-                        <li><i class="fas fa-info-circle text-info"></i> Giá phòng tính theo VNĐ/đêm</li>
-                        <li><i class="fas fa-info-circle text-info"></i> Chọn tiện nghi phù hợp với loại phòng</li>
-                        <li><i class="fas fa-info-circle text-info"></i> Hình ảnh nên có chất lượng cao</li>
-                    </ul>
                 </div>
             </div>
         </div>
@@ -166,28 +133,101 @@
 </div>
 
 <script>
-// Live preview
+// Live preview functions
 function updatePreview() {
-    const ten = document.getElementById('ten_loai').value || 'Tên loại phòng';
-    const gia = document.getElementById('gia_phong').value || 0;
-    const dienTich = document.getElementById('dien_tich').value || 0;
-    const sucChua = document.getElementById('suc_chua').value || 0;
+    const ten = document.getElementById('ten').value || 'Tên loại phòng';
     const moTa = document.getElementById('mo_ta').value || 'Mô tả sẽ hiển thị ở đây...';
     
     document.getElementById('preview-ten').textContent = ten;
-    document.getElementById('preview-gia').textContent = parseInt(gia).toLocaleString('vi-VN') + ' VNĐ/đêm';
-    document.getElementById('preview-thongtin').textContent = `Diện tích: ${dienTich}m² | Sức chứa: ${sucChua} người`;
     document.getElementById('preview-mota').textContent = moTa;
 }
 
-document.getElementById('ten_loai').addEventListener('input', updatePreview);
-document.getElementById('gia_phong').addEventListener('input', updatePreview);
-document.getElementById('dien_tich').addEventListener('input', updatePreview);
-document.getElementById('suc_chua').addEventListener('input', updatePreview);
-document.getElementById('mo_ta').addEventListener('input', updatePreview);
+// Image preview
+function previewImage(event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById('preview-img');
+    const placeholder = document.querySelector('#preview-hinh-anh p');
+    const previewContainer = document.getElementById('image-preview');
+    const mainPreview = document.getElementById('preview-image');
+    
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // Main preview
+            mainPreview.src = e.target.result;
+            previewContainer.classList.remove('hidden');
+            
+            // Side preview
+            preview.src = e.target.result;
+            preview.classList.remove('hidden');
+            placeholder.style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+    }
+}
 
-// Format price input
-document.getElementById('gia_phong').addEventListener('input', function() {
-    this.value = this.value.replace(/[^0-9]/g, '');
+// Remove image
+function removeImage() {
+    document.getElementById('hinh_anh').value = '';
+    document.getElementById('image-preview').classList.add('hidden');
+    document.getElementById('preview-img').classList.add('hidden');
+    document.querySelector('#preview-hinh-anh p').style.display = 'block';
+}
+
+// Add event listeners
+document.getElementById('ten').addEventListener('input', updatePreview);
+document.getElementById('mo_ta').addEventListener('input', updatePreview);
+document.getElementById('hinh_anh').addEventListener('change', previewImage);
+
+// Form validation
+document.querySelector('form').addEventListener('submit', function(e) {
+    const ten = document.getElementById('ten').value.trim();
+    
+    if (!ten) {
+        e.preventDefault();
+        alert('Vui lòng nhập tên loại phòng!');
+        document.getElementById('ten').focus();
+        return;
+    }
+    
+    // Show loading state
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Đang tạo...';
+    submitBtn.disabled = true;
+    
+    // Re-enable if form submission fails
+    setTimeout(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    }, 5000);
+});
+
+// Drag and drop functionality
+const dropZone = document.querySelector('input[type="file"]').closest('.border-dashed');
+dropZone.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    this.classList.add('border-blue-500', 'bg-blue-50');
+});
+
+dropZone.addEventListener('dragleave', function(e) {
+    e.preventDefault();
+    this.classList.remove('border-blue-500', 'bg-blue-50');
+});
+
+dropZone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    this.classList.remove('border-blue-500', 'bg-blue-50');
+    
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        document.getElementById('hinh_anh').files = files;
+        previewImage({ target: { files: files } });
+    }
 });
 </script>
+
+<?php
+$content = ob_get_clean();
+include __DIR__ . '/../../layouts/admin.php';
+?>

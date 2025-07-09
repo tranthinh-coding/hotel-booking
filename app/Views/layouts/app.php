@@ -131,6 +131,45 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
+        
+        /* Toast Notifications */
+        .toast {
+            transform: translateX(100%);
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .toast.hide {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        
+        @media (max-width: 640px) {
+            #toast-container {
+                left: 1rem;
+                right: 1rem;
+                top: 1rem;
+            }
+            
+            .toast {
+                transform: translateY(-100%);
+            }
+            
+            .toast.show {
+                transform: translateY(0);
+            }
+            
+            .toast.hide {
+                transform: translateY(-100%);
+            }
+        }
     </style>
 </head>
 <body class="h-full bg-gradient-to-br from-gray-50 via-ocean-50 to-white">
@@ -261,40 +300,36 @@
         </div>
     </nav>
 
-    <!-- Flash Messages -->
+    <!-- Flash Messages Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-3"></div>
+    
     <?php if (function_exists('flash_get')): ?>
         <?php $success = flash_get('success'); ?>
         <?php $error = flash_get('error'); ?>
         <?php $info = flash_get('info'); ?>
         
         <?php if ($success): ?>
-            <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-xl mx-4 mt-4 relative soft-shadow animate__animated animate__fadeInDown" role="alert">
-                <i class="fas fa-check-circle mr-2"></i>
-                <span><?= htmlspecialchars($success) ?></span>
-                <button onclick="this.parentElement.remove()" class="absolute top-0 bottom-0 right-0 px-4 py-3 gentle-hover">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    showToast('<?= addslashes(htmlspecialchars($success)) ?>', 'success');
+                });
+            </script>
         <?php endif; ?>
         
         <?php if ($error): ?>
-            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mx-4 mt-4 relative soft-shadow animate__animated animate__fadeInDown" role="alert">
-                <i class="fas fa-exclamation-circle mr-2"></i>
-                <span><?= htmlspecialchars($error) ?></span>
-                <button onclick="this.parentElement.remove()" class="absolute top-0 bottom-0 right-0 px-4 py-3 gentle-hover">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    showToast('<?= addslashes(htmlspecialchars($error)) ?>', 'error');
+                });
+            </script>
         <?php endif; ?>
         
         <?php if ($info): ?>
-            <div class="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-xl mx-4 mt-4 relative soft-shadow animate__animated animate__fadeInDown" role="alert">
-                <i class="fas fa-info-circle mr-2"></i>
-                <span><?= htmlspecialchars($info) ?></span>
-                <button onclick="this.parentElement.remove()" class="absolute top-0 bottom-0 right-0 px-4 py-3 gentle-hover">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    showToast('<?= addslashes(htmlspecialchars($info)) ?>', 'info');
+                });
+            </script>
         <?php endif; ?>
     <?php endif; ?>
 
@@ -374,14 +409,84 @@
             menu.classList.toggle('hidden');
         }
 
-        // Auto hide flash messages after 5 seconds
-        setTimeout(() => {
-            document.querySelectorAll('[role="alert"]').forEach(alert => {
-                alert.style.transition = 'opacity 0.5s';
-                alert.style.opacity = '0';
-                setTimeout(() => alert.remove(), 500);
-            });
-        }, 5000);
+        // Toast Notification System
+        function showToast(message, type = 'info', duration = 5000) {
+            const container = document.getElementById('toast-container');
+            
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = `toast max-w-sm w-full bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden`;
+            
+            // Define styles and icons based on type
+            let iconClass, bgColor, textColor, borderColor;
+            switch(type) {
+                case 'success':
+                    iconClass = 'fas fa-check-circle';
+                    bgColor = 'bg-emerald-50';
+                    textColor = 'text-emerald-700';
+                    borderColor = 'border-emerald-200';
+                    break;
+                case 'error':
+                    iconClass = 'fas fa-exclamation-circle';
+                    bgColor = 'bg-red-50';
+                    textColor = 'text-red-700';
+                    borderColor = 'border-red-200';
+                    break;
+                case 'info':
+                default:
+                    iconClass = 'fas fa-info-circle';
+                    bgColor = 'bg-blue-50';
+                    textColor = 'text-blue-700';
+                    borderColor = 'border-blue-200';
+                    break;
+            }
+            
+            toast.innerHTML = `
+                <div class="${bgColor} ${borderColor} border-l-4 p-4">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <i class="${iconClass} ${textColor} text-lg"></i>
+                        </div>
+                        <div class="ml-3 flex-1">
+                            <p class="${textColor} text-sm font-medium">${message}</p>
+                        </div>
+                        <div class="ml-4 flex-shrink-0">
+                            <button onclick="hideToast(this.closest('.toast'))" class="${textColor} hover:opacity-75 transition-opacity">
+                                <i class="fas fa-times text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Add to container
+            container.appendChild(toast);
+            
+            // Show with animation
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+            
+            // Auto hide
+            if (duration > 0) {
+                setTimeout(() => {
+                    hideToast(toast);
+                }, duration);
+            }
+            
+            return toast;
+        }
+        
+        function hideToast(toast) {
+            toast.classList.add('hide');
+            toast.classList.remove('show');
+            
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 500);
+        }
 
         // GSAP Animations
         gsap.registerPlugin(ScrollTrigger);

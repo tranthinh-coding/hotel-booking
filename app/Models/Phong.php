@@ -12,11 +12,15 @@ class Phong extends Model
 {
     protected $table = 'phong';
 
+    protected $primaryKey = 'ma_phong';
+
     protected $attributes = [
         'ma_phong',
         'ten_phong',
         'loai_phong',
-        'gia_phong',
+        'mo_ta',
+        'gia',
+        'ma_loai_phong'
     ];
 
     /**

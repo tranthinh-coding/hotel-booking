@@ -1,23 +1,117 @@
-<?php include_once '../layouts/admin.php'; ?>
+<?php
+$title = 'Quản lý Dịch vụ - Ocean Pearl Hotel Admin';
+$pageTitle = 'Quản lý Dịch vụ';
+ob_start();
+?>
 
-<div class="container-fluid px-4">
-    <h1 class="mt-4">Quản lý Dịch vụ</h1>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a href="/admin/dashboard">Dashboard</a></li>
-        <li class="breadcrumb-item active">Dịch vụ</li>
-    </ol>
-
-    <div class="card mb-4">
-        <div class="card-header">
-            <i class="fas fa-concierge-bell me-1"></i>
-            Danh sách Dịch vụ
-            <div class="float-end">
-                <a href="/admin/dichvu/create" class="btn btn-primary btn-sm">
-                    <i class="fas fa-plus"></i> Thêm dịch vụ
-                </a>
-            </div>
+<div class="space-y-6">
+    <!-- Header Actions -->
+    <div class="flex justify-between items-center">
+        <div>
+            <nav class="text-sm text-gray-500">
+                <a href="/admin/dashboard" class="hover:text-gray-700">Dashboard</a>
+                <span class="mx-2">/</span>
+                <span class="text-gray-900">Dịch vụ</span>
+            </nav>
         </div>
-        <div class="card-body">
+        <div>
+            <a href="/admin/dich-vu/create" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
+                <i class="fas fa-plus mr-2"></i>
+                Thêm dịch vụ
+            </a>
+        </div>
+    </div>
+
+    <!-- Services Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <?php if (!empty($dichVus)): ?>
+            <?php foreach ($dichVus as $dichVu): ?>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300">
+                    <div class="h-48 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                        <i class="fas fa-concierge-bell text-6xl text-white opacity-80"></i>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="mb-4">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">
+                                <?= htmlspecialchars($dichVu->ten_dich_vu ?? $dichVu['ten_dich_vu']) ?>
+                            </h3>
+                            <p class="text-gray-600">
+                                Mã dịch vụ: <span class="font-medium"><?= htmlspecialchars($dichVu->ma_dich_vu ?? $dichVu['ma_dich_vu']) ?></span>
+                            </p>
+                        </div>
+
+                        <div class="mb-4 p-3 bg-gray-50 rounded-lg">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-blue-600">
+                                    <?= number_format($dichVu->gia ?? $dichVu['gia'], 0, ',', '.') ?>₫
+                                </div>
+                                <div class="text-sm text-gray-500">Giá dịch vụ</div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center">
+                            <div class="flex space-x-2">
+                                <a href="/admin/dich-vu/edit/<?= $dichVu->ma_dich_vu ?? $dichVu['ma_dich_vu'] ?>" 
+                                   class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                    <i class="fas fa-edit mr-1"></i>Sửa
+                                </a>
+                                <button onclick="deleteService('<?= $dichVu->ma_dich_vu ?? $dichVu['ma_dich_vu'] ?>')" 
+                                        class="text-red-600 hover:text-red-800 text-sm font-medium">
+                                    <i class="fas fa-trash mr-1"></i>Xóa
+                                </button>
+                            </div>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                Hoạt động
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <div class="col-span-full">
+                <div class="text-center py-12 bg-white rounded-xl border border-gray-200">
+                    <i class="fas fa-concierge-bell text-4xl text-gray-400 mb-4"></i>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Chưa có dịch vụ nào</h3>
+                    <p class="text-gray-500 mb-6">Hãy thêm dịch vụ đầu tiên để bắt đầu</p>
+                    <a href="/admin/dich-vu/create" 
+                       class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
+                        <i class="fas fa-plus mr-2"></i>
+                        Thêm dịch vụ
+                    </a>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
+
+<script>
+function deleteService(id) {
+    if (confirm('Bạn có chắc chắn muốn xóa dịch vụ này?')) {
+        fetch(`/admin/dich-vu/delete/${id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                location.reload();
+            } else {
+                alert('Có lỗi xảy ra khi xóa dịch vụ');
+            }
+        })
+        .catch(error => {
+            alert('Có lỗi xảy ra khi xóa dịch vụ');
+        });
+    }
+}
+</script>
+
+<?php
+$content = ob_get_clean();
+include __DIR__ . '/../../layouts/admin.php';
+?>
             <div class="row mb-3">
                 <div class="col-md-4">
                     <input type="text" class="form-control" placeholder="Tìm kiếm dịch vụ..." id="searchInput">

@@ -11,7 +11,9 @@ class LoaiPhong extends Model
     
     protected $attributes = [
         'ma_loai_phong',
-        'ten'
+        'ten',
+        'mo_ta',
+        'hinh_anh',
     ];
     
     /**

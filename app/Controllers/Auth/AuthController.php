@@ -4,6 +4,7 @@ namespace HotelBooking\Controllers\Auth;
 
 use HotelBooking\Models\TaiKhoan;
 use HotelBooking\Services\MailSender;
+use HotelBooking\Enums\PhanQuyen;
 
 class AuthController
 {
@@ -29,17 +30,10 @@ class AuthController
             return;
         }
 
-        // Find user by email
-        $users = TaiKhoan::all();
-        $user = null;
-        foreach ($users as $u) {
-            if ($u->mail === $email) {
-                $user = $u;
-                break;
-            }
-        }
+        // Find user by email using optimized query
+        $user = TaiKhoan::findByEmail($email);
 
-        if (!$user || !password_verify($password, $user->mat_khau)) {
+        if (!$user || !$user->verifyPassword($password)) {
             flash_error('Email hoặc mật khẩu không đúng');
             set_old_input();
             back();
@@ -50,8 +44,8 @@ class AuthController
         clear_old_input();
         flash_success('Đăng nhập thành công');
         
-        // Redirect based on role
-        if (in_array($user->phan_quyen, ['Quản lý', 'Lễ tân'])) {
+        // Redirect based on role using Enum
+        if (PhanQuyen::isAdmin($user->phan_quyen)) {
             redirect('/admin/dashboard');
         } else {
             redirect('/');
@@ -110,13 +104,9 @@ class AuthController
             $errors[] = 'Xác nhận mật khẩu không khớp';
         }
 
-        // Check if email already exists
-        $users = TaiKhoan::all();
-        foreach ($users as $user) {
-            if ($user->mail === $data['mail']) {
-                $errors[] = 'Email này đã được sử dụng';
-                break;
-            }
+        // Check if email already exists using optimized method
+        if (TaiKhoan::emailExists($data['mail'])) {
+            $errors[] = 'Email này đã được sử dụng';
         }
 
         if (!empty($errors)) {
@@ -126,18 +116,15 @@ class AuthController
             return;
         }
 
-        // Create new user
-        $userData = [
+        // Create new user using optimized method
+        $newUser = TaiKhoan::createWithHashedPassword([
             'ho_ten' => $data['ho_ten'],
             'so_cccd' => $data['so_cccd'],
             'sdt' => $data['sdt'],
             'mail' => $data['mail'],
-            'mat_khau' => password_hash($data['mat_khau'], PASSWORD_DEFAULT),
-            'phan_quyen' => 'Khách hàng' // Default role
-        ];
-
-        $taiKhoan = new TaiKhoan();
-        $newUser = $taiKhoan->create($userData);
+            'mat_khau' => $data['mat_khau'],
+            'phan_quyen' => PhanQuyen::KHACH_HANG
+        ]);
 
         // Send welcome email
         try {
@@ -237,15 +224,8 @@ class AuthController
             return;
         }
 
-        // Find user by email
-        $users = TaiKhoan::all();
-        $user = null;
-        foreach ($users as $u) {
-            if ($u->mail === $email) {
-                $user = $u;
-                break;
-            }
-        }
+        // Find user by email using optimized query
+        $user = TaiKhoan::findByEmail($email);
 
         if (!$user) {
             flash_error('Email không tồn tại trong hệ thống');

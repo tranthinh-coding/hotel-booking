@@ -1,316 +1,351 @@
-<?php include_once '../layouts/admin.php'; ?>
+<?php 
+ob_start(); 
+$title = 'Thống kê & Báo cáo';
+?>
 
-<div class="container-fluid px-4">
-    <h1 class="mt-4">Thống kê & Báo cáo</h1>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a href="/admin/dashboard">Dashboard</a></li>
-        <li class="breadcrumb-item active">Thống kê</li>
-    </ol>
+<!-- Page Header -->
+<div class="mb-8">
+    <div class="flex justify-between items-center">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900">Thống kê & Báo cáo</h1>
+            <nav class="text-sm text-gray-600 mt-2">
+                <a href="/admin/dashboard" class="hover:text-blue-600">Dashboard</a>
+                <span class="mx-2">/</span>
+                <span class="text-gray-400">Thống kê</span>
+            </nav>
+        </div>
+    </div>
+</div>
 
-    <!-- Date Range Filter -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-3">
-                    <label for="start_date" class="form-label">Từ ngày</label>
-                    <input type="date" class="form-control" id="start_date" value="<?= date('Y-m-01') ?>">
+<!-- Date Range Filter -->
+<div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div>
+            <label for="start_date" class="block text-sm font-medium text-gray-700 mb-2">Từ ngày</label>
+            <input type="date" 
+                   id="start_date" 
+                   value="<?= date('Y-m-01') ?>"
+                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        </div>
+        <div>
+            <label for="end_date" class="block text-sm font-medium text-gray-700 mb-2">Đến ngày</label>
+            <input type="date" 
+                   id="end_date" 
+                   value="<?= date('Y-m-d') ?>"
+                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        </div>
+        <div>
+            <label for="time_period" class="block text-sm font-medium text-gray-700 mb-2">Khoảng thời gian</label>
+            <select id="time_period" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <option value="today">Hôm nay</option>
+                <option value="week">Tuần này</option>
+                <option value="month" selected>Tháng này</option>
+                <option value="quarter">Quý này</option>
+                <option value="year">Năm này</option>
+                <option value="custom">Tùy chọn</option>
+            </select>
+        </div>
+        <div class="flex items-end">
+            <button onclick="updateStats()" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                <i class="fas fa-sync-alt mr-2"></i>Cập nhật
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-blue-500">
+        <div class="flex items-center">
+            <div class="flex-shrink-0">
+                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-blue-100 text-blue-600">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                    </svg>
                 </div>
-                <div class="col-md-3">
-                    <label for="end_date" class="form-label">Đến ngày</label>
-                    <input type="date" class="form-control" id="end_date" value="<?= date('Y-m-d') ?>">
-                </div>
-                <div class="col-md-3">
-                    <label for="time_period" class="form-label">Khoảng thời gian</label>
-                    <select class="form-select" id="time_period">
-                        <option value="today">Hôm nay</option>
-                        <option value="week">Tuần này</option>
-                        <option value="month" selected>Tháng này</option>
-                        <option value="quarter">Quý này</option>
-                        <option value="year">Năm này</option>
-                        <option value="custom">Tùy chọn</option>
-                    </select>
-                </div>
-                <div class="col-md-3 d-flex align-items-end">
-                    <button class="btn btn-primary" onclick="updateStats()">
-                        <i class="fas fa-sync-alt"></i> Cập nhật
-                    </button>
-                </div>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+                <dl>
+                    <dt class="text-sm font-medium text-gray-500 truncate">Tổng doanh thu</dt>
+                    <dd class="text-2xl font-bold text-blue-600">125,750,000 VNĐ</dd>
+                    <dd class="text-sm text-green-600">
+                        <i class="fas fa-arrow-up"></i> +12.5% so với tháng trước
+                    </dd>
+                </dl>
             </div>
         </div>
     </div>
 
-    <!-- Summary Cards -->
-    <div class="row">
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-primary text-white mb-4">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <div class="text-white-75 small">Tổng doanh thu</div>
-                            <div class="text-lg fw-bold">125,750,000 VNĐ</div>
-                            <div class="text-white-75 small">
-                                <i class="fas fa-arrow-up"></i> +12.5% so với tháng trước
-                            </div>
-                        </div>
-                        <div class="align-self-center">
-                            <i class="fas fa-dollar-sign fa-2x"></i>
-                        </div>
-                    </div>
+    <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-yellow-500">
+        <div class="flex items-center">
+            <div class="flex-shrink-0">
+                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-yellow-100 text-yellow-600">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
                 </div>
             </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-warning text-white mb-4">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <div class="text-white-75 small">Số đặt phòng</div>
-                            <div class="text-lg fw-bold">148</div>
-                            <div class="text-white-75 small">
-                                <i class="fas fa-arrow-up"></i> +8.3% so với tháng trước
-                            </div>
-                        </div>
-                        <div class="align-self-center">
-                            <i class="fas fa-calendar-check fa-2x"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-success text-white mb-4">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <div class="text-white-75 small">Tỷ lệ lấp đầy</div>
-                            <div class="text-lg fw-bold">78.5%</div>
-                            <div class="text-white-75 small">
-                                <i class="fas fa-arrow-down"></i> -2.1% so với tháng trước
-                            </div>
-                        </div>
-                        <div class="align-self-center">
-                            <i class="fas fa-bed fa-2x"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-danger text-white mb-4">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <div class="text-white-75 small">Khách hàng mới</div>
-                            <div class="text-lg fw-bold">67</div>
-                            <div class="text-white-75 small">
-                                <i class="fas fa-arrow-up"></i> +15.7% so với tháng trước
-                            </div>
-                        </div>
-                        <div class="align-self-center">
-                            <i class="fas fa-users fa-2x"></i>
-                        </div>
-                    </div>
-                </div>
+            <div class="ml-5 w-0 flex-1">
+                <dl>
+                    <dt class="text-sm font-medium text-gray-500 truncate">Số đặt phòng</dt>
+                    <dd class="text-2xl font-bold text-yellow-600">148</dd>
+                    <dd class="text-sm text-green-600">
+                        <i class="fas fa-arrow-up"></i> +8.3% so với tháng trước
+                    </dd>
+                </dl>
             </div>
         </div>
     </div>
 
-    <!-- Charts Row -->
-    <div class="row">
-        <div class="col-xl-8">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <i class="fas fa-chart-area me-1"></i>
-                    Doanh thu theo thời gian
-                </div>
-                <div class="card-body">
-                    <canvas id="revenueChart" width="100%" height="40"></canvas>
+    <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-500">
+        <div class="flex items-center">
+            <div class="flex-shrink-0">
+                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-green-100 text-green-600">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2v0a2 2 0 012-2h6l2 2h6a2 2 0 012 2v1M3 7l3 9 3-9 3 9"></path>
+                    </svg>
                 </div>
             </div>
-        </div>
-        <div class="col-xl-4">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <i class="fas fa-chart-pie me-1"></i>
-                    Doanh thu theo loại phòng
-                </div>
-                <div class="card-body">
-                    <canvas id="roomTypeChart" width="100%" height="100"></canvas>
-                </div>
+            <div class="ml-5 w-0 flex-1">
+                <dl>
+                    <dt class="text-sm font-medium text-gray-500 truncate">Tỷ lệ lấp đầy</dt>
+                    <dd class="text-2xl font-bold text-green-600">78.5%</dd>
+                    <dd class="text-sm text-red-600">
+                        <i class="fas fa-arrow-down"></i> -2.1% so với tháng trước
+                    </dd>
+                </dl>
             </div>
         </div>
     </div>
 
-    <!-- Tables Row -->
-    <div class="row">
-        <div class="col-xl-6">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <i class="fas fa-crown me-1"></i>
-                    Top 10 khách hàng VIP
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Khách hàng</th>
-                                    <th>Tổng chi tiêu</th>
-                                    <th>Số lần đặt</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Nguyễn Văn A</td>
-                                    <td class="text-success fw-bold">12,500,000 VNĐ</td>
-                                    <td>8</td>
-                                </tr>
-                                <tr>
-                                    <td>Trần Thị B</td>
-                                    <td class="text-success fw-bold">9,800,000 VNĐ</td>
-                                    <td>6</td>
-                                </tr>
-                                <tr>
-                                    <td>Lê Văn C</td>
-                                    <td class="text-success fw-bold">8,200,000 VNĐ</td>
-                                    <td>5</td>
-                                </tr>
-                                <tr>
-                                    <td>Phạm Thị D</td>
-                                    <td class="text-success fw-bold">7,650,000 VNĐ</td>
-                                    <td>4</td>
-                                </tr>
-                                <tr>
-                                    <td>Hoàng Văn E</td>
-                                    <td class="text-success fw-bold">6,900,000 VNĐ</td>
-                                    <td>3</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+    <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-purple-500">
+        <div class="flex items-center">
+            <div class="flex-shrink-0">
+                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-purple-100 text-purple-600">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                    </svg>
                 </div>
             </div>
+            <div class="ml-5 w-0 flex-1">
+                <dl>
+                    <dt class="text-sm font-medium text-gray-500 truncate">Khách hàng mới</dt>
+                    <dd class="text-2xl font-bold text-purple-600">67</dd>
+                    <dd class="text-sm text-green-600">
+                        <i class="fas fa-arrow-up"></i> +15.7% so với tháng trước
+                    </dd>
+                </dl>
+            </div>
         </div>
-        <div class="col-xl-6">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <i class="fas fa-star me-1"></i>
-                    Phòng được ưa chuộng nhất
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+    <div class="lg:col-span-2">
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-medium text-gray-900">Doanh thu theo thời gian</h3>
+                <div class="flex items-center space-x-2">
+                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
                 </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Loại phòng</th>
-                                    <th>Số lượt đặt</th>
-                                    <th>Tỷ lệ</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Phòng Deluxe</td>
-                                    <td>65</td>
-                                    <td>
-                                        <div class="progress">
-                                            <div class="progress-bar bg-primary" style="width: 65%"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Phòng Standard</td>
-                                    <td>45</td>
-                                    <td>
-                                        <div class="progress">
-                                            <div class="progress-bar bg-warning" style="width: 45%"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Phòng Suite</td>
-                                    <td>38</td>
-                                    <td>
-                                        <div class="progress">
-                                            <div class="progress-bar bg-success" style="width: 38%"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+            </div>
+            <div class="h-80">
+                <canvas id="revenueChart" width="100%" height="100%"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div>
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-medium text-gray-900">Doanh thu theo loại phòng</h3>
+                <div class="flex items-center space-x-2">
+                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
+                    </svg>
+                </div>
+            </div>
+            <div class="h-64">
+                <canvas id="roomTypeChart" width="100%" height="100%"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tables Row -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                <svg class="h-5 w-5 text-yellow-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3l14 9-14 9V3z"></path>
+                </svg>
+                Top 10 khách hàng VIP
+            </h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Khách hàng</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tổng chi tiêu</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Số lần đặt</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Nguyễn Văn A</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-green-600">12,500,000 VNĐ</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">8</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Trần Thị B</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-green-600">9,800,000 VNĐ</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">6</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Lê Văn C</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-green-600">8,200,000 VNĐ</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Phạm Thị D</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-green-600">7,650,000 VNĐ</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">4</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Hoàng Văn E</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-green-600">6,900,000 VNĐ</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">3</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                <svg class="h-5 w-5 text-yellow-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                </svg>
+                Phòng được ưa chuộng nhất
+            </h3>
+        </div>
+        <div class="p-6">
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-gray-900">Phòng Deluxe</span>
+                    <span class="text-sm text-gray-500">65 lượt</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div class="bg-blue-600 h-2 rounded-full" style="width: 65%"></div>
+                </div>
+                
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-gray-900">Phòng Standard</span>
+                    <span class="text-sm text-gray-500">45 lượt</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div class="bg-yellow-500 h-2 rounded-full" style="width: 45%"></div>
+                </div>
+                
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-gray-900">Phòng Suite</span>
+                    <span class="text-sm text-gray-500">38 lượt</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div class="bg-green-500 h-2 rounded-full" style="width: 38%"></div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Service Statistics -->
-    <div class="row">
-        <div class="col-xl-12">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <i class="fas fa-concierge-bell me-1"></i>
-                    Thống kê dịch vụ
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3 text-center">
-                            <h4 class="text-info">2,450,000 VNĐ</h4>
-                            <small class="text-muted">Doanh thu dịch vụ</small>
-                        </div>
-                        <div class="col-md-3 text-center">
-                            <h4 class="text-warning">156</h4>
-                            <small class="text-muted">Lượt sử dụng dịch vụ</small>
-                        </div>
-                        <div class="col-md-3 text-center">
-                            <h4 class="text-success">Spa & Massage</h4>
-                            <small class="text-muted">Dịch vụ phổ biến nhất</small>
-                        </div>
-                        <div class="col-md-3 text-center">
-                            <h4 class="text-danger">4.8/5</h4>
-                            <small class="text-muted">Điểm đánh giá trung bình</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!-- Service Statistics -->
+<div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+    <div class="flex items-center justify-between mb-6">
+        <h3 class="text-lg font-medium text-gray-900 flex items-center">
+            <svg class="h-5 w-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+            </svg>
+            Thống kê dịch vụ
+        </h3>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="text-center">
+            <div class="text-3xl font-bold text-blue-600">2,450,000 VNĐ</div>
+            <div class="text-sm text-gray-500">Doanh thu dịch vụ</div>
+        </div>
+        <div class="text-center">
+            <div class="text-3xl font-bold text-yellow-600">156</div>
+            <div class="text-sm text-gray-500">Lượt sử dụng dịch vụ</div>
+        </div>
+        <div class="text-center">
+            <div class="text-lg font-bold text-green-600">Spa & Massage</div>
+            <div class="text-sm text-gray-500">Dịch vụ phổ biến nhất</div>
+        </div>
+        <div class="text-center">
+            <div class="text-3xl font-bold text-purple-600">4.8/5</div>
+            <div class="text-sm text-gray-500">Điểm đánh giá trung bình</div>
         </div>
     </div>
+</div>
 
-    <!-- Export Options -->
-    <div class="card">
-        <div class="card-header">
-            <i class="fas fa-download me-1"></i>
+<!-- Export Options -->
+<div class="bg-white rounded-xl shadow-lg overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-200">
+        <h3 class="text-lg font-medium text-gray-900 flex items-center">
+            <svg class="h-5 w-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
             Xuất báo cáo
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <h6>Báo cáo có sẵn:</h6>
-                    <ul class="list-unstyled">
-                        <li><i class="fas fa-file-excel text-success"></i> <a href="#" onclick="exportExcel()">Xuất Excel - Doanh thu chi tiết</a></li>
-                        <li><i class="fas fa-file-pdf text-danger"></i> <a href="#" onclick="exportPDF()">Xuất PDF - Báo cáo tổng hợp</a></li>
-                        <li><i class="fas fa-file-csv text-info"></i> <a href="#" onclick="exportCSV()">Xuất CSV - Dữ liệu thô</a></li>
-                    </ul>
+        </h3>
+    </div>
+    <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <h4 class="text-sm font-medium text-gray-900 mb-4">Báo cáo có sẵn:</h4>
+                <div class="space-y-3">
+                    <a href="#" onclick="exportExcel()" class="flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
+                        <svg class="h-6 w-6 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        <span class="text-sm">Xuất Excel - Doanh thu chi tiết</span>
+                    </a>
+                    <a href="#" onclick="exportPDF()" class="flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
+                        <svg class="h-6 w-6 text-red-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                        <span class="text-sm">Xuất PDF - Báo cáo tổng hợp</span>
+                    </a>
+                    <a href="#" onclick="exportCSV()" class="flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
+                        <svg class="h-6 w-6 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        <span class="text-sm">Xuất CSV - Dữ liệu thô</span>
+                    </a>
                 </div>
-                <div class="col-md-6">
-                    <h6>Lên lịch báo cáo tự động:</h6>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="daily_report">
-                        <label class="form-check-label" for="daily_report">
-                            Báo cáo hàng ngày qua email
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="weekly_report">
-                        <label class="form-check-label" for="weekly_report">
-                            Báo cáo hàng tuần qua email
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="monthly_report" checked>
-                        <label class="form-check-label" for="monthly_report">
-                            Báo cáo hàng tháng qua email
-                        </label>
-                    </div>
+            </div>
+            <div>
+                <h4 class="text-sm font-medium text-gray-900 mb-4">Lên lịch báo cáo tự động:</h4>
+                <div class="space-y-3">
+                    <label class="flex items-center">
+                        <input type="checkbox" id="daily_report" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <span class="ml-2 text-sm text-gray-700">Báo cáo hàng ngày qua email</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" id="weekly_report" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <span class="ml-2 text-sm text-gray-700">Báo cáo hàng tuần qua email</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" id="monthly_report" checked class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <span class="ml-2 text-sm text-gray-700">Báo cáo hàng tháng qua email</span>
+                    </label>
                 </div>
             </div>
         </div>
@@ -328,16 +363,31 @@ const revenueChart = new Chart(revenueCtx, {
         datasets: [{
             label: 'Doanh thu (triệu VNĐ)',
             data: [65, 78, 82, 85, 92, 88, 95, 102, 98, 105, 118, 125],
-            borderColor: 'rgb(75, 192, 192)',
-            backgroundColor: 'rgba(75, 192, 192, 0.1)',
-            tension: 0.4
+            borderColor: 'rgb(59, 130, 246)',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            tension: 0.4,
+            fill: true
         }]
     },
     options: {
         responsive: true,
+        maintainAspectRatio: false,
         scales: {
             y: {
-                beginAtZero: true
+                beginAtZero: true,
+                grid: {
+                    color: 'rgba(0, 0, 0, 0.1)'
+                }
+            },
+            x: {
+                grid: {
+                    color: 'rgba(0, 0, 0, 0.1)'
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
             }
         }
     }
@@ -352,70 +402,117 @@ const roomTypeChart = new Chart(roomTypeCtx, {
         datasets: [{
             data: [45, 30, 25],
             backgroundColor: [
-                'rgb(54, 162, 235)',
-                'rgb(255, 205, 86)',
-                'rgb(255, 99, 132)'
-            ]
+                'rgb(59, 130, 246)',
+                'rgb(245, 158, 11)',
+                'rgb(34, 197, 94)'
+            ],
+            borderWidth: 0
         }]
     },
     options: {
         responsive: true,
-        maintainAspectRatio: false
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    padding: 20,
+                    usePointStyle: true
+                }
+            }
+        }
     }
 });
 
 // Time period change handler
 document.getElementById('time_period').addEventListener('change', function() {
-    const customInputs = document.getElementById('start_date').parentElement.parentElement;
-    if (this.value === 'custom') {
-        customInputs.style.display = 'flex';
-    } else {
-        customInputs.style.display = 'none';
-        // Auto set dates based on period
-        const today = new Date();
-        let startDate, endDate = today;
-        
-        switch(this.value) {
-            case 'today':
-                startDate = today;
-                break;
-            case 'week':
-                startDate = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-                break;
-            case 'month':
-                startDate = new Date(today.getFullYear(), today.getMonth(), 1);
-                break;
-            case 'quarter':
-                const quarter = Math.floor(today.getMonth() / 3);
-                startDate = new Date(today.getFullYear(), quarter * 3, 1);
-                break;
-            case 'year':
-                startDate = new Date(today.getFullYear(), 0, 1);
-                break;
-        }
-        
-        document.getElementById('start_date').value = startDate.toISOString().split('T')[0];
-        document.getElementById('end_date').value = endDate.toISOString().split('T')[0];
+    const today = new Date();
+    let startDate, endDate = today;
+    
+    switch(this.value) {
+        case 'today':
+            startDate = today;
+            break;
+        case 'week':
+            startDate = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+            break;
+        case 'month':
+            startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+            break;
+        case 'quarter':
+            const quarter = Math.floor(today.getMonth() / 3);
+            startDate = new Date(today.getFullYear(), quarter * 3, 1);
+            break;
+        case 'year':
+            startDate = new Date(today.getFullYear(), 0, 1);
+            break;
+        case 'custom':
+            return; // Don't auto-set dates for custom
     }
+    
+    document.getElementById('start_date').value = startDate.toISOString().split('T')[0];
+    document.getElementById('end_date').value = endDate.toISOString().split('T')[0];
 });
 
 function updateStats() {
-    // Implement statistics update logic here
-    console.log('Updating statistics...');
+    const startDate = document.getElementById('start_date').value;
+    const endDate = document.getElementById('end_date').value;
+    const period = document.getElementById('time_period').value;
+    
+    console.log('Updating statistics...', { startDate, endDate, period });
+    
+    // Show loading state
+    const button = event.target;
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Đang cập nhật...';
+    button.disabled = true;
+    
+    // Simulate API call
+    setTimeout(() => {
+        button.innerHTML = originalText;
+        button.disabled = false;
+        
+        // Show success notification
+        showNotification('Thống kê đã được cập nhật thành công!', 'success');
+    }, 1500);
 }
 
 function exportExcel() {
+    console.log('Exporting Excel...');
+    showNotification('Đang xuất file Excel...', 'info');
     // Implement Excel export
-    alert('Đang xuất file Excel...');
 }
 
 function exportPDF() {
+    console.log('Exporting PDF...');
+    showNotification('Đang xuất file PDF...', 'info');
     // Implement PDF export
-    alert('Đang xuất file PDF...');
 }
 
 function exportCSV() {
+    console.log('Exporting CSV...');
+    showNotification('Đang xuất file CSV...', 'info');
     // Implement CSV export
-    alert('Đang xuất file CSV...');
+}
+
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 ${
+        type === 'success' ? 'bg-green-500 text-white' : 
+        type === 'error' ? 'bg-red-500 text-white' : 
+        'bg-blue-500 text-white'
+    }`;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
 }
 </script>
+
+<?php 
+$content = ob_get_clean();
+include_once '../layouts/admin.php';
+?>

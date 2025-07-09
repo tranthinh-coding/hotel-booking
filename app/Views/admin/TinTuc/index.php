@@ -1,23 +1,233 @@
-<?php include_once '../layouts/admin.php'; ?>
+<?php
+$title = 'Quản lý Tin tức - Ocean Pearl Hotel Admin';
+$pageTitle = 'Quản lý Tin tức';
+ob_start();
+?>
 
-<div class="container-fluid px-4">
-    <h1 class="mt-4">Quản lý Tin tức</h1>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a href="/admin/dashboard">Dashboard</a></li>
-        <li class="breadcrumb-item active">Tin tức</li>
-    </ol>
+<div class="space-y-6">
+    <!-- Header Actions -->
+    <div class="flex justify-between items-center">
+        <div>
+            <nav class="text-sm text-gray-500">
+                <a href="/admin/dashboard" class="hover:text-gray-700">Dashboard</a>
+                <span class="mx-2">/</span>
+                <span class="text-gray-900">Tin tức</span>
+            </nav>
+        </div>
+        <div>
+            <a href="/admin/tin-tuc/create" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
+                <i class="fas fa-plus mr-2"></i>
+                Thêm tin tức
+            </a>
+        </div>
+    </div>
 
-    <div class="card mb-4">
-        <div class="card-header">
-            <i class="fas fa-newspaper me-1"></i>
-            Danh sách Tin tức
-            <div class="float-end">
-                <a href="/admin/tintuc/create" class="btn btn-primary btn-sm">
-                    <i class="fas fa-plus"></i> Thêm tin tức
-                </a>
+    <!-- Search and Filters -->
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <input type="text" 
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                       placeholder="Tìm kiếm tin tức..." 
+                       id="searchInput">
+            </div>
+            <div>
+                <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                        id="statusFilter">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="published">Đã xuất bản</option>
+                    <option value="draft">Bản nháp</option>
+                    <option value="archived">Lưu trữ</option>
+                </select>
+            </div>
+            <div>
+                <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                        id="categoryFilter">
+                    <option value="">Tất cả danh mục</option>
+                    <option value="news">Tin tức</option>
+                    <option value="events">Sự kiện</option>
+                    <option value="promotion">Khuyến mãi</option>
+                </select>
             </div>
         </div>
-        <div class="card-body">
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm">Tổng tin tức</p>
+                    <p class="text-2xl font-bold text-gray-900"><?= count($tinTucs ?? []) ?></p>
+                </div>
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-newspaper text-blue-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm">Đã xuất bản</p>
+                    <p class="text-2xl font-bold text-green-600">0</p>
+                </div>
+                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm">Bản nháp</p>
+                    <p class="text-2xl font-bold text-orange-600">0</p>
+                </div>
+                <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-edit text-orange-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm">Lượt xem hôm nay</p>
+                    <p class="text-2xl font-bold text-purple-600">0</p>
+                </div>
+                <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-eye text-purple-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- News Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <?php if (!empty($tinTucs)): ?>
+            <?php foreach ($tinTucs as $tinTuc): ?>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300">
+                    <div class="h-48 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                        <i class="fas fa-newspaper text-6xl text-white opacity-80"></i>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="mb-4">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">
+                                <?= htmlspecialchars($tinTuc->tieu_de ?? $tinTuc['tieu_de']) ?>
+                            </h3>
+                            <p class="text-gray-600 text-sm line-clamp-3">
+                                <?= htmlspecialchars(substr($tinTuc->noi_dung ?? $tinTuc['noi_dung'] ?? '', 0, 100)) ?>...
+                            </p>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="flex items-center text-sm text-gray-500 mb-2">
+                                <i class="fas fa-calendar mr-2"></i>
+                                <?= date('d/m/Y', strtotime($tinTuc->ngay_tao ?? $tinTuc['ngay_tao'] ?? 'now')) ?>
+                            </div>
+                            <div class="flex items-center text-sm text-gray-500">
+                                <i class="fas fa-user mr-2"></i>
+                                <?= htmlspecialchars($tinTuc->tac_gia ?? $tinTuc['tac_gia'] ?? 'Admin') ?>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center">
+                            <div class="flex space-x-2">
+                                <a href="/admin/tin-tuc/edit/<?= $tinTuc->ma_tin_tuc ?? $tinTuc['ma_tin_tuc'] ?>" 
+                                   class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                    <i class="fas fa-edit mr-1"></i>Sửa
+                                </a>
+                                <button onclick="deleteNews('<?= $tinTuc->ma_tin_tuc ?? $tinTuc['ma_tin_tuc'] ?>')" 
+                                        class="text-red-600 hover:text-red-800 text-sm font-medium">
+                                    <i class="fas fa-trash mr-1"></i>Xóa
+                                </button>
+                            </div>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                Đã xuất bản
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <div class="col-span-full">
+                <div class="text-center py-12 bg-white rounded-xl border border-gray-200">
+                    <i class="fas fa-newspaper text-4xl text-gray-400 mb-4"></i>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Chưa có tin tức nào</h3>
+                    <p class="text-gray-500 mb-6">Hãy thêm tin tức đầu tiên để bắt đầu</p>
+                    <a href="/admin/tin-tuc/create" 
+                       class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
+                        <i class="fas fa-plus mr-2"></i>
+                        Thêm tin tức
+                    </a>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
+
+<style>
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+</style>
+
+<script>
+function deleteNews(id) {
+    if (confirm('Bạn có chắc chắn muốn xóa tin tức này?')) {
+        fetch(`/admin/tin-tuc/delete/${id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                location.reload();
+            } else {
+                alert('Có lỗi xảy ra khi xóa tin tức');
+            }
+        })
+        .catch(error => {
+            alert('Có lỗi xảy ra khi xóa tin tức');
+        });
+    }
+}
+
+// Search functionality
+document.getElementById('searchInput')?.addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    const newsCards = document.querySelectorAll('.grid > div:not(.col-span-full)');
+    
+    newsCards.forEach(card => {
+        const title = card.querySelector('h3').textContent.toLowerCase();
+        const content = card.querySelector('p').textContent.toLowerCase();
+        
+        if (title.includes(searchTerm) || content.includes(searchTerm)) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+});
+</script>
+
+<?php
+$content = ob_get_clean();
+include __DIR__ . '/../../layouts/admin.php';
+?>
             <div class="row mb-3">
                 <div class="col-md-4">
                     <input type="text" class="form-control" placeholder="Tìm kiếm tin tức..." id="searchInput">

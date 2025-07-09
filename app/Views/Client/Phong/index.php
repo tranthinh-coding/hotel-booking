@@ -1,280 +1,926 @@
 <?php ob_start(); ?>
 
-<!-- Include animate.css and GSAP -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
 <style>
-    .ocean-gradient {
-        background: linear-gradient(135deg, 
-            rgba(56, 189, 248, 0.1) 0%, 
-            rgba(14, 165, 233, 0.1) 25%, 
-            rgba(6, 182, 212, 0.1) 50%, 
-            rgba(20, 184, 166, 0.1) 75%, 
-            rgba(16, 185, 129, 0.1) 100%);
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
     }
-    
-    .card-gentle {
-        backdrop-filter: blur(20px);
-        background: rgba(255, 255, 255, 0.85);
-        box-shadow: 0 8px 32px rgba(56, 189, 248, 0.12);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 25%, #bae6fd 50%, #7dd3fc 75%, #38bdf8 100%);
+        min-height: 100vh;
+        color: #1e293b;
     }
-    
-    .card-gentle:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 20px 40px rgba(56, 189, 248, 0.2);
-        background: rgba(255, 255, 255, 0.95);
+
+    .main-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
     }
-    
-    .ocean-ripple {
+
+    /* Header Section */
+    .hero-section {
+        text-align: center;
+        padding: 60px 0;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 249, 255, 0.8));
+        border-radius: 24px;
+        margin-bottom: 40px;
         position: relative;
         overflow: hidden;
+        border: 1px solid rgba(56, 189, 248, 0.2);
+        box-shadow: 0 20px 40px rgba(56, 189, 248, 0.1);
     }
-    
-    .ocean-ripple::before {
+
+    .hero-section::before {
         content: '';
         position: absolute;
         top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-        transition: left 0.5s;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(56,189,248,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
     }
-    
-    .ocean-ripple:hover::before {
-        left: 100%;
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(135deg, #0ea5e9, #0284c7);
+        border: 1px solid rgba(14, 165, 233, 0.3);
+        padding: 8px 20px;
+        border-radius: 50px;
+        color: white;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 24px;
+        box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #0c4a6e, #0369a1, #0284c7);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 16px;
+        line-height: 1.1;
+    }
+
+    .hero-subtitle {
+        font-size: 1.25rem;
+        color: #475569;
+        max-width: 600px;
+        margin: 0 auto 32px;
+        line-height: 1.6;
+        font-weight: 500;
+    }
+
+    /* Search Section */
+    .search-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(14, 165, 233, 0.2);
+        border-radius: 20px;
+        padding: 32px;
+        margin-bottom: 48px;
+        box-shadow: 0 25px 50px rgba(14, 165, 233, 0.15);
+    }
+
+    .search-header {
+        text-align: center;
+        margin-bottom: 32px;
+    }
+
+    .search-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #0c4a6e;
+        margin-bottom: 8px;
+    }
+
+    .search-description {
+        color: #64748b;
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+
+    .search-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 24px;
+        margin-bottom: 24px;
+    }
+
+    .input-group {
+        position: relative;
+    }
+
+    .input-label {
+        display: block;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 8px;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .input-field {
+        width: 100%;
+        padding: 14px 18px;
+        background: white;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        color: #1e293b;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .input-field:focus {
+        outline: none;
+        border-color: #0ea5e9;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .search-button {
+        width: 100%;
+        background: linear-gradient(135deg, #0ea5e9, #0284c7);
+        color: white;
+        border: none;
+        padding: 16px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 24px;
+        box-shadow: 0 8px 20px rgba(14, 165, 233, 0.3);
+    }
+
+    .search-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 30px rgba(14, 165, 233, 0.4);
+        background: linear-gradient(135deg, #0284c7, #0369a1);
+    }
+
+    /* Results Section */
+    .results-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 32px;
+        flex-wrap: wrap;
+        gap: 16px;
+        background: rgba(255, 255, 255, 0.8);
+        padding: 20px 24px;
+        border-radius: 16px;
+        border: 1px solid rgba(14, 165, 233, 0.1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .results-count {
+        font-size: 1.125rem;
+        color: #1e293b;
+        font-weight: 600;
+    }
+
+    .results-count .number {
+        color: #0ea5e9;
+        font-weight: 700;
+        font-size: 1.25rem;
+    }
+
+    .sort-dropdown {
+        padding: 10px 16px;
+        background: white;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        color: #1e293b;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .sort-dropdown:focus {
+        outline: none;
+        border-color: #0ea5e9;
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+    }
+
+    /* Rooms Grid */
+    .rooms-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+        gap: 32px;
+        margin-bottom: 48px;
+    }
+
+    .room-card {
+        background: white;
+        border: 1px solid rgba(14, 165, 233, 0.1);
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.4s ease;
+        position: relative;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    .room-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 25px 50px rgba(14, 165, 233, 0.15);
+        border-color: rgba(14, 165, 233, 0.3);
+    }
+
+    .room-image {
+        height: 240px;
+        background: linear-gradient(135deg, #0ea5e9, #0284c7, #0369a1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 3rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .room-image::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+    }
+
+    .room-card:hover .room-image::before {
+        transform: translateX(100%);
+    }
+
+    .room-badge {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .room-content {
+        padding: 28px;
+    }
+
+    .room-header {
+        margin-bottom: 20px;
+    }
+
+    .room-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #0c4a6e;
+        margin-bottom: 8px;
+        line-height: 1.3;
+    }
+
+    .room-type {
+        color: #0ea5e9;
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        background: rgba(14, 165, 233, 0.1);
+        padding: 4px 12px;
+        border-radius: 12px;
+        display: inline-block;
+    }
+
+    .room-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .detail-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #475569;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .detail-icon {
+        color: #0ea5e9;
+        width: 16px;
+        text-align: center;
+    }
+
+    .room-amenities {
+        margin-bottom: 24px;
+    }
+
+    .amenities-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 12px;
+    }
+
+    .amenities-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .amenity-tag {
+        background: rgba(14, 165, 233, 0.1);
+        border: 1px solid rgba(14, 165, 233, 0.2);
+        color: #0369a1;
+        padding: 6px 12px;
+        border-radius: 16px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.3s ease;
+    }
+
+    .amenity-tag:hover {
+        background: rgba(14, 165, 233, 0.15);
+        transform: translateY(-1px);
+    }
+
+    .room-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 20px;
+        border-top: 1px solid rgba(226, 232, 240, 0.8);
+    }
+
+    .room-price {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .price-amount {
+        font-size: 1.875rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #0c4a6e, #0369a1);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        line-height: 1;
+        margin-bottom: 2px;
+    }
+
+    .price-period {
+        font-size: 0.75rem;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    .book-button {
+        background: linear-gradient(135deg, #0ea5e9, #0284c7);
+        color: white;
+        border: none;
+        padding: 14px 28px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .book-button::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+    }
+
+    .book-button:hover::before {
+        transform: translateX(100%);
+    }
+
+    .book-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(14, 165, 233, 0.4);
+        background: linear-gradient(135deg, #0284c7, #0369a1);
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        border: 2px dashed rgba(14, 165, 233, 0.3);
+        box-shadow: 0 20px 40px rgba(14, 165, 233, 0.1);
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        color: #64748b;
+        margin-bottom: 24px;
+    }
+
+    .empty-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 12px;
+    }
+
+    .empty-description {
+        color: #64748b;
+        margin-bottom: 32px;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+        font-weight: 500;
+    }
+
+    .reset-button {
+        background: linear-gradient(135deg, #0ea5e9, #0284c7);
+        border: none;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+    }
+
+    .reset-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(14, 165, 233, 0.4);
+        background: linear-gradient(135deg, #0284c7, #0369a1);
+    }
+
+    /* Animation styles */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .room-card {
+        animation: fadeInUp 0.6s ease-out;
+        animation-fill-mode: both;
+    }
+
+    .room-card:nth-child(1) { animation-delay: 0.1s; }
+    .room-card:nth-child(2) { animation-delay: 0.2s; }
+    .room-card:nth-child(3) { animation-delay: 0.3s; }
+    .room-card:nth-child(4) { animation-delay: 0.4s; }
+    .room-card:nth-child(5) { animation-delay: 0.5s; }
+    .room-card:nth-child(6) { animation-delay: 0.6s; }
+
+    .hero-section {
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    .search-container {
+        animation: fadeInUp 0.8s ease-out 0.2s;
+        animation-fill-mode: both;
+    }
+
+    .results-header {
+        animation: slideIn 0.6s ease-out 0.4s;
+        animation-fill-mode: both;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .main-container {
+            padding: 16px;
+        }
+
+        .hero-section {
+            padding: 40px 20px;
+            margin-bottom: 30px;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.125rem;
+        }
+
+        .search-container {
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+
+        .search-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .rooms-grid {
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+        .results-header {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 12px;
+        }
+
+        .room-details {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .room-footer {
+            flex-direction: column;
+            gap: 16px;
+            align-items: stretch;
+        }
+
+        .book-button {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .price-amount {
+            font-size: 1.5rem;
+        }
+
+        .empty-state {
+            padding: 60px 20px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero-title {
+            font-size: 2rem;
+        }
+
+        .search-container {
+            padding: 20px;
+        }
+
+        .room-content {
+            padding: 20px;
+        }
+
+        .amenities-grid {
+            gap: 6px;
+        }
+
+        .amenity-tag {
+            font-size: 0.7rem;
+            padding: 4px 8px;
+        }
+    }
+
+    /* Loading Animation */
+    .loading-shimmer {
+        background: linear-gradient(90deg, rgba(71, 85, 105, 0.3) 25%, rgba(71, 85, 105, 0.5) 50%, rgba(71, 85, 105, 0.3) 75%);
+        background-size: 200% 100%;
+        animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
     }
 </style>
 
-<div class="min-h-screen ocean-gradient relative overflow-hidden">
-    <!-- Floating Ocean Elements -->
-    <div class="absolute inset-0 overflow-hidden pointer-events-none">
-        <div class="ocean-bubble absolute w-3 h-3 bg-blue-200 rounded-full opacity-30 animate-pulse" style="top: 20%; left: 10%; animation-delay: 0s;"></div>
-        <div class="ocean-bubble absolute w-2 h-2 bg-teal-200 rounded-full opacity-40 animate-pulse" style="top: 60%; left: 85%; animation-delay: 1s;"></div>
-        <div class="ocean-bubble absolute w-4 h-4 bg-cyan-200 rounded-full opacity-20 animate-pulse" style="top: 40%; left: 20%; animation-delay: 2s;"></div>
-        <div class="ocean-bubble absolute w-2 h-2 bg-blue-300 rounded-full opacity-30 animate-pulse" style="top: 80%; left: 70%; animation-delay: 3s;"></div>
+<div class="main-container">
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i class="fas fa-crown"></i>
+                Ocean Pearl Hotel
+            </div>
+            <h1 class="hero-title">Khám Phá Phòng Nghỉ Đẳng Cấp</h1>
+            <p class="hero-subtitle">
+                Trải nghiệm những không gian nghỉ dưỡng sang trọng với view biển tuyệt đẹp 
+                và dịch vụ 5 sao tại Ocean Pearl Hotel
+            </p>
+        </div>
     </div>
 
-    <div class="relative z-10 py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Header Section -->
-            <div class="text-center mb-16 fade-in-header">
-                <div class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-full text-blue-600 text-sm font-medium mb-6 shadow-sm">
-                    <i class="fas fa-waves mr-2"></i>
-                    Ocean Pearl Hotel
+    <!-- Search Section -->
+    <div class="search-container">
+        <div class="search-header">
+            <h2 class="search-title">Tìm Phòng Phù Hợp</h2>
+            <p class="search-description">Nhập thông tin để tìm kiếm phòng khả dụng theo nhu cầu của bạn</p>
+        </div>
+        
+        <form method="GET" action="/phong">
+            <div class="search-grid">
+                <div class="input-group">
+                    <label class="input-label" for="checkin">
+                        <i class="fas fa-calendar-plus"></i> Ngày nhận phòng
+                    </label>
+                    <input type="date" 
+                           name="checkin" 
+                           id="checkin" 
+                           class="input-field"
+                           value="<?= htmlspecialchars($searchParams['checkin'] ?? '') ?>"
+                           min="<?= date('Y-m-d') ?>">
                 </div>
-                <h1 class="text-5xl font-bold text-gray-800 mb-6 bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-600 bg-clip-text text-transparent">
-                    Khám Phá Thiên Đường Nghỉ Dưỡng
-                </h1>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-                    Đắm chìm trong không gian sang trọng bên bờ biển xanh ngọc bích, 
-                    nơi mỗi phòng nghỉ là một câu chuyện riêng về sự thoải mái và đẳng cấp
-                </p>
-                <div class="mt-8">
-                    <a href="/search-rooms" class="ocean-ripple inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-2xl hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-lg font-medium">
-                        <i class="fas fa-search mr-3"></i>
-                        Tìm Phòng Lý Tưởng
-                        <i class="fas fa-arrow-right ml-3"></i>
-                    </a>
+
+                <div class="input-group">
+                    <label class="input-label" for="checkout">
+                        <i class="fas fa-calendar-minus"></i> Ngày trả phòng
+                    </label>
+                    <input type="date" 
+                           name="checkout" 
+                           id="checkout" 
+                           class="input-field"
+                           value="<?= htmlspecialchars($searchParams['checkout'] ?? '') ?>"
+                           min="<?= date('Y-m-d', strtotime('+1 day')) ?>">
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label" for="guests">
+                        <i class="fas fa-users"></i> Số khách
+                    </label>
+                    <select name="guests" id="guests" class="input-field">
+                        <?php for($i = 1; $i <= 6; $i++): ?>
+                            <option value="<?= $i ?>" <?= (($searchParams['guests'] ?? 1) == $i) ? 'selected' : '' ?>>
+                                <?= $i ?> khách
+                            </option>
+                        <?php endfor; ?>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label" for="room_type">
+                        <i class="fas fa-bed"></i> Loại phòng
+                    </label>
+                    <select name="room_type" id="room_type" class="input-field">
+                        <option value="">Tất cả loại phòng</option>
+                        <?php if(isset($loaiPhongs) && !empty($loaiPhongs)): ?>
+                            <?php foreach($loaiPhongs as $loaiPhong): ?>
+                                <option value="<?= htmlspecialchars($loaiPhong['ma_loai_phong'] ?? $loaiPhong->ma_loai_phong) ?>" 
+                                        <?= (($searchParams['room_type'] ?? '') == ($loaiPhong['ma_loai_phong'] ?? $loaiPhong->ma_loai_phong)) ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($loaiPhong['ten'] ?? $loaiPhong->ten) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </select>
                 </div>
             </div>
+            
+            <button type="submit" class="search-button">
+                <i class="fas fa-search"></i>
+                Tìm Phòng Khả Dụng
+            </button>
+        </form>
+    </div>
 
-        <?php if (empty($phongs)): ?>
-            <div class="text-center py-20 fade-in-empty">
-                <div class="card-gentle rounded-3xl p-16 max-w-2xl mx-auto">
-                    <div class="w-32 h-32 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
-                        <i class="fas fa-umbrella-beach text-6xl text-blue-400"></i>
-                    </div>
-                    <h3 class="text-3xl font-semibold text-gray-800 mb-4">Đang Chuẩn Bị Những Trải Nghiệm Tuyệt Vời</h3>
-                    <p class="text-lg text-gray-600 mb-10 leading-relaxed">
-                        Chúng tôi đang hoàn thiện những không gian nghỉ dưỡng đẳng cấp dành riêng cho bạn. 
-                        Hãy liên hệ để được tư vấn và đặt phòng sớm nhất.
-                    </p>
-                    <div class="space-y-4">
-                        <a href="/contact" class="ocean-ripple inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-2xl hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-lg font-medium">
-                            <i class="fas fa-phone mr-3"></i>
-                            Liên Hệ Ngay
-                        </a>
-                        <div class="text-sm text-gray-500">
-                            <i class="fas fa-clock mr-2"></i>
-                            Phục vụ 24/7 - Hotline: 1900 8888
+    <!-- Results Section -->
+    <?php if(!empty($phongs)): ?>
+        <div class="results-header">
+            <div class="results-count">
+                Tìm thấy <span class="number"><?= count($phongs) ?></span> phòng phù hợp
+            </div>
+            <select class="sort-dropdown">
+                <option>Sắp xếp theo giá tăng dần</option>
+                <option>Sắp xếp theo giá giảm dần</option>
+                <option>Sắp xếp theo tên phòng</option>
+            </select>
+        </div>
+
+        <div class="rooms-grid">
+            <?php foreach($phongs as $phong): ?>
+                <div class="room-card">
+                    <div class="room-image">
+                        <i class="fas fa-hotel"></i>
+                        <div class="room-badge">
+                            <i class="fas fa-check-circle"></i>
+                            Còn trống
                         </div>
                     </div>
-                </div>
-            </div>
-        <?php else: ?>
-            <!-- Rooms Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 rooms-grid">
-                <?php foreach ($phongs as $index => $phong): ?>
-                    <div class="room-card card-gentle rounded-3xl overflow-hidden" data-index="<?= $index ?>">
-                        <!-- Room Image -->
-                        <div class="relative h-64 bg-gradient-to-br from-blue-400 via-cyan-400 to-teal-400 overflow-hidden">
-                            <!-- Ocean waves animation -->
-                            <div class="absolute inset-0 opacity-30">
-                                <div class="wave wave1"></div>
-                                <div class="wave wave2"></div>
-                                <div class="wave wave3"></div>
+                    
+                    <div class="room-content">
+                        <div class="room-header">
+                            <h3 class="room-title">
+                                <?= htmlspecialchars($phong['ten_phong'] ?? $phong->ten_phong) ?>
+                            </h3>
+                            <div class="room-type">
+                                <?= htmlspecialchars($phong['loai_phong'] ?? $phong->loai_phong) ?>
                             </div>
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-                            <div class="absolute bottom-6 left-6 text-white">
-                                <h3 class="text-2xl font-bold mb-1"><?= htmlspecialchars($phong->ten_phong) ?></h3>
-                                <p class="text-blue-100 text-lg"><?= htmlspecialchars($phong->loai_phong) ?></p>
+                        </div>
+
+                        <div class="room-details">
+                            <div class="detail-item">
+                                <i class="fas fa-hashtag detail-icon"></i>
+                                <span>Mã: <?= htmlspecialchars($phong['ma_phong'] ?? $phong->ma_phong) ?></span>
                             </div>
-                            <div class="absolute top-6 right-6">
-                                <span class="bg-white/20 backdrop-blur-md text-white px-3 py-1 rounded-full text-sm font-medium">
-                                    <i class="fas fa-star text-yellow-300 mr-1"></i>
-                                    Premium
+                            <div class="detail-item">
+                                <i class="fas fa-water detail-icon"></i>
+                                <span>View biển</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-bed detail-icon"></i>
+                                <span>Giường đôi</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-expand-arrows-alt detail-icon"></i>
+                                <span>35m²</span>
+                            </div>
+                        </div>
+
+                        <div class="room-amenities">
+                            <h4 class="amenities-title">Tiện nghi</h4>
+                            <div class="amenities-grid">
+                                <span class="amenity-tag">
+                                    <i class="fas fa-wifi"></i> WiFi miễn phí
+                                </span>
+                                <span class="amenity-tag">
+                                    <i class="fas fa-tv"></i> Smart TV
+                                </span>
+                                <span class="amenity-tag">
+                                    <i class="fas fa-snowflake"></i> Điều hòa
+                                </span>
+                                <span class="amenity-tag">
+                                    <i class="fas fa-bath"></i> Bồn tắm
+                                </span>
+                                <span class="amenity-tag">
+                                    <i class="fas fa-glass-martini-alt"></i> Minibar
+                                </span>
+                                <span class="amenity-tag">
+                                    <i class="fas fa-concierge-bell"></i> Room service
                                 </span>
                             </div>
                         </div>
 
-                        <!-- Room Info -->
-                        <div class="p-8">
-                            <div class="flex justify-between items-start mb-6">
-                                <div>
-                                    <div class="text-3xl font-bold text-blue-600 mb-1">
-                                        <?= number_format($phong->gia_phong, 0, ',', '.') ?><span class="text-lg text-gray-500">đ</span>
-                                    </div>
-                                    <div class="text-sm text-gray-500">mỗi đêm</div>
+                        <div class="room-footer">
+                            <div class="room-price">
+                                <div class="price-amount">
+                                    <?= number_format($phong['gia_phong'] ?? $phong->gia_phong, 0, ',', '.') ?>₫
                                 </div>
-                                <div class="text-right">
-                                    <div class="text-sm text-gray-600 mb-1">Mã phòng</div>
-                                    <div class="font-mono text-blue-600 font-semibold"><?= htmlspecialchars($phong->ma_phong) ?></div>
-                                </div>
+                                <div class="price-period">mỗi đêm</div>
                             </div>
-
-                            <!-- Room Features -->
-                            <div class="grid grid-cols-2 gap-4 mb-8">
-                                <div class="flex items-center text-gray-600">
-                                    <i class="fas fa-water text-blue-400 w-5 mr-3"></i>
-                                    <span class="text-sm">View biển</span>
-                                </div>
-                                <div class="flex items-center text-gray-600">
-                                    <i class="fas fa-wifi text-blue-400 w-5 mr-3"></i>
-                                    <span class="text-sm">WiFi miễn phí</span>
-                                </div>
-                                <div class="flex items-center text-gray-600">
-                                    <i class="fas fa-snowflake text-blue-400 w-5 mr-3"></i>
-                                    <span class="text-sm">Điều hòa</span>
-                                </div>
-                                <div class="flex items-center text-gray-600">
-                                    <i class="fas fa-concierge-bell text-blue-400 w-5 mr-3"></i>
-                                    <span class="text-sm">Room service</span>
-                                </div>
-                            </div>
-
-                            <!-- Action Buttons -->
-                            <div class="flex space-x-3">
-                                <a href="/phong/<?= $phong->id ?>" class="flex-1 ocean-ripple bg-gradient-to-r from-blue-50 to-cyan-50 text-blue-600 py-3 px-4 rounded-xl hover:from-blue-100 hover:to-cyan-100 transition-all duration-300 text-center font-medium border border-blue-200">
-                                    <i class="fas fa-eye mr-2"></i>
-                                    Chi tiết
-                                </a>
-                                <a href="/booking/<?= $phong->id ?>" class="flex-1 ocean-ripple bg-gradient-to-r from-blue-500 to-cyan-500 text-white py-3 px-4 rounded-xl hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 text-center font-medium shadow-lg hover:shadow-xl">
-                                    <i class="fas fa-calendar-check mr-2"></i>
-                                    Đặt ngay
-                                </a>
-                            </div>
+                            <a href="/phong/<?= $phong['ma_phong'] ?? $phong->ma_phong ?>" class="book-button">
+                                <i class="fas fa-calendar-check"></i>
+                                Đặt ngay
+                            </a>
                         </div>
                     </div>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
         </div>
-    </div>
+    <?php else: ?>
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <h3 class="empty-title">Không tìm thấy phòng phù hợp</h3>
+            <p class="empty-description">
+                Thử thay đổi tiêu chí tìm kiếm hoặc chọn ngày khác để xem thêm phòng có sẵn
+            </p>
+            <a href="/phong" class="reset-button">
+                <i class="fas fa-refresh"></i>
+                Xem tất cả phòng
+            </a>
+        </div>
+    <?php endif; ?>
 </div>
 
-<!-- Wave Animation CSS -->
-<style>
-    .wave {
-        position: absolute;
-        width: 200%;
-        height: 200%;
-        background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.3));
-        border-radius: 50%;
-        animation: wave-animation 6s ease-in-out infinite;
-    }
-    
-    .wave1 {
-        top: -50%;
-        left: -50%;
-        animation-delay: 0s;
-    }
-    
-    .wave2 {
-        top: -30%;
-        left: -30%;
-        animation-delay: 2s;
-    }
-    
-    .wave3 {
-        top: -70%;
-        left: -70%;
-        animation-delay: 4s;
-    }
-    
-    @keyframes wave-animation {
-        0%, 100% { transform: rotate(0deg) scale(1); }
-        50% { transform: rotate(180deg) scale(1.1); }
-    }
-</style>
-
-<!-- JavaScript Animations -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // GSAP Animations
-    gsap.registerPlugin();
-    
-    // Header animation
-    gsap.from('.fade-in-header', {
-        duration: 1.5,
-        y: 50,
-        opacity: 0,
-        ease: "power3.out"
+    // Auto update checkout date when checkin changes
+    document.getElementById('checkin')?.addEventListener('change', function() {
+        const checkinDate = new Date(this.value);
+        const checkoutInput = document.getElementById('checkout');
+        const nextDay = new Date(checkinDate);
+        nextDay.setDate(nextDay.getDate() + 1);
+        
+        if (!checkoutInput.value || new Date(checkoutInput.value) <= checkinDate) {
+            checkoutInput.value = nextDay.toISOString().split('T')[0];
+        }
+        
+        checkoutInput.min = nextDay.toISOString().split('T')[0];
     });
-    
-    // Room cards animation
-    gsap.from('.room-card', {
-        duration: 1,
-        y: 80,
-        opacity: 0,
-        stagger: 0.2,
-        ease: "power3.out",
-        delay: 0.5
+
+    // Form validation
+    document.querySelector('form')?.addEventListener('submit', function(e) {
+        const checkin = document.getElementById('checkin').value;
+        const checkout = document.getElementById('checkout').value;
+        
+        if (checkin && checkout && new Date(checkin) >= new Date(checkout)) {
+            e.preventDefault();
+            alert('Ngày trả phòng phải sau ngày nhận phòng!');
+            return false;
+        }
     });
-    
-    // Empty state animation
-    gsap.from('.fade-in-empty', {
-        duration: 1.5,
-        scale: 0.8,
-        opacity: 0,
-        ease: "elastic.out(1, 0.5)"
+
+    // Sort functionality
+    document.querySelector('.sort-dropdown')?.addEventListener('change', function() {
+        const sortValue = this.value;
+        const roomsGrid = document.querySelector('.rooms-grid');
+        const roomCards = Array.from(roomsGrid.children);
+        
+        roomCards.sort((a, b) => {
+            if (sortValue.includes('giá tăng')) {
+                const priceA = parseInt(a.querySelector('.price-amount').textContent.replace(/[^\d]/g, ''));
+                const priceB = parseInt(b.querySelector('.price-amount').textContent.replace(/[^\d]/g, ''));
+                return priceA - priceB;
+            } else if (sortValue.includes('giá giảm')) {
+                const priceA = parseInt(a.querySelector('.price-amount').textContent.replace(/[^\d]/g, ''));
+                const priceB = parseInt(b.querySelector('.price-amount').textContent.replace(/[^\d]/g, ''));
+                return priceB - priceA;
+            } else if (sortValue.includes('tên')) {
+                const nameA = a.querySelector('.room-title').textContent.trim();
+                const nameB = b.querySelector('.room-title').textContent.trim();
+                return nameA.localeCompare(nameB, 'vi');
+            }
+            return 0;
+        });
+        
+        roomCards.forEach(card => roomsGrid.appendChild(card));
     });
-    
-    // Floating bubbles animation
-    gsap.to('.ocean-bubble', {
-        y: -20,
-        duration: 3,
-        ease: "power1.inOut",
-        yoyo: true,
-        repeat: -1,
-        stagger: 0.5
-    });
-    
-    // Smooth scroll behavior
-    document.querySelectorAll('a[href^="/"]').forEach(link => {
-        link.addEventListener('click', function(e) {
-            if (this.getAttribute('href').startsWith('/')) {
-                this.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    this.style.transform = '';
-                }, 150);
+
+    // Intersection Observer for animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
             }
         });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
     });
-});
+
+    // Apply animations to room cards
+    document.querySelectorAll('.room-card').forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(40px)';
+        card.style.transition = `all 0.6s ease ${index * 0.1}s`;
+        observer.observe(card);
+    });
 </script>
 
 <?php

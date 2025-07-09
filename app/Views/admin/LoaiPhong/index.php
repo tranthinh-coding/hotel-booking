@@ -1,53 +1,154 @@
-<?php include_once '../layouts/admin.php'; ?>
+<?php
+$title = 'Quản lý Loại phòng - Ocean Pearl Hotel Admin';
+$pageTitle = 'Quản lý Loại phòng';
+ob_start();
+?>
 
-<div class="container-fluid px-4">
-    <h1 class="mt-4">Quản lý Loại phòng</h1>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a href="/admin/dashboard">Dashboard</a></li>
-        <li class="breadcrumb-item active">Loại phòng</li>
-    </ol>
+<div class="space-y-6">
+    <!-- Header Actions -->
+    <div class="flex justify-between items-center">
+        <div>
+            <nav class="text-sm text-gray-500">
+                <a href="/admin/dashboard" class="hover:text-gray-700">Dashboard</a>
+                <span class="mx-2">/</span>
+                <span class="text-gray-900">Loại phòng</span>
+            </nav>
+        </div>
+        <div>
+            <a href="/admin/loai-phong/create" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
+                <i class="fas fa-plus mr-2"></i>
+                Thêm loại phòng
+            </a>
+        </div>
+    </div>
 
-    <div class="card mb-4">
-        <div class="card-header">
-            <i class="fas fa-bed me-1"></i>
-            Danh sách Loại phòng
-            <div class="float-end">
-                <a href="/admin/loaiphong/create" class="btn btn-primary btn-sm">
-                    <i class="fas fa-plus"></i> Thêm loại phòng
-                </a>
+    <!-- Search and Filters -->
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <input type="text" 
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                       placeholder="Tìm kiếm loại phòng..." 
+                       id="searchInput">
+            </div>
+            <div>
+                <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                        id="statusFilter">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="active">Hoạt động</option>
+                    <option value="inactive">Không hoạt động</option>
+                </select>
+            </div>
+            <div>
+                <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                        id="priceFilter">
+                    <option value="">Tất cả giá</option>
+                    <option value="under_1m">Dưới 1 triệu</option>
+                    <option value="1m_to_2m">1-2 triệu</option>
+                    <option value="over_2m">Trên 2 triệu</option>
+                </select>
             </div>
         </div>
-        <div class="card-body">
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <input type="text" class="form-control" placeholder="Tìm kiếm loại phòng..." id="searchInput">
+    </div>
+
+    <!-- Room Types Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <?php if (!empty($loaiPhongs)): ?>
+            <?php foreach ($loaiPhongs as $loaiPhong): ?>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300">
+                    <div class="h-48 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                        <i class="fas fa-bed text-6xl text-white opacity-80"></i>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="mb-4">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">
+                                <?= htmlspecialchars($loaiPhong->ten ?? $loaiPhong['ten']) ?>
+                            </h3>
+                            <p class="text-gray-600">
+                                Mã loại: <span class="font-medium"><?= htmlspecialchars($loaiPhong->ma_loai_phong ?? $loaiPhong['ma_loai_phong']) ?></span>
+                            </p>
+                        </div>
+
+                        <div class="flex justify-between items-center">
+                            <div class="flex space-x-2">
+                                <a href="/admin/loai-phong/edit/<?= $loaiPhong->ma_loai_phong ?? $loaiPhong['ma_loai_phong'] ?>" 
+                                   class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                    <i class="fas fa-edit mr-1"></i>Sửa
+                                </a>
+                                <button onclick="deleteRoomType('<?= $loaiPhong->ma_loai_phong ?? $loaiPhong['ma_loai_phong'] ?>')" 
+                                        class="text-red-600 hover:text-red-800 text-sm font-medium">
+                                    <i class="fas fa-trash mr-1"></i>Xóa
+                                </button>
+                            </div>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                Hoạt động
+                            </span>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <select class="form-select" id="statusFilter">
-                        <option value="">Tất cả trạng thái</option>
-                        <option value="active">Hoạt động</option>
-                        <option value="inactive">Không hoạt động</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <select class="form-select" id="priceFilter">
-                        <option value="">Tất cả giá</option>
-                        <option value="under_1m">Dưới 1 triệu</option>
-                        <option value="1m_to_2m">1-2 triệu</option>
-                        <option value="over_2m">Trên 2 triệu</option>
-                    </select>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <div class="col-span-full">
+                <div class="text-center py-12 bg-white rounded-xl border border-gray-200">
+                    <i class="fas fa-bed text-4xl text-gray-400 mb-4"></i>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Chưa có loại phòng nào</h3>
+                    <p class="text-gray-500 mb-6">Hãy thêm loại phòng đầu tiên để bắt đầu</p>
+                    <a href="/admin/loai-phong/create" 
+                       class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
+                        <i class="fas fa-plus mr-2"></i>
+                        Thêm loại phòng
+                    </a>
                 </div>
             </div>
+        <?php endif; ?>
+    </div>
+</div>
 
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <img src="https://via.placeholder.com/400x250/007bff/ffffff?text=Standard+Room" 
-                             class="card-img-top" alt="Standard Room">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">Phòng Standard</h5>
-                            <p class="card-text">Phòng tiêu chuẩn với đầy đủ tiện nghi cơ bản, phù hợp cho khách du lịch một mình hoặc cặp đôi.</p>
-                            <div class="mt-auto">
+<script>
+function deleteRoomType(id) {
+    if (confirm('Bạn có chắc chắn muốn xóa loại phòng này?')) {
+        fetch(`/admin/loai-phong/delete/${id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                location.reload();
+            } else {
+                alert('Có lỗi xảy ra khi xóa loại phòng');
+            }
+        })
+        .catch(error => {
+            alert('Có lỗi xảy ra khi xóa loại phòng');
+        });
+    }
+}
+
+// Search functionality
+document.getElementById('searchInput')?.addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    const roomCards = document.querySelectorAll('.grid > div:not(.col-span-full)');
+    
+    roomCards.forEach(card => {
+        const roomName = card.querySelector('h3').textContent.toLowerCase();
+        const roomCode = card.querySelector('span.font-medium').textContent.toLowerCase();
+        
+        if (roomName.includes(searchTerm) || roomCode.includes(searchTerm)) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+});
+</script>
+
+<?php
+$content = ob_get_clean();
+include __DIR__ . '/../../layouts/admin.php';
+?>
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <span class="text-success fw-bold fs-5">800,000 VNĐ/đêm</span>
                                     <span class="badge bg-success">Hoạt động</span>

@@ -5,6 +5,8 @@ namespace HotelBooking\Models;
 /**
  * @property int $ma_tin_tuc
  * @property int $ma_tai_khoan
+ * @property string $tieu_de
+ * @property string $anh_dai_dien
  * @property string $noi_dung
  * @property string $ngay_dang
  * @property string $trang_thai
@@ -17,6 +19,8 @@ class TinTuc extends Model
     protected $attributes = [
         'ma_tin_tuc',
         'ma_tai_khoan',
+        'tieu_de',
+        'anh_dai_dien',
         'noi_dung',
         'ngay_dang',
         'trang_thai',
