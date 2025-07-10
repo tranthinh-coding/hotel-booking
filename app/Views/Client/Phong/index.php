@@ -1,369 +1,1344 @@
 <?php
-$title = 'Phòng Nghỉ - Ocean Pearl Hotel';
+$title = 'Danh sách Phòng - Ocean Pearl Hotel';
 ob_start();
 ?>
 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
 <style>
-    .room-card {
-        backdrop-filter: blur(20px);
-        background: rgba(255, 255, 255, 0.95);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
     }
-    
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        min-height: 100vh;
+        color: #1e293b;
+        line-height: 1.6;
+    }
+
+    .main-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .content-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    /* Hero Section - Full Width */
+    .hero-section {
+        position: relative;
+        min-height: 100vh;
+        background: linear-gradient(135deg, 
+            rgba(56, 189, 248, 0.95) 0%, 
+            rgba(14, 165, 233, 0.95) 25%, 
+            rgba(6, 182, 212, 0.95) 50%, 
+            rgba(20, 184, 166, 0.95) 75%, 
+            rgba(16, 185, 129, 0.95) 100%),
+            url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        overflow: hidden;
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    /* Floating elements */
+    .floating-element {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        pointer-events: none;
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .floating-element:nth-child(1) {
+        width: 16px;
+        height: 16px;
+        top: 20%;
+        left: 15%;
+        animation-delay: 0s;
+    }
+
+    .floating-element:nth-child(2) {
+        width: 12px;
+        height: 12px;
+        top: 60%;
+        right: 15%;
+        animation-delay: 2s;
+    }
+
+    .floating-element:nth-child(3) {
+        width: 20px;
+        height: 20px;
+        top: 40%;
+        left: 25%;
+        animation-delay: 4s;
+    }
+
+    .floating-element:nth-child(4) {
+        width: 8px;
+        height: 8px;
+        top: 80%;
+        right: 30%;
+        animation-delay: 1s;
+    }
+
+    .floating-element:nth-child(5) {
+        width: 14px;
+        height: 14px;
+        top: 30%;
+        right: 40%;
+        animation-delay: 3s;
+    }
+
+    @keyframes float {
+        0%, 100% { 
+            transform: translateY(0px); 
+        }
+        50% { 
+            transform: translateY(-20px); 
+        }
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 10;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(12px);
+        padding: 12px 24px;
+        border-radius: 50px;
+        color: white;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 32px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .hero-badge:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    .hero-title {
+        font-size: 4rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 24px;
+        line-height: 1.1;
+        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero-title-highlight {
+        display: block;
+        background: linear-gradient(45deg, #ffffff, #f0f9ff, #e0f2fe);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: ocean-wave 3s ease-in-out infinite;
+    }
+
+    @keyframes ocean-wave {
+        0%, 100% { 
+            background-position: 0% 50%; 
+        }
+        50% { 
+            background-position: 100% 50%; 
+        }
+    }
+
+    .hero-subtitle {
+        font-size: 1.5rem;
+        color: rgba(255, 255, 255, 0.9);
+        max-width: 800px;
+        margin: 0 auto 48px;
+        line-height: 1.6;
+        font-weight: 500;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .hero-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(255, 255, 255, 0.95);
+        color: #0ea5e9;
+        padding: 16px 32px;
+        border-radius: 16px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 1.125rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 32px rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .hero-cta:hover {
+        transform: translateY(-4px) scale(1.05);
+        box-shadow: 0 12px 40px rgba(255, 255, 255, 0.4);
+        background: white;
+    }
+
+    .hero-cta i {
+        transition: transform 0.3s ease;
+    }
+
+    .hero-cta:hover i {
+        transform: scale(1.2);
+    }
+
+    .hero-stats {
+        display: flex;
+        justify-content: center;
+        gap: 64px;
+        margin-top: 64px;
+    }
+
+    .hero-stat {
+        text-align: center;
+    }
+
+    .hero-stat-number {
+        font-size: 3rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 8px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero-stat-label {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .scroll-indicator {
+        position: absolute;
+        bottom: 32px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+        0%, 20%, 53%, 80%, 100% {
+            transform: translateX(-50%) translateY(0);
+        }
+        40%, 43% {
+            transform: translateX(-50%) translateY(-10px);
+        }
+        70% {
+            transform: translateX(-50%) translateY(-5px);
+        }
+        90% {
+            transform: translateX(-50%) translateY(-2px);
+        }
+    }
+
+    /* Search Section */
+    .search-section {
+        background: white;
+        border-radius: 20px;
+        padding: 32px;
+        margin-bottom: 40px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        animation: fadeInUp 0.8s ease-out 0.2s;
+        animation-fill-mode: both;
+    }
+
+    .search-header {
+        text-align: center;
+        margin-bottom: 32px;
+    }
+
+    .search-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 8px;
+    }
+
+    .search-description {
+        color: #64748b;
+        font-size: 1rem;
+        font-weight: 500;
+    }
+
+    .search-form {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 24px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-input {
+        padding: 12px 16px;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+        color: #1f2937;
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: #0ea5e9;
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .search-button {
+        grid-column: 1 / -1;
+        background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+        color: white;
+        border: none;
+        padding: 16px 32px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
+    }
+
+    .search-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(14, 165, 233, 0.35);
+        background: linear-gradient(135deg, #0284c7, #0891b2);
+    }
+
+    /* Room Statistics Section */
+    .stats-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 24px;
+        margin-bottom: 40px;
+        animation: fadeInUp 0.8s ease-out 0.4s;
+        animation-fill-mode: both;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        text-align: center;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #0ea5e9, #06b6d4);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .stat-icon {
+        font-size: 2.5rem;
+        color: #0ea5e9;
+        margin-bottom: 16px;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 8px;
+    }
+
+    .stat-label {
+        font-size: 0.875rem;
+        color: #64748b;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Rooms Grid Section */
+    .rooms-section {
+        animation: fadeInUp 0.8s ease-out 0.6s;
+        animation-fill-mode: both;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 16px;
+    }
+
+    .section-subtitle {
+        font-size: 1.125rem;
+        color: #64748b;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .rooms-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 32px;
+        margin-bottom: 48px;
+    }
+
+    .room-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        transition: all 0.4s ease;
+        position: relative;
+        animation: fadeInUp 0.6s ease-out;
+        animation-fill-mode: both;
+    }
+
     .room-card:hover {
         transform: translateY(-8px);
-        box-shadow: 0 20px 60px rgba(56, 189, 248, 0.15);
-        background: rgba(255, 255, 255, 1);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+        border-color: #0ea5e9;
     }
-    
-    .filter-section {
-        backdrop-filter: blur(16px);
-        background: rgba(255, 255, 255, 0.9);
-        border: 1px solid rgba(13, 148, 136, 0.1);
-    }
-    
-    .price-badge {
-        background: linear-gradient(135deg, #0891b2, #0d9488);
-    }
-    
-    .available-badge {
-        background: linear-gradient(135deg, #10b981, #059669);
-    }
-    
+
     .room-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
         transition: transform 0.4s ease;
     }
-    
+
     .room-card:hover .room-image {
         transform: scale(1.05);
     }
+
+    .room-image-container {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .room-badge {
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .room-price {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: rgba(255, 255, 255, 0.95);
+        color: #0f172a;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 700;
+        backdrop-filter: blur(10px);
+    }
+
+    .room-content {
+        padding: 24px;
+    }
+
+    .room-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 16px;
+    }
+
+    .room-title {
+        font-size: 1.375rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 4px;
+    }
+
+    .room-type {
+        font-size: 0.875rem;
+        color: #0ea5e9;
+        font-weight: 600;
+        background: rgba(14, 165, 233, 0.1);
+        padding: 4px 12px;
+        border-radius: 12px;
+    }
+
+    .room-description {
+        color: #64748b;
+        font-size: 0.875rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+    .room-features {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .room-feature {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #64748b;
+        font-size: 0.875rem;
+    }
+
+    .room-feature i {
+        color: #0ea5e9;
+        font-size: 1rem;
+    }
+
+    .room-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 20px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .room-price-display {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .room-price-amount {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #0f172a;
+    }
+
+    .room-price-unit {
+        font-size: 0.875rem;
+        color: #64748b;
+    }
+
+    .room-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .room-btn {
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-decoration: none;
+        text-align: center;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-outline {
+        background: transparent;
+        color: #0ea5e9;
+        border: 2px solid #0ea5e9;
+    }
+
+    .btn-outline:hover {
+        background: #0ea5e9;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+        color: white;
+        border: none;
+        box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(14, 165, 233, 0.35);
+        background: linear-gradient(135deg, #0284c7, #0891b2);
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 80px 40px;
+        background: white;
+        border-radius: 20px;
+        border: 2px dashed #cbd5e1;
+        margin: 40px 0;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        color: #cbd5e1;
+        margin-bottom: 24px;
+    }
+
+    .empty-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 12px;
+    }
+
+    .empty-description {
+        color: #64748b;
+        margin-bottom: 32px;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .empty-button {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+    }
+
+    .empty-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .main-container {
+            padding: 16px;
+        }
+
+        .hero-section {
+            padding: 60px 24px;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+        }
+
+        .hero-stats {
+            gap: 24px;
+        }
+
+        .hero-stat-number {
+            font-size: 2rem;
+        }
+
+        .hero-cta {
+            padding: 14px 24px;
+            font-size: 1rem;
+        }
+
+        .search-form {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-section {
+            grid-template-columns: 1fr;
+        }
+
+        .rooms-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .room-actions {
+            flex-direction: column;
+        }
+
+        .section-title {
+            font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero-title {
+            font-size: 2rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+        }
+
+        .hero-stats {
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .hero-stat-number {
+            font-size: 1.5rem;
+        }
+
+        .hero-cta {
+            padding: 12px 20px;
+            font-size: 0.9rem;
+        }
+
+        .room-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .room-footer {
+            flex-direction: column;
+            gap: 16px;
+            align-items: stretch;
+        }
+    }
 </style>
 
-<!-- Hero Section -->
-<section class="relative bg-gradient-to-br from-cyan-50 via-blue-50 to-emerald-50 py-16">
-    <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-emerald-500/5"></div>
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center">
-            <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-                Phòng Nghỉ
-                <span class="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-emerald-600">
-                    Cao Cấp
-                </span>
-            </h1>
-            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                Khám phá bộ sưu tập phòng nghỉ sang trọng với thiết kế hiện đại và view biển tuyệt đẹp
+<!-- Section 1: Hero Section -->
+<div class="hero-section">
+    <!-- Floating ocean elements -->
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    
+    <div class="hero-content">
+        <div class="hero-badge">
+            <i class="fas fa-gem"></i>
+            Ocean Pearl Hotel
+        </div>
+        
+        <h1 class="hero-title">
+            Phòng Nghỉ
+            <span class="hero-title-highlight">Cao Cấp</span>
+        </h1>
+        
+        <p class="hero-subtitle">
+            Khám phá các phòng nghỉ sang trọng với thiết kế hiện đại, view biển tuyệt đẹp 
+            và đầy đủ tiện nghi 5 sao mang đến trải nghiệm nghỉ dưỡng đẳng cấp
+        </p>
+        
+        <a href="#search" class="hero-cta">
+            <i class="fas fa-search"></i>
+            Tìm phòng ngay
+            <i class="fas fa-arrow-right"></i>
+        </a>
+        
+        <!-- Quick stats -->
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="hero-stat-number"><?= count($phongs) ?>+</div>
+                <div class="hero-stat-label">Phòng nghỉ</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-number">200m</div>
+                <div class="hero-stat-label">Mặt tiền biển</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-number">4.9★</div>
+                <div class="hero-stat-label">Đánh giá</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scroll indicator -->
+    <div class="scroll-indicator">
+        <i class="fas fa-chevron-down text-2xl"></i>
+    </div>
+</div>
+
+<div class="main-container">
+    <!-- Section 2: Search Section -->
+    <div class="content-container">
+        <div id="search" class="search-section">
+        <div class="search-header">
+            <h2 class="search-title">Tìm Kiếm Phòng Nghỉ</h2>
+            <p class="search-description">Chọn ngày và loại phòng phù hợp với nhu cầu của bạn</p>
+        </div>
+        
+        <form method="GET" action="/phong" class="search-form">
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-calendar-check"></i>
+                    Ngày nhận phòng
+                </label>
+                <input type="date" name="checkin" class="form-input" 
+                       value="<?= htmlspecialchars($_GET['checkin'] ?? '') ?>" 
+                       min="<?= date('Y-m-d') ?>">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-calendar-times"></i>
+                    Ngày trả phòng
+                </label>
+                <input type="date" name="checkout" class="form-input" 
+                       value="<?= htmlspecialchars($_GET['checkout'] ?? '') ?>" 
+                       min="<?= date('Y-m-d', strtotime('+1 day')) ?>">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-users"></i>
+                    Số khách
+                </label>
+                <select name="guests" class="form-input">
+                    <?php for($i = 1; $i <= 8; $i++): ?>
+                        <option value="<?= $i ?>" <?= ($_GET['guests'] ?? 1) == $i ? 'selected' : '' ?>>
+                            <?= $i ?> khách
+                        </option>
+                    <?php endfor; ?>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-bed"></i>
+                    Loại phòng
+                </label>
+                <select name="room_type" class="form-input">
+                    <option value="">Tất cả loại phòng</option>
+                    <option value="Standard" <?= ($_GET['room_type'] ?? '') == 'Standard' ? 'selected' : '' ?>>Standard</option>
+                    <option value="Deluxe" <?= ($_GET['room_type'] ?? '') == 'Deluxe' ? 'selected' : '' ?>>Deluxe</option>
+                    <option value="Suite" <?= ($_GET['room_type'] ?? '') == 'Suite' ? 'selected' : '' ?>>Suite</option>
+                    <option value="Presidential" <?= ($_GET['room_type'] ?? '') == 'Presidential' ? 'selected' : '' ?>>Presidential</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="search-button">
+                <i class="fas fa-search"></i>
+                Tìm kiếm phòng
+            </button>
+        </form>
+        </div>
+
+        <!-- Section 3: Statistics Section -->
+        <div class="stats-section">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-bed"></i>
+            </div>
+            <div class="stat-number"><?= count($phongs) ?></div>
+            <div class="stat-label">Phòng có sẵn</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-star"></i>
+            </div>
+            <div class="stat-number">4.9</div>
+            <div class="stat-label">Đánh giá trung bình</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-number">2,847</div>
+            <div class="stat-label">Khách hàng hài lòng</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-award"></i>
+            </div>
+            <div class="stat-number">5</div>
+            <div class="stat-label">Năm kinh nghiệm</div>
+        </div>
+    </div>
+
+    <!-- Section 4: Rooms Results -->
+    <div class="rooms-section">
+        <div class="section-header">
+            <h2 class="section-title">Phòng Nghỉ Dành Cho Bạn</h2>
+            <p class="section-subtitle">
+                Lựa chọn phòng nghỉ phù hợp với nhu cầu và ngân sách của bạn
             </p>
         </div>
-    </div>
-</section>
 
-<!-- Search & Filter Section -->
-<section class="py-8 bg-white/50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="filter-section rounded-2xl p-6 mb-8">
-            <form method="GET" action="/phong" class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-                    <!-- Check-in Date -->
-                    <div>
-                        <label for="checkin" class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-calendar-check text-cyan-600 mr-2"></i>Ngày nhận phòng
-                        </label>
-                        <input 
-                            type="date" 
-                            id="checkin" 
-                            name="checkin" 
-                            value="<?= htmlspecialchars($searchParams['checkin']) ?>"
-                            class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-                            min="<?= date('Y-m-d') ?>"
-                        >
+        <?php if (!empty($phongs)): ?>
+            <div class="rooms-grid">
+                <?php foreach ($phongs as $index => $phong): ?>
+                    <div class="room-card" style="animation-delay: <?= $index * 0.1 ?>s;">
+                        <div class="room-image-container">
+                            <?php
+                            // Default room images based on room type
+                            $roomImages = [
+                                'Standard' => 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                                'Deluxe' => 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                                'Suite' => 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                                'Presidential' => 'https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+                            ];
+                            
+                            $roomType = $phong->loai_phong ?? 'Standard';
+                            $roomImage = $roomImages[$roomType] ?? $roomImages['Standard'];
+                            ?>
+                            <img src="<?= $roomImage ?>" alt="<?= htmlspecialchars($phong->ten_phong ?? 'Phòng nghỉ') ?>" class="room-image">
+                            <div class="room-badge">Có sẵn</div>
+                            <div class="room-price"><?= number_format($phong->gia, 0, ',', '.') ?>đ</div>
+                        </div>
+                        
+                        <div class="room-content">
+                            <div class="room-header">
+                                <div>
+                                    <h3 class="room-title"><?= htmlspecialchars($phong->ten_phong ?? 'Phòng nghỉ') ?></h3>
+                                    <div class="room-type"><?= htmlspecialchars($roomType) ?></div>
+                                </div>
+                            </div>
+                            
+                            <p class="room-description">
+                                <?= htmlspecialchars($phong->mo_ta ?? 'Phòng nghỉ cao cấp với đầy đủ tiện nghi hiện đại, view biển tuyệt đẹp và không gian thoáng mát.') ?>
+                            </p>
+                            
+                            <div class="room-features">
+                                <div class="room-feature">
+                                    <i class="fas fa-wifi"></i>
+                                    WiFi miễn phí
+                                </div>
+                                <div class="room-feature">
+                                    <i class="fas fa-snowflake"></i>
+                                    Điều hòa
+                                </div>
+                                <div class="room-feature">
+                                    <i class="fas fa-tv"></i>
+                                    Smart TV
+                                </div>
+                                <div class="room-feature">
+                                    <i class="fas fa-bath"></i>
+                                    Phòng tắm riêng
+                                </div>
+                            </div>
+                            
+                            <div class="room-footer">
+                                <div class="room-price-display">
+                                    <div class="room-price-amount"><?= number_format($phong->gia, 0, ',', '.') ?>đ</div>
+                                    <div class="room-price-unit">mỗi đêm</div>
+                                </div>
+                                <div class="room-actions">
+                                    <a href="/phong/<?= $phong->ma_phong ?>" class="room-btn btn-outline">
+                                        <i class="fas fa-eye"></i>
+                                        Chi tiết
+                                    </a>
+                                    <a href="/dat-phong?room_id=<?= $phong->ma_phong ?>" class="room-btn btn-primary">
+                                        <i class="fas fa-calendar-plus"></i>
+                                        Đặt ngay
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <!-- Check-out Date -->
-                    <div>
-                        <label for="checkout" class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-calendar-times text-cyan-600 mr-2"></i>Ngày trả phòng
-                        </label>
-                        <input 
-                            type="date" 
-                            id="checkout" 
-                            name="checkout" 
-                            value="<?= htmlspecialchars($searchParams['checkout']) ?>"
-                            class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-                            min="<?= date('Y-m-d', strtotime('+1 day')) ?>"
-                        >
-                    </div>
-                    
-                    <!-- Number of Guests -->
-                    <div>
-                        <label for="guests" class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-users text-cyan-600 mr-2"></i>Số khách
-                        </label>
-                        <select 
-                            id="guests" 
-                            name="guests" 
-                            class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-                        >
-                            <?php for($i = 1; $i <= 6; $i++): ?>
-                                <option value="<?= $i ?>" <?= $searchParams['guests'] == $i ? 'selected' : '' ?>>
-                                    <?= $i ?> khách
-                                </option>
-                            <?php endfor; ?>
-                        </select>
-                    </div>
-                    
-                    <!-- Room Type -->
-                    <div>
-                        <label for="room_type" class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-bed text-cyan-600 mr-2"></i>Loại phòng
-                        </label>
-                        <select 
-                            id="room_type" 
-                            name="room_type" 
-                            class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-                        >
-                            <option value="">Tất cả loại phòng</option>
-                            <?php foreach($loaiPhongs as $loaiPhong): ?>
-                                <option value="<?= htmlspecialchars($loaiPhong['ma_loai_phong'] ?? $loaiPhong->ma_loai_phong) ?>" 
-                                        <?= $searchParams['room_type'] == ($loaiPhong['ma_loai_phong'] ?? $loaiPhong->ma_loai_phong) ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($loaiPhong['ten'] ?? $loaiPhong->ten) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    
-                    <!-- Search Button -->
-                    <div class="flex items-end">
-                        <button 
-                            type="submit" 
-                            class="w-full bg-gradient-to-r from-cyan-600 to-emerald-600 text-white px-6 py-3 rounded-lg font-medium hover:from-cyan-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105"
-                        >
-                            <i class="fas fa-search mr-2"></i>Tìm kiếm
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-
-        <!-- Search Results Info -->
-        <?php if (!empty($searchParams['checkin']) && !empty($searchParams['checkout'])): ?>
-        <div class="mb-6 p-4 bg-cyan-50 border border-cyan-200 rounded-lg">
-            <div class="flex items-center">
-                <i class="fas fa-info-circle text-cyan-600 mr-3"></i>
-                <span class="text-cyan-800">
-                    Kết quả tìm kiếm cho ngày 
-                    <strong><?= date('d/m/Y', strtotime($searchParams['checkin'])) ?></strong> - 
-                    <strong><?= date('d/m/Y', strtotime($searchParams['checkout'])) ?></strong>
-                    (<?= count($phongs) ?> phòng có sẵn)
-                </span>
+                <?php endforeach; ?>
             </div>
-        </div>
-        <?php endif; ?>
-    </div>
-</section>
-
-<!-- Rooms Grid Section -->
-<section class="py-12 bg-gradient-to-br from-gray-50 to-blue-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <?php if (empty($phongs)): ?>
-        <!-- No Results -->
-        <div class="text-center py-16">
-            <div class="max-w-md mx-auto">
-                <i class="fas fa-bed text-6xl text-gray-300 mb-6"></i>
-                <h3 class="text-2xl font-bold text-gray-900 mb-4">Không tìm thấy phòng nào</h3>
-                <p class="text-gray-600 mb-8">
-                    Vui lòng thử thay đổi tiêu chí tìm kiếm hoặc chọn ngày khác.
+        <?php else: ?>
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-bed"></i>
+                </div>
+                <h3 class="empty-title">Không tìm thấy phòng phù hợp</h3>
+                <p class="empty-description">
+                    Vui lòng thay đổi tiêu chí tìm kiếm hoặc liên hệ với chúng tôi để được hỗ trợ tốt nhất
                 </p>
-                <a href="/phong" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-cyan-600 to-emerald-600 text-white rounded-lg font-medium hover:from-cyan-700 hover:to-emerald-700 transition-all duration-300">
-                    <i class="fas fa-refresh mr-2"></i>
-                    Xem tất cả phòng
+                <a href="/contact" class="empty-button">
+                    <i class="fas fa-phone"></i>
+                    Liên hệ hỗ trợ
                 </a>
             </div>
-        </div>
-        <?php else: ?>
-        
-        <!-- Rooms Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <?php foreach($phongs as $phong): 
-                // Handle both array and object data
-                $maPhong = $phong['ma_phong'] ?? $phong->ma_phong ?? '';
-                $tenPhong = $phong['ten_phong'] ?? $phong->ten_phong ?? 'Phòng ' . $maPhong;
-                $moTa = $phong['mo_ta'] ?? $phong->mo_ta ?? 'Phòng nghỉ cao cấp với đầy đủ tiện nghi hiện đại';
-                $gia = $phong['gia'] ?? $phong->gia ?? 0;
-                $loaiPhong = $phong['loai_phong'] ?? $phong->loai_phong ?? 'Standard';
-                
-                // Default room image based on room type
-                $defaultImages = [
-                    'Deluxe' => 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-                    'Suite' => 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-                    'Standard' => 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-                    'Presidential' => 'https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
-                ];
-                $roomImage = $defaultImages[$loaiPhong] ?? $defaultImages['Standard'];
-            ?>
-            
-            <div class="room-card rounded-2xl overflow-hidden shadow-lg">
-                <!-- Room Image -->
-                <div class="relative h-64 overflow-hidden">
-                    <img 
-                        src="<?= $roomImage ?>" 
-                        alt="<?= htmlspecialchars($tenPhong) ?>"
-                        class="room-image w-full h-full object-cover"
-                    >
-                    <div class="absolute top-4 left-4">
-                        <span class="available-badge text-white px-3 py-1 rounded-full text-sm font-medium">
-                            <i class="fas fa-check mr-1"></i>Có sẵn
-                        </span>
-                    </div>
-                    <div class="absolute top-4 right-4">
-                        <span class="price-badge text-white px-3 py-1 rounded-full text-sm font-medium">
-                            <?= number_format($gia, 0, ',', '.') ?>đ/đêm
-                        </span>
-                    </div>
-                </div>
-                
-                <!-- Room Content -->
-                <div class="p-6">
-                    <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-xl font-bold text-gray-900"><?= htmlspecialchars($tenPhong) ?></h3>
-                        <span class="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                            <?= htmlspecialchars($loaiPhong) ?>
-                        </span>
-                    </div>
-                    
-                    <p class="text-gray-600 mb-4 line-clamp-2">
-                        <?= htmlspecialchars($moTa) ?>
-                    </p>
-                    
-                    <!-- Room Features -->
-                    <div class="flex items-center space-x-4 mb-6 text-sm text-gray-500">
-                        <span class="flex items-center">
-                            <i class="fas fa-wifi mr-1 text-cyan-600"></i>WiFi miễn phí
-                        </span>
-                        <span class="flex items-center">
-                            <i class="fas fa-snowflake mr-1 text-cyan-600"></i>Điều hòa
-                        </span>
-                        <span class="flex items-center">
-                            <i class="fas fa-tv mr-1 text-cyan-600"></i>TV
-                        </span>
-                    </div>
-                    
-                    <!-- Price and Action -->
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <span class="text-2xl font-bold text-gray-900">
-                                <?= number_format($gia, 0, ',', '.') ?>đ
-                            </span>
-                            <span class="text-gray-500">/đêm</span>
-                        </div>
-                        <div class="space-x-2">
-                            <a 
-                                href="/phong/<?= urlencode($maPhong) ?>" 
-                                class="inline-flex items-center px-4 py-2 bg-white border border-cyan-600 text-cyan-600 rounded-lg font-medium hover:bg-cyan-50 transition-all duration-300"
-                            >
-                                <i class="fas fa-eye mr-2"></i>Chi tiết
-                            </a>
-                            <button 
-                                onclick="bookRoom('<?= htmlspecialchars($maPhong) ?>')"
-                                class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-cyan-600 to-emerald-600 text-white rounded-lg font-medium hover:from-cyan-700 hover:to-emerald-700 transition-all duration-300"
-                            >
-                                <i class="fas fa-calendar-plus mr-2"></i>Đặt phòng
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <?php endforeach; ?>
-        </div>
-        
         <?php endif; ?>
+        </div>
     </div>
-</section>
+</div>
 
 <script>
-// Initialize date inputs with today and tomorrow as default
 document.addEventListener('DOMContentLoaded', function() {
-    const checkinInput = document.getElementById('checkin');
-    const checkoutInput = document.getElementById('checkout');
-    
-    // Set min dates
-    const today = new Date().toISOString().split('T')[0];
-    const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
-    
-    checkinInput.min = today;
-    checkoutInput.min = tomorrow;
-    
-    // Set default dates if empty
-    if (!checkinInput.value) {
-        checkinInput.value = today;
+    // Hero section parallax effect
+    const heroSection = document.querySelector('.hero-section');
+    if (heroSection) {
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * -0.5;
+            heroSection.style.transform = `translateY(${rate}px)`;
+        });
     }
-    if (!checkoutInput.value) {
-        checkoutInput.value = tomorrow;
-    }
-    
-    // Update checkout min date when checkin changes
-    checkinInput.addEventListener('change', function() {
-        const checkinDate = new Date(this.value);
-        const minCheckout = new Date(checkinDate.getTime() + 86400000).toISOString().split('T')[0];
-        checkoutInput.min = minCheckout;
+
+    // Typing effect for hero title
+    const heroTitle = document.querySelector('.hero-title');
+    if (heroTitle) {
+        const titleText = heroTitle.textContent;
+        heroTitle.textContent = '';
+        heroTitle.style.opacity = '1';
         
-        if (checkoutInput.value <= this.value) {
-            checkoutInput.value = minCheckout;
-        }
-    });
-});
-
-// Book room function
-function bookRoom(roomId) {
-    const checkin = document.getElementById('checkin').value;
-    const checkout = document.getElementById('checkout').value;
-    const guests = document.getElementById('guests').value;
-    
-    if (!checkin || !checkout) {
-        alert('Vui lòng chọn ngày nhận và trả phòng!');
-        return;
+        let i = 0;
+        const typeWriter = function() {
+            if (i < titleText.length) {
+                heroTitle.textContent += titleText.charAt(i);
+                i++;
+                setTimeout(typeWriter, 50);
+            }
+        };
+        
+        setTimeout(typeWriter, 1000);
     }
-    
-    // Redirect to booking page with parameters
-    const params = new URLSearchParams({
-        room_id: roomId,
-        checkin: checkin,
-        checkout: checkout,
-        guests: guests
-    });
-    
-    window.location.href = `/dat-phong?${params.toString()}`;
-}
 
-// Add some animation effects
-document.addEventListener('DOMContentLoaded', function() {
-    // Animate cards on scroll
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
+    // Animate hero stats on scroll
+    const heroStats = document.querySelectorAll('.hero-stat-number');
+    const animateStats = function() {
+        heroStats.forEach(stat => {
+            const target = parseInt(stat.getAttribute('data-target')) || parseInt(stat.textContent);
+            const current = parseInt(stat.textContent) || 0;
+            const increment = target / 100;
+            
+            if (current < target) {
+                stat.textContent = Math.ceil(current + increment);
+                setTimeout(animateStats, 20);
+            } else {
+                stat.textContent = target;
+            }
+        });
     };
     
-    const observer = new IntersectionObserver(function(entries) {
+    // Start animation after page load
+    setTimeout(animateStats, 2000);
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Date validation
+    const checkinInput = document.querySelector('input[name="checkin"]');
+    const checkoutInput = document.querySelector('input[name="checkout"]');
+    
+    if (checkinInput && checkoutInput) {
+        // Set default dates if empty
+        const today = new Date().toISOString().split('T')[0];
+        const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+        
+        if (!checkinInput.value) {
+            checkinInput.value = today;
+        }
+        if (!checkoutInput.value) {
+            checkoutInput.value = tomorrow;
+        }
+        
+        // Update checkout min date when checkin changes
+        checkinInput.addEventListener('change', function() {
+            const checkinDate = new Date(this.value);
+            const minCheckout = new Date(checkinDate.getTime() + 86400000).toISOString().split('T')[0];
+            checkoutInput.min = minCheckout;
+            
+            if (checkoutInput.value <= this.value) {
+                checkoutInput.value = minCheckout;
+            }
+        });
+    }
+
+    // Form validation
+    const searchForm = document.querySelector('form');
+    if (searchForm) {
+        searchForm.addEventListener('submit', function(e) {
+            const checkin = checkinInput?.value;
+            const checkout = checkoutInput?.value;
+            
+            if (checkin && checkout && checkin >= checkout) {
+                e.preventDefault();
+                alert('Ngày trả phòng phải sau ngày nhận phòng!');
+                return false;
+            }
+        });
+    }
+
+    // Animate statistics numbers
+    function animateNumbers() {
+        const numbers = document.querySelectorAll('.stat-number');
+        numbers.forEach(number => {
+            const finalValue = parseInt(number.textContent.replace(/[^\d]/g, ''));
+            if (finalValue && finalValue > 0) {
+                let currentValue = 0;
+                const increment = Math.ceil(finalValue / 50);
+                const timer = setInterval(() => {
+                    currentValue += increment;
+                    if (currentValue >= finalValue) {
+                        currentValue = finalValue;
+                        clearInterval(timer);
+                    }
+                    
+                    if (finalValue > 1000) {
+                        number.textContent = currentValue.toLocaleString('vi-VN');
+                    } else {
+                        number.textContent = currentValue;
+                    }
+                }, 30);
+            }
+        });
+    }
+
+    // Intersection Observer for animations
+    const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
+                if (entry.target.classList.contains('stats-section')) {
+                    animateNumbers();
+                }
+                
                 entry.target.style.opacity = '1';
                 entry.target.style.transform = 'translateY(0)';
             }
         });
-    }, observerOptions);
-    
-    // Observe all room cards
-    document.querySelectorAll('.room-card').forEach(card => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(30px)';
-        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(card);
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
     });
+
+    // Observe elements for animation
+    document.querySelectorAll('.hero-section, .search-section, .stats-section, .rooms-section, .room-card').forEach(el => {
+        observer.observe(el);
+    });
+
+    // Enhanced card interactions
+    document.querySelectorAll('.room-card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-12px)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+
+    // Button ripple effect
+    document.querySelectorAll('button, .room-btn, .hero-cta, .empty-button').forEach(button => {
+        button.addEventListener('click', function(e) {
+            const ripple = document.createElement('span');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            ripple.classList.add('ripple');
+            
+            this.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+    });
+
+    // Add ripple CSS
+    const style = document.createElement('style');
+    style.textContent = `
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+            pointer-events: none;
+        }
+        
+        @keyframes ripple-animation {
+            to {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+        
+        button, .room-btn, .hero-cta, .empty-button {
+            position: relative;
+            overflow: hidden;
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Lazy loading for images
+    const imageObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src || img.src;
+                img.classList.add('loaded');
+                imageObserver.unobserve(img);
+            }
+        });
+    });
+
+    document.querySelectorAll('.room-image').forEach(img => {
+        imageObserver.observe(img);
+    });
+
+    // Search form auto-suggestion
+    const guestsSelect = document.querySelector('select[name="guests"]');
+    if (guestsSelect) {
+        guestsSelect.addEventListener('change', function() {
+            const guests = parseInt(this.value);
+            const roomTypeSelect = document.querySelector('select[name="room_type"]');
+            
+            if (roomTypeSelect && guests > 4) {
+                // Suggest suite or presidential for large groups
+                if (roomTypeSelect.querySelector('option[value="Suite"]')) {
+                    roomTypeSelect.value = 'Suite';
+                }
+            }
+        });
+    }
+    // Enhanced hero interactions
+    const heroTitle = document.querySelector('.hero-title');
+    const heroBadge = document.querySelector('.hero-badge');
+    const heroStats = document.querySelectorAll('.hero-stat-number');
+    
+    // Add parallax effect to hero background
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const parallax = document.querySelector('.hero-section');
+        if (parallax) {
+            const speed = scrolled * 0.5;
+            parallax.style.backgroundPosition = `center ${speed}px`;
+        }
+    });
+    
+    // Animate hero stats numbers
+    function animateHeroStats() {
+        heroStats.forEach(stat => {
+            const finalValue = stat.textContent.replace(/[^\d]/g, '');
+            if (finalValue && finalValue > 0) {
+                let currentValue = 0;
+                const increment = Math.ceil(finalValue / 30);
+                const timer = setInterval(() => {
+                    currentValue += increment;
+                    if (currentValue >= finalValue) {
+                        currentValue = finalValue;
+                        clearInterval(timer);
+                    }
+                    
+                    if (stat.textContent.includes('★')) {
+                        stat.textContent = currentValue + '.9★';
+                    } else if (stat.textContent.includes('m')) {
+                        stat.textContent = currentValue + 'm';
+                    } else if (stat.textContent.includes('+')) {
+                        stat.textContent = currentValue + '+';
+                    } else {
+                        stat.textContent = currentValue;
+                    }
+                }, 50);
+            }
+        });
+    }
 });
 </script>
 
 <?php
 $content = ob_get_clean();
-include __DIR__ . '/../../layouts/app.php';
+require_once __DIR__ . '/../../layouts/app.php';
 ?>
