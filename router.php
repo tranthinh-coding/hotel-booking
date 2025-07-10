@@ -22,6 +22,7 @@ Route::get('/login', 'HotelBooking\Controllers\Auth\AuthController', 'showLoginF
 Route::post('/login', 'HotelBooking\Controllers\Auth\AuthController', 'login');
 Route::get('/register', 'HotelBooking\Controllers\Auth\AuthController', 'showRegisterForm');
 Route::post('/register', 'HotelBooking\Controllers\Auth\AuthController', 'register');
+Route::get('/logout', 'HotelBooking\Controllers\Auth\AuthController', 'logout');
 Route::post('/logout', 'HotelBooking\Controllers\Auth\AuthController', 'logout');
 
 // Profile & Đổi mật khẩu
