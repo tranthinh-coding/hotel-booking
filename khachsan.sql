@@ -144,13 +144,16 @@ CREATE TABLE IF NOT EXISTS `hoa_don_phong` (
 DROP TABLE IF EXISTS `loai_phong`;
 CREATE TABLE IF NOT EXISTS `loai_phong` (
   `ma_loai_phong` int NOT NULL AUTO_INCREMENT,
+  `hinh_anh` text COLLATE utf8mb4_unicode_ci,
   `ten` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
+  `mo_ta` text COLLATE utf8mb4_unicode_ci,
   PRIMARY KEY (`ma_loai_phong`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table khachsan.loai_phong: ~0 rows (approximately)
-REPLACE INTO `loai_phong` (`ma_loai_phong`, `ten`) VALUES
-	(1, 'Deluxe');
+REPLACE INTO `loai_phong` (`ma_loai_phong`, `hinh_anh`, `ten`, `mo_ta`) VALUES
+	(1, NULL, 'Deluxe', NULL),
+	(2, NULL, 'Deluxe', NULL);
 
 -- Dumping structure for table khachsan.phong
 DROP TABLE IF EXISTS `phong`;
@@ -179,11 +182,12 @@ CREATE TABLE IF NOT EXISTS `tai_khoan` (
   `mat_khau` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `phan_quyen` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`ma_tai_khoan`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table khachsan.tai_khoan: ~0 rows (approximately)
 REPLACE INTO `tai_khoan` (`ma_tai_khoan`, `ho_ten`, `so_cccd`, `sdt`, `mail`, `mat_khau`, `phan_quyen`) VALUES
-	(1, 'Trần Văn Thinh', '123123123', '0123123123', 'tranthinh.own@gmail.com', '$2y$12$q9xO5o7ZGClAl/V4aNUww.9DqXAzmvjHtpf4tjY4qsaRShUgfiL.e', 'Quản lý');
+	(1, 'Trần Văn Thinh', '123123123', '0123123123', 'tranthinh.own@gmail.com', '$2y$12$q9xO5o7ZGClAl/V4aNUww.9DqXAzmvjHtpf4tjY4qsaRShUgfiL.e', 'Quản lý'),
+	(2, 'Lê Duyên', '122122122', '0987654321', 'ltduyenn@gmail.com', '$2y$12$UzXHbgRAWGlgIazAwnEVouf.DyMUoIhARKzDRE8lshC26Yi/9pFbW', 'Quản lý');
 
 -- Dumping structure for table khachsan.tin_tuc
 DROP TABLE IF EXISTS `tin_tuc`;
@@ -193,6 +197,8 @@ CREATE TABLE IF NOT EXISTS `tin_tuc` (
   `noi_dung` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `ngay_dang` datetime NOT NULL,
   `trang_thai` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tieu_de` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `anh_dai_dien` text COLLATE utf8mb4_unicode_ci,
   PRIMARY KEY (`ma_tin_tuc`),
   KEY `fk_tintuc_taikhoan` (`ma_tai_khoan`),
   CONSTRAINT `FK_tin_tuc_tai_khoan` FOREIGN KEY (`ma_tai_khoan`) REFERENCES `tai_khoan` (`ma_tai_khoan`)
