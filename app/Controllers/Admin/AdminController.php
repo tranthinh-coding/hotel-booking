@@ -27,7 +27,7 @@ class AdminController
         $totalReviews = count(DanhGia::all());
         $totalBookings = 0; // TODO: Implement when HoaDon model is ready
 
-        view('Admin.Dashboard/index', [
+        view('Admin.Dashboard.index', [
             'totalRooms' => $totalRooms,
             'totalUsers' => $totalUsers,
             'totalReviews' => $totalReviews,
@@ -49,7 +49,7 @@ class AdminController
         }
 
         $taiKhoans = TaiKhoan::all();
-        view('Admin.TaiKhoan/index', ['taiKhoans' => $taiKhoans]);
+        view('Admin.TaiKhoan.index', ['taiKhoans' => $taiKhoans]);
     }
 
     public function taiKhoanCreate()
@@ -63,7 +63,7 @@ class AdminController
             redirect('/');
         }
 
-        view('Admin.TaiKhoan/create', []);
+        view('Admin.TaiKhoan.create', []);
     }
 
     public function taiKhoanStore()
@@ -109,7 +109,7 @@ class AdminController
         }
 
         $taiKhoan = TaiKhoan::find($id);
-        view('Admin.TaiKhoan/edit', ['taiKhoan' => $taiKhoan]);
+        view('Admin.TaiKhoan.edit', ['taiKhoan' => $taiKhoan]);
     }
 
     public function taiKhoanUpdate($id)

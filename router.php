@@ -71,50 +71,36 @@ Route::get('/admin/dashboard', 'HotelBooking\Controllers\Admin\AdminController',
 // Admin - Quản lý loại phòng
 Route::get('/admin/loai-phong', 'HotelBooking\Controllers\Admin\AdminLoaiPhongController', 'index');
 Route::get('/admin/loai-phong/create', 'HotelBooking\Controllers\Admin\AdminLoaiPhongController', 'create');
-Route::post('/admin/loai-phong', 'HotelBooking\Controllers\Admin\AdminLoaiPhongController', 'store');
-Route::get('/admin/loai-phong/{id}/edit', 'HotelBooking\Controllers\Admin\AdminLoaiPhongController', 'edit');
-Route::put('/admin/loai-phong/{id}', 'HotelBooking\Controllers\Admin\AdminLoaiPhongController', 'update');
-Route::post('/admin/loai-phong/{id}/delete', 'HotelBooking\Controllers\Admin\AdminLoaiPhongController', 'destroy');
+Route::post('/admin/loai-phong/store', 'HotelBooking\Controllers\Admin\AdminLoaiPhongController', 'store');
+Route::get('/admin/loai-phong/edit', 'HotelBooking\Controllers\Admin\AdminLoaiPhongController', 'edit');
+Route::post('/admin/loai-phong/update', 'HotelBooking\Controllers\Admin\AdminLoaiPhongController', 'update');
+Route::post('/admin/loai-phong/delete', 'HotelBooking\Controllers\Admin\AdminLoaiPhongController', 'destroy');
 
 // Admin - Quản lý phòng  
 Route::get('/admin/phong', 'HotelBooking\Controllers\Admin\AdminPhongController', 'index');
 Route::get('/admin/phong/create', 'HotelBooking\Controllers\Admin\AdminPhongController', 'create');
-Route::post('/admin/phong', 'HotelBooking\Controllers\Admin\AdminPhongController', 'store');
+Route::post('/admin/phong/store', 'HotelBooking\Controllers\Admin\AdminPhongController', 'store');
+Route::get('/admin/phong/{id}', 'HotelBooking\Controllers\Admin\AdminPhongController', 'show');
 Route::get('/admin/phong/{id}/edit', 'HotelBooking\Controllers\Admin\AdminPhongController', 'edit');
-Route::put('/admin/phong/{id}', 'HotelBooking\Controllers\Admin\AdminPhongController', 'update');
-Route::post('/admin/phong/{id}/delete', 'HotelBooking\Controllers\Admin\AdminPhongController', 'destroy');
-
-// Admin - Quản lý loại phòng
-Route::get('/admin/loai-phong', 'HotelBooking\Controllers\Admin\AdminLoaiPhongController', 'index');
-Route::get('/admin/loai-phong/create', 'HotelBooking\Controllers\Admin\AdminLoaiPhongController', 'create');
-Route::post('/admin/loai-phong', 'HotelBooking\Controllers\Admin\AdminLoaiPhongController', 'store');
-Route::get('/admin/loai-phong/{id}/edit', 'HotelBooking\Controllers\Admin\AdminLoaiPhongController', 'edit');
-Route::put('/admin/loai-phong/{id}', 'HotelBooking\Controllers\Admin\AdminLoaiPhongController', 'update');
-Route::post('/admin/loai-phong/{id}/delete', 'HotelBooking\Controllers\Admin\AdminLoaiPhongController', 'destroy');
-
-// Admin - Quản lý phòng  
-Route::get('/admin/phong', 'HotelBooking\Controllers\Admin\AdminPhongController', 'index');
-Route::get('/admin/phong/create', 'HotelBooking\Controllers\Admin\AdminPhongController', 'create');
-Route::post('/admin/phong', 'HotelBooking\Controllers\Admin\AdminPhongController', 'store');
-Route::get('/admin/phong/{id}/edit', 'HotelBooking\Controllers\Admin\AdminPhongController', 'edit');
-Route::put('/admin/phong/{id}', 'HotelBooking\Controllers\Admin\AdminPhongController', 'update');
+Route::post('/admin/phong/{id}/update', 'HotelBooking\Controllers\Admin\AdminPhongController', 'update');
+Route::post('/admin/phong/{id}/update-status', 'HotelBooking\Controllers\Admin\AdminPhongController', 'updateStatus');
 Route::post('/admin/phong/{id}/delete', 'HotelBooking\Controllers\Admin\AdminPhongController', 'destroy');
 
 // Admin - Quản lý tài khoản
 Route::get('/admin/tai-khoan', 'HotelBooking\Controllers\Admin\AdminTaiKhoanController', 'index');
 Route::get('/admin/tai-khoan/create', 'HotelBooking\Controllers\Admin\AdminTaiKhoanController', 'create');
-Route::post('/admin/tai-khoan', 'HotelBooking\Controllers\Admin\AdminTaiKhoanController', 'store');
-Route::get('/admin/tai-khoan/{id}/edit', 'HotelBooking\Controllers\Admin\AdminTaiKhoanController', 'edit');
-Route::put('/admin/tai-khoan/{id}', 'HotelBooking\Controllers\Admin\AdminTaiKhoanController', 'update');
-Route::delete('/admin/tai-khoan/{id}', 'HotelBooking\Controllers\Admin\AdminTaiKhoanController', 'destroy');
+Route::post('/admin/tai-khoan/store', 'HotelBooking\Controllers\Admin\AdminTaiKhoanController', 'store');
+Route::get('/admin/tai-khoan/edit', 'HotelBooking\Controllers\Admin\AdminTaiKhoanController', 'edit');
+Route::post('/admin/tai-khoan/update', 'HotelBooking\Controllers\Admin\AdminTaiKhoanController', 'update');
+Route::post('/admin/tai-khoan/delete', 'HotelBooking\Controllers\Admin\AdminTaiKhoanController', 'destroy');
 
 // Admin - Quản lý dịch vụ
 Route::get('/admin/dich-vu', 'HotelBooking\Controllers\Admin\AdminDichVuController', 'index');
 Route::get('/admin/dich-vu/create', 'HotelBooking\Controllers\Admin\AdminDichVuController', 'create');
-Route::post('/admin/dich-vu', 'HotelBooking\Controllers\Admin\AdminDichVuController', 'store');
-Route::get('/admin/dich-vu/{id}/edit', 'HotelBooking\Controllers\Admin\AdminDichVuController', 'edit');
-Route::put('/admin/dich-vu/{id}', 'HotelBooking\Controllers\Admin\AdminDichVuController', 'update');
-Route::delete('/admin/dich-vu/{id}', 'HotelBooking\Controllers\Admin\AdminDichVuController', 'destroy');
+Route::post('/admin/dich-vu/store', 'HotelBooking\Controllers\Admin\AdminDichVuController', 'store');
+Route::get('/admin/dich-vu/edit', 'HotelBooking\Controllers\Admin\AdminDichVuController', 'edit');
+Route::post('/admin/dich-vu/update', 'HotelBooking\Controllers\Admin\AdminDichVuController', 'update');
+Route::post('/admin/dich-vu/delete', 'HotelBooking\Controllers\Admin\AdminDichVuController', 'destroy');
 
 // Admin - Quản lý hóa đơn
 Route::get('/admin/hoa-don', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'index');
@@ -155,8 +141,6 @@ Route::delete('/api/upload/image/{id}', 'HotelBooking\Controllers\Admin\AdminCon
 
 // API cho báo cáo và thống kê
 Route::get('/api/admin/stats', 'HotelBooking\Controllers\Admin\AdminController', 'getStats');
-Route::get('/api/admin/revenue', 'HotelBooking\Controllers\Admin\AdminController', 'getRevenue');
-Route::get('/api/admin/bookings', 'HotelBooking\Controllers\Admin\AdminController', 'getBookings');
 Route::get('/api/admin/revenue', 'HotelBooking\Controllers\Admin\AdminController', 'getRevenue');
 Route::get('/api/admin/bookings', 'HotelBooking\Controllers\Admin\AdminController', 'getBookings');
 

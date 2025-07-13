@@ -10,7 +10,7 @@ namespace HotelBooking\Models;
  */
 class HoaDon extends Model
 {
-    protected $table = 'hoa_don';
+    protected $table = 'hoa_don_tong';
     protected $primaryKey = 'ma_hoa_don';
 
     protected $attributes = [

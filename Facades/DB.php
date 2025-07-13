@@ -74,6 +74,23 @@ class DB
         return $this;
     }
 
+    // Thêm điều kiện OR WHERE
+    public function orWhere($column, $operator, $value)
+    {
+        $conn = self::connect();
+        $escaped = $conn->real_escape_string($value);
+        self::close();
+        
+        if (empty($this->wheres)) {
+            $this->wheres[] = "$column $operator '$escaped'";
+        } else {
+            // Lấy điều kiện cuối cùng và thêm OR
+            $lastIndex = count($this->wheres) - 1;
+            $this->wheres[$lastIndex] = "({$this->wheres[$lastIndex]} OR $column $operator '$escaped')";
+        }
+        return $this;
+    }
+
     // Order by
     public function orderBy($column, $direction = 'ASC')
     {
@@ -89,7 +106,7 @@ class DB
     }
 
     // Lấy danh sách kết quả
-    public function get()
+    public function get(): array
     {
         $sql = "SELECT {$this->columns} FROM {$this->table}";
         if ($this->wheres) {
@@ -143,6 +160,14 @@ class DB
         }, $escaped));
         $sql = "INSERT INTO {$this->table} ($cols) VALUES ($vals)";
         $res = $conn->query($sql);
+        // Don't close connection here - let caller decide
+        return $res;
+    }
+
+    // Insert data and close connection (standalone insert)
+    public function insertAndClose($data)
+    {
+        $res = $this->insert($data);
         self::close();
         return $res;
     }
@@ -249,13 +274,14 @@ class DB
     // Insert and get ID
     public function insertGetId($data)
     {
+        $conn = self::connect();
         $res = $this->insert($data);
         if ($res) {
-            $conn = self::connect();
             $id = $conn->insert_id;
             self::close();
             return $id;
         }
+        self::close();
         return null;
     }
 

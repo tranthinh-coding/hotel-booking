@@ -15,11 +15,11 @@ class AdminDichVuController
 
     private function checkAdminAccess()
     {
-        if (!isset($_SESSION['user_id'])) {
+        if (auth_guest()) {
             redirect('/login');
         }
 
-        $user = TaiKhoan::find($_SESSION['user_id']);
+        $user = user();
         if (!$user || !PhanQuyen::isAdmin($user->phan_quyen)) {
             redirect('/');
         }
@@ -28,12 +28,12 @@ class AdminDichVuController
     public function index()
     {
         $dichVus = DichVu::all();
-        view('Admin.DichVu/index', ['dichVus' => $dichVus]);
+        view('Admin.DichVu.index', ['dichVus' => $dichVus]);
     }
 
     public function create()
     {
-        view('Admin.DichVu/create');
+        view('Admin.DichVu.create');
     }
 
     public function store()
@@ -55,7 +55,7 @@ class AdminDichVuController
             redirect('/admin/dich-vu?error=notfound');
         }
 
-        view('Admin.DichVu/edit', ['dichVu' => $dichVu]);
+        view('Admin.DichVu.edit', ['dichVu' => $dichVu]);
     }
 
     public function update($id)

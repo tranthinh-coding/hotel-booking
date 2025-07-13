@@ -36,12 +36,12 @@ ob_start();
     .hero-section {
         position: relative;
         min-height: 100vh;
-        background: linear-gradient(135deg, 
-            rgba(56, 189, 248, 0.95) 0%, 
-            rgba(14, 165, 233, 0.95) 25%, 
-            rgba(6, 182, 212, 0.95) 50%, 
-            rgba(20, 184, 166, 0.95) 75%, 
-            rgba(16, 185, 129, 0.95) 100%),
+        background: linear-gradient(135deg,
+                rgba(56, 189, 248, 0.95) 0%,
+                rgba(14, 165, 233, 0.95) 25%,
+                rgba(6, 182, 212, 0.95) 50%,
+                rgba(20, 184, 166, 0.95) 75%,
+                rgba(16, 185, 129, 0.95) 100%),
             url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
         background-size: cover;
         background-position: center;
@@ -104,11 +104,14 @@ ob_start();
     }
 
     @keyframes float {
-        0%, 100% { 
-            transform: translateY(0px); 
+
+        0%,
+        100% {
+            transform: translateY(0px);
         }
-        50% { 
-            transform: translateY(-20px); 
+
+        50% {
+            transform: translateY(-20px);
         }
     }
 
@@ -161,11 +164,14 @@ ob_start();
     }
 
     @keyframes ocean-wave {
-        0%, 100% { 
-            background-position: 0% 50%; 
+
+        0%,
+        100% {
+            background-position: 0% 50%;
         }
-        50% { 
-            background-position: 100% 50%; 
+
+        50% {
+            background-position: 100% 50%;
         }
     }
 
@@ -247,15 +253,24 @@ ob_start();
     }
 
     @keyframes bounce {
-        0%, 20%, 53%, 80%, 100% {
+
+        0%,
+        20%,
+        53%,
+        80%,
+        100% {
             transform: translateX(-50%) translateY(0);
         }
-        40%, 43% {
+
+        40%,
+        43% {
             transform: translateX(-50%) translateY(-10px);
         }
+
         70% {
             transform: translateX(-50%) translateY(-5px);
         }
+
         90% {
             transform: translateX(-50%) translateY(-2px);
         }
@@ -687,6 +702,7 @@ ob_start();
             opacity: 0;
             transform: translateY(30px);
         }
+
         to {
             opacity: 1;
             transform: translateY(0);
@@ -698,6 +714,7 @@ ob_start();
             opacity: 0;
             transform: translateX(-30px);
         }
+
         to {
             opacity: 1;
             transform: translateX(0);
@@ -801,29 +818,29 @@ ob_start();
     <div class="floating-element"></div>
     <div class="floating-element"></div>
     <div class="floating-element"></div>
-    
+
     <div class="hero-content">
         <div class="hero-badge">
             <i class="fas fa-gem"></i>
             Ocean Pearl Hotel
         </div>
-        
+
         <h1 class="hero-title">
             Phòng Nghỉ
             <span class="hero-title-highlight">Cao Cấp</span>
         </h1>
-        
+
         <p class="hero-subtitle">
-            Khám phá các phòng nghỉ sang trọng với thiết kế hiện đại, view biển tuyệt đẹp 
+            Khám phá các phòng nghỉ sang trọng với thiết kế hiện đại, view biển tuyệt đẹp
             và đầy đủ tiện nghi 5 sao mang đến trải nghiệm nghỉ dưỡng đẳng cấp
         </p>
-        
+
         <a href="#search" class="hero-cta">
             <i class="fas fa-search"></i>
             Tìm phòng ngay
             <i class="fas fa-arrow-right"></i>
         </a>
-        
+
         <!-- Quick stats -->
         <div class="hero-stats">
             <div class="hero-stat">
@@ -840,7 +857,7 @@ ob_start();
             </div>
         </div>
     </div>
-    
+
     <!-- Scroll indicator -->
     <div class="scroll-indicator">
         <i class="fas fa-chevron-down text-2xl"></i>
@@ -851,394 +868,397 @@ ob_start();
     <!-- Section 2: Search Section -->
     <div class="content-container">
         <div id="search" class="search-section">
-        <div class="search-header">
-            <h2 class="search-title">Tìm Kiếm Phòng Nghỉ</h2>
-            <p class="search-description">Chọn ngày và loại phòng phù hợp với nhu cầu của bạn</p>
-        </div>
-        
-        <form method="GET" action="/phong" class="search-form">
-            <div class="form-group">
-                <label class="form-label">
-                    <i class="fas fa-calendar-check"></i>
-                    Ngày nhận phòng
-                </label>
-                <input type="date" name="checkin" class="form-input" 
-                       value="<?= htmlspecialchars($_GET['checkin'] ?? '') ?>" 
-                       min="<?= date('Y-m-d') ?>">
+            <div class="search-header">
+                <h2 class="search-title">Tìm Kiếm Phòng Nghỉ</h2>
+                <p class="search-description">Chọn ngày và loại phòng phù hợp với nhu cầu của bạn</p>
             </div>
-            
-            <div class="form-group">
-                <label class="form-label">
-                    <i class="fas fa-calendar-times"></i>
-                    Ngày trả phòng
-                </label>
-                <input type="date" name="checkout" class="form-input" 
-                       value="<?= htmlspecialchars($_GET['checkout'] ?? '') ?>" 
-                       min="<?= date('Y-m-d', strtotime('+1 day')) ?>">
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">
-                    <i class="fas fa-users"></i>
-                    Số khách
-                </label>
-                <select name="guests" class="form-input">
-                    <?php for($i = 1; $i <= 8; $i++): ?>
-                        <option value="<?= $i ?>" <?= ($_GET['guests'] ?? 1) == $i ? 'selected' : '' ?>>
-                            <?= $i ?> khách
+
+            <form method="GET" action="/phong" class="search-form">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-calendar-check"></i>
+                        Ngày nhận phòng
+                    </label>
+                    <input type="date" name="checkin" class="form-input"
+                        value="<?= htmlspecialchars($_GET['checkin'] ?? '') ?>" min="<?= date('Y-m-d') ?>">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-calendar-times"></i>
+                        Ngày trả phòng
+                    </label>
+                    <input type="date" name="checkout" class="form-input"
+                        value="<?= htmlspecialchars($_GET['checkout'] ?? '') ?>"
+                        min="<?= date('Y-m-d', strtotime('+1 day')) ?>">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-users"></i>
+                        Số khách
+                    </label>
+                    <select name="guests" class="form-input">
+                        <?php for ($i = 1; $i <= 8; $i++): ?>
+                            <option value="<?= $i ?>" <?= ($_GET['guests'] ?? 1) == $i ? 'selected' : '' ?>>
+                                <?= $i ?> khách
+                            </option>
+                        <?php endfor; ?>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-bed"></i>
+                        Loại phòng
+                    </label>
+                    <select name="room_type" class="form-input">
+                        <option value="">Tất cả loại phòng</option>
+                        <option value="Standard" <?= ($_GET['room_type'] ?? '') == 'Standard' ? 'selected' : '' ?>>Standard
                         </option>
-                    <?php endfor; ?>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">
-                    <i class="fas fa-bed"></i>
-                    Loại phòng
-                </label>
-                <select name="room_type" class="form-input">
-                    <option value="">Tất cả loại phòng</option>
-                    <option value="Standard" <?= ($_GET['room_type'] ?? '') == 'Standard' ? 'selected' : '' ?>>Standard</option>
-                    <option value="Deluxe" <?= ($_GET['room_type'] ?? '') == 'Deluxe' ? 'selected' : '' ?>>Deluxe</option>
-                    <option value="Suite" <?= ($_GET['room_type'] ?? '') == 'Suite' ? 'selected' : '' ?>>Suite</option>
-                    <option value="Presidential" <?= ($_GET['room_type'] ?? '') == 'Presidential' ? 'selected' : '' ?>>Presidential</option>
-                </select>
-            </div>
-            
-            <button type="submit" class="search-button">
-                <i class="fas fa-search"></i>
-                Tìm kiếm phòng
-            </button>
-        </form>
+                        <option value="Deluxe" <?= ($_GET['room_type'] ?? '') == 'Deluxe' ? 'selected' : '' ?>>Deluxe
+                        </option>
+                        <option value="Suite" <?= ($_GET['room_type'] ?? '') == 'Suite' ? 'selected' : '' ?>>Suite</option>
+                        <option value="Presidential" <?= ($_GET['room_type'] ?? '') == 'Presidential' ? 'selected' : '' ?>>
+                            Presidential</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="search-button">
+                    <i class="fas fa-search"></i>
+                    Tìm kiếm phòng
+                </button>
+            </form>
         </div>
 
         <!-- Section 3: Statistics Section -->
         <div class="stats-section">
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="fas fa-bed"></i>
-            </div>
-            <div class="stat-number"><?= count($phongs) ?></div>
-            <div class="stat-label">Phòng có sẵn</div>
-        </div>
-        
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="fas fa-star"></i>
-            </div>
-            <div class="stat-number">4.9</div>
-            <div class="stat-label">Đánh giá trung bình</div>
-        </div>
-        
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="fas fa-users"></i>
-            </div>
-            <div class="stat-number">2,847</div>
-            <div class="stat-label">Khách hàng hài lòng</div>
-        </div>
-        
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="fas fa-award"></i>
-            </div>
-            <div class="stat-number">5</div>
-            <div class="stat-label">Năm kinh nghiệm</div>
-        </div>
-    </div>
-
-    <!-- Section 4: Rooms Results -->
-    <div class="rooms-section">
-        <div class="section-header">
-            <h2 class="section-title">Phòng Nghỉ Dành Cho Bạn</h2>
-            <p class="section-subtitle">
-                Lựa chọn phòng nghỉ phù hợp với nhu cầu và ngân sách của bạn
-            </p>
-        </div>
-
-        <?php if (!empty($phongs)): ?>
-            <div class="rooms-grid">
-                <?php foreach ($phongs as $index => $phong): ?>
-                    <div class="room-card" style="animation-delay: <?= $index * 0.1 ?>s;">
-                        <div class="room-image-container">
-                            <?php
-                            // Default room images based on room type
-                            $roomImages = [
-                                'Standard' => 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-                                'Deluxe' => 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-                                'Suite' => 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-                                'Presidential' => 'https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
-                            ];
-                            
-                            $roomType = $phong->loai_phong ?? 'Standard';
-                            $roomImage = $roomImages[$roomType] ?? $roomImages['Standard'];
-                            ?>
-                            <img src="<?= $roomImage ?>" alt="<?= htmlspecialchars($phong->ten_phong ?? 'Phòng nghỉ') ?>" class="room-image">
-                            <div class="room-badge">Có sẵn</div>
-                            <div class="room-price"><?= number_format($phong->gia, 0, ',', '.') ?>đ</div>
-                        </div>
-                        
-                        <div class="room-content">
-                            <div class="room-header">
-                                <div>
-                                    <h3 class="room-title"><?= htmlspecialchars($phong->ten_phong ?? 'Phòng nghỉ') ?></h3>
-                                    <div class="room-type"><?= htmlspecialchars($roomType) ?></div>
-                                </div>
-                            </div>
-                            
-                            <p class="room-description">
-                                <?= htmlspecialchars($phong->mo_ta ?? 'Phòng nghỉ cao cấp với đầy đủ tiện nghi hiện đại, view biển tuyệt đẹp và không gian thoáng mát.') ?>
-                            </p>
-                            
-                            <div class="room-features">
-                                <div class="room-feature">
-                                    <i class="fas fa-wifi"></i>
-                                    WiFi miễn phí
-                                </div>
-                                <div class="room-feature">
-                                    <i class="fas fa-snowflake"></i>
-                                    Điều hòa
-                                </div>
-                                <div class="room-feature">
-                                    <i class="fas fa-tv"></i>
-                                    Smart TV
-                                </div>
-                                <div class="room-feature">
-                                    <i class="fas fa-bath"></i>
-                                    Phòng tắm riêng
-                                </div>
-                            </div>
-                            
-                            <div class="room-footer">
-                                <div class="room-price-display">
-                                    <div class="room-price-amount"><?= number_format($phong->gia, 0, ',', '.') ?>đ</div>
-                                    <div class="room-price-unit">mỗi đêm</div>
-                                </div>
-                                <div class="room-actions">
-                                    <a href="/phong/<?= $phong->ma_phong ?>" class="room-btn btn-outline">
-                                        <i class="fas fa-eye"></i>
-                                        Chi tiết
-                                    </a>
-                                    <a href="/dat-phong?room_id=<?= $phong->ma_phong ?>" class="room-btn btn-primary">
-                                        <i class="fas fa-calendar-plus"></i>
-                                        Đặt ngay
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        <?php else: ?>
-            <div class="empty-state">
-                <div class="empty-icon">
+            <div class="stat-card">
+                <div class="stat-icon">
                     <i class="fas fa-bed"></i>
                 </div>
-                <h3 class="empty-title">Không tìm thấy phòng phù hợp</h3>
-                <p class="empty-description">
-                    Vui lòng thay đổi tiêu chí tìm kiếm hoặc liên hệ với chúng tôi để được hỗ trợ tốt nhất
-                </p>
-                <a href="/contact" class="empty-button">
-                    <i class="fas fa-phone"></i>
-                    Liên hệ hỗ trợ
-                </a>
+                <div class="stat-number"><?= count($phongs) ?></div>
+                <div class="stat-label">Phòng có sẵn</div>
             </div>
-        <?php endif; ?>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="stat-number">4.9</div>
+                <div class="stat-label">Đánh giá trung bình</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-number">2,847</div>
+                <div class="stat-label">Khách hàng hài lòng</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-award"></i>
+                </div>
+                <div class="stat-number">5</div>
+                <div class="stat-label">Năm kinh nghiệm</div>
+            </div>
+        </div>
+
+        <!-- Section 4: Rooms Results -->
+        <div class="rooms-section">
+            <div class="section-header">
+                <h2 class="section-title">Phòng Nghỉ Dành Cho Bạn</h2>
+                <p class="section-subtitle">
+                    Lựa chọn phòng nghỉ phù hợp với nhu cầu và ngân sách của bạn
+                </p>
+            </div>
+
+            <?php if (!empty($phongs)): ?>
+                <div class="rooms-grid">
+                    <?php foreach ($phongs as $index => $phong): ?>
+                        <div class="room-card" style="animation-delay: <?= $index * 0.1 ?>s;">
+                            <div class="room-image-container">
+                                <?php
+                                // Default room images based on room type
+                                $roomImages = [
+                                    'Standard' => 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                                    'Deluxe' => 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                                    'Suite' => 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                                    'Presidential' => 'https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+                                ];
+
+                                $roomType = $phong->loai_phong ?? 'Standard';
+                                $roomImage = $roomImages[$roomType] ?? $roomImages['Standard'];
+                                ?>
+                                <img src="<?= $roomImage ?>" alt="<?= htmlspecialchars($phong->ten_phong ?? 'Phòng nghỉ') ?>"
+                                    class="room-image">
+                                <div class="room-badge">Có sẵn</div>
+                                <div class="room-price"><?= number_format($phong->gia, 0, ',', '.') ?>đ</div>
+                            </div>
+
+                            <div class="room-content">
+                                <div class="room-header">
+                                    <div>
+                                        <h3 class="room-title"><?= htmlspecialchars($phong->ten_phong ?? 'Phòng nghỉ') ?></h3>
+                                        <div class="room-type"><?= htmlspecialchars($roomType) ?></div>
+                                    </div>
+                                </div>
+
+                                <p class="room-description">
+                                    <?= htmlspecialchars($phong->mo_ta ?? 'Phòng nghỉ cao cấp với đầy đủ tiện nghi hiện đại, view biển tuyệt đẹp và không gian thoáng mát.') ?>
+                                </p>
+
+                                <div class="room-features">
+                                    <div class="room-feature">
+                                        <i class="fas fa-wifi"></i>
+                                        WiFi miễn phí
+                                    </div>
+                                    <div class="room-feature">
+                                        <i class="fas fa-snowflake"></i>
+                                        Điều hòa
+                                    </div>
+                                    <div class="room-feature">
+                                        <i class="fas fa-tv"></i>
+                                        Smart TV
+                                    </div>
+                                    <div class="room-feature">
+                                        <i class="fas fa-bath"></i>
+                                        Phòng tắm riêng
+                                    </div>
+                                </div>
+
+                                <div class="room-footer">
+                                    <div class="room-price-display">
+                                        <div class="room-price-amount"><?= number_format($phong->gia, 0, ',', '.') ?>đ</div>
+                                        <div class="room-price-unit">mỗi đêm</div>
+                                    </div>
+                                    <div class="room-actions">
+                                        <a href="/phong/<?= $phong->ma_phong ?>" class="room-btn btn-outline">
+                                            <i class="fas fa-eye"></i>
+                                            Chi tiết
+                                        </a>
+                                        <a href="/dat-phong?room_id=<?= $phong->ma_phong ?>" class="room-btn btn-primary">
+                                            <i class="fas fa-calendar-plus"></i>
+                                            Đặt ngay
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-bed"></i>
+                    </div>
+                    <h3 class="empty-title">Không tìm thấy phòng phù hợp</h3>
+                    <p class="empty-description">
+                        Vui lòng thay đổi tiêu chí tìm kiếm hoặc liên hệ với chúng tôi để được hỗ trợ tốt nhất
+                    </p>
+                    <a href="/contact" class="empty-button">
+                        <i class="fas fa-phone"></i>
+                        Liên hệ hỗ trợ
+                    </a>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Hero section parallax effect
-    const heroSection = document.querySelector('.hero-section');
-    if (heroSection) {
-        window.addEventListener('scroll', function() {
-            const scrolled = window.pageYOffset;
-            const rate = scrolled * -0.5;
-            heroSection.style.transform = `translateY(${rate}px)`;
-        });
-    }
-
-    // Typing effect for hero title
-    const heroTitle = document.querySelector('.hero-title');
-    if (heroTitle) {
-        const titleText = heroTitle.textContent;
-        heroTitle.textContent = '';
-        heroTitle.style.opacity = '1';
-        
-        let i = 0;
-        const typeWriter = function() {
-            if (i < titleText.length) {
-                heroTitle.textContent += titleText.charAt(i);
-                i++;
-                setTimeout(typeWriter, 50);
-            }
-        };
-        
-        setTimeout(typeWriter, 1000);
-    }
-
-    // Animate hero stats on scroll
-    const heroStats = document.querySelectorAll('.hero-stat-number');
-    const animateStats = function() {
-        heroStats.forEach(stat => {
-            const target = parseInt(stat.getAttribute('data-target')) || parseInt(stat.textContent);
-            const current = parseInt(stat.textContent) || 0;
-            const increment = target / 100;
-            
-            if (current < target) {
-                stat.textContent = Math.ceil(current + increment);
-                setTimeout(animateStats, 20);
-            } else {
-                stat.textContent = target;
-            }
-        });
-    };
-    
-    // Start animation after page load
-    setTimeout(animateStats, 2000);
-
-    // Smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    });
-
-    // Date validation
-    const checkinInput = document.querySelector('input[name="checkin"]');
-    const checkoutInput = document.querySelector('input[name="checkout"]');
-    
-    if (checkinInput && checkoutInput) {
-        // Set default dates if empty
-        const today = new Date().toISOString().split('T')[0];
-        const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
-        
-        if (!checkinInput.value) {
-            checkinInput.value = today;
+    document.addEventListener('DOMContentLoaded', function () {
+        // Hero section parallax effect
+        const heroSection = document.querySelector('.hero-section');
+        if (heroSection) {
+            window.addEventListener('scroll', function () {
+                const scrolled = window.pageYOffset;
+                const rate = scrolled * -0.5;
+                heroSection.style.transform = `translateY(${rate}px)`;
+            });
         }
-        if (!checkoutInput.value) {
-            checkoutInput.value = tomorrow;
-        }
-        
-        // Update checkout min date when checkin changes
-        checkinInput.addEventListener('change', function() {
-            const checkinDate = new Date(this.value);
-            const minCheckout = new Date(checkinDate.getTime() + 86400000).toISOString().split('T')[0];
-            checkoutInput.min = minCheckout;
-            
-            if (checkoutInput.value <= this.value) {
-                checkoutInput.value = minCheckout;
-            }
-        });
-    }
 
-    // Form validation
-    const searchForm = document.querySelector('form');
-    if (searchForm) {
-        searchForm.addEventListener('submit', function(e) {
-            const checkin = checkinInput?.value;
-            const checkout = checkoutInput?.value;
-            
-            if (checkin && checkout && checkin >= checkout) {
-                e.preventDefault();
-                alert('Ngày trả phòng phải sau ngày nhận phòng!');
-                return false;
-            }
-        });
-    }
+        // Typing effect for hero title
+        const heroTitle = document.querySelector('.hero-title');
+        if (heroTitle) {
+            const titleText = heroTitle.textContent;
+            heroTitle.textContent = '';
+            heroTitle.style.opacity = '1';
 
-    // Animate statistics numbers
-    function animateNumbers() {
-        const numbers = document.querySelectorAll('.stat-number');
-        numbers.forEach(number => {
-            const finalValue = parseInt(number.textContent.replace(/[^\d]/g, ''));
-            if (finalValue && finalValue > 0) {
-                let currentValue = 0;
-                const increment = Math.ceil(finalValue / 50);
-                const timer = setInterval(() => {
-                    currentValue += increment;
-                    if (currentValue >= finalValue) {
-                        currentValue = finalValue;
-                        clearInterval(timer);
-                    }
-                    
-                    if (finalValue > 1000) {
-                        number.textContent = currentValue.toLocaleString('vi-VN');
-                    } else {
-                        number.textContent = currentValue;
-                    }
-                }, 30);
-            }
-        });
-    }
-
-    // Intersection Observer for animations
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                if (entry.target.classList.contains('stats-section')) {
-                    animateNumbers();
+            let i = 0;
+            const typeWriter = function () {
+                if (i < titleText.length) {
+                    heroTitle.textContent += titleText.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, 50);
                 }
-                
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
+            };
+
+            setTimeout(typeWriter, 1000);
+        }
+
+        // Animate hero stats on scroll
+        const heroStats = document.querySelectorAll('.hero-stat-number');
+        const animateStats = function () {
+            heroStats.forEach(stat => {
+                const target = parseInt(stat.getAttribute('data-target')) || parseInt(stat.textContent);
+                const current = parseInt(stat.textContent) || 0;
+                const increment = target / 100;
+
+                if (current < target) {
+                    stat.textContent = Math.ceil(current + increment);
+                    setTimeout(animateStats, 20);
+                } else {
+                    stat.textContent = target;
+                }
+            });
+        };
+
+        // Start animation after page load
+        setTimeout(animateStats, 2000);
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Date validation
+        const checkinInput = document.querySelector('input[name="checkin"]');
+        const checkoutInput = document.querySelector('input[name="checkout"]');
+
+        if (checkinInput && checkoutInput) {
+            // Set default dates if empty
+            const today = new Date().toISOString().split('T')[0];
+            const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+
+            if (!checkinInput.value) {
+                checkinInput.value = today;
             }
-        });
-    }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    });
+            if (!checkoutInput.value) {
+                checkoutInput.value = tomorrow;
+            }
 
-    // Observe elements for animation
-    document.querySelectorAll('.hero-section, .search-section, .stats-section, .rooms-section, .room-card').forEach(el => {
-        observer.observe(el);
-    });
+            // Update checkout min date when checkin changes
+            checkinInput.addEventListener('change', function () {
+                const checkinDate = new Date(this.value);
+                const minCheckout = new Date(checkinDate.getTime() + 86400000).toISOString().split('T')[0];
+                checkoutInput.min = minCheckout;
 
-    // Enhanced card interactions
-    document.querySelectorAll('.room-card').forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-12px)';
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-        });
-    });
+                if (checkoutInput.value <= this.value) {
+                    checkoutInput.value = minCheckout;
+                }
+            });
+        }
 
-    // Button ripple effect
-    document.querySelectorAll('button, .room-btn, .hero-cta, .empty-button').forEach(button => {
-        button.addEventListener('click', function(e) {
-            const ripple = document.createElement('span');
-            const rect = this.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            const x = e.clientX - rect.left - size / 2;
-            const y = e.clientY - rect.top - size / 2;
-            
-            ripple.style.width = ripple.style.height = size + 'px';
-            ripple.style.left = x + 'px';
-            ripple.style.top = y + 'px';
-            ripple.classList.add('ripple');
-            
-            this.appendChild(ripple);
-            
-            setTimeout(() => {
-                ripple.remove();
-            }, 600);
-        });
-    });
+        // Form validation
+        const searchForm = document.querySelector('form');
+        if (searchForm) {
+            searchForm.addEventListener('submit', function (e) {
+                const checkin = checkinInput?.value;
+                const checkout = checkoutInput?.value;
 
-    // Add ripple CSS
-    const style = document.createElement('style');
-    style.textContent = `
+                if (checkin && checkout && checkin >= checkout) {
+                    e.preventDefault();
+                    alert('Ngày trả phòng phải sau ngày nhận phòng!');
+                    return false;
+                }
+            });
+        }
+
+        // Animate statistics numbers
+        function animateNumbers() {
+            const numbers = document.querySelectorAll('.stat-number');
+            numbers.forEach(number => {
+                const finalValue = parseInt(number.textContent.replace(/[^\d]/g, ''));
+                if (finalValue && finalValue > 0) {
+                    let currentValue = 0;
+                    const increment = Math.ceil(finalValue / 50);
+                    const timer = setInterval(() => {
+                        currentValue += increment;
+                        if (currentValue >= finalValue) {
+                            currentValue = finalValue;
+                            clearInterval(timer);
+                        }
+
+                        if (finalValue > 1000) {
+                            number.textContent = currentValue.toLocaleString('vi-VN');
+                        } else {
+                            number.textContent = currentValue;
+                        }
+                    }, 30);
+                }
+            });
+        }
+
+        // Intersection Observer for animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    if (entry.target.classList.contains('stats-section')) {
+                        animateNumbers();
+                    }
+
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        // Observe elements for animation
+        document.querySelectorAll('.hero-section, .search-section, .stats-section, .rooms-section, .room-card').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Enhanced card interactions
+        document.querySelectorAll('.room-card').forEach(card => {
+            card.addEventListener('mouseenter', function () {
+                this.style.transform = 'translateY(-12px)';
+            });
+
+            card.addEventListener('mouseleave', function () {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Button ripple effect
+        document.querySelectorAll('button, .room-btn, .hero-cta, .empty-button').forEach(button => {
+            button.addEventListener('click', function (e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.classList.add('ripple');
+
+                this.appendChild(ripple);
+
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+
+        // Add ripple CSS
+        const style = document.createElement('style');
+        style.textContent = `
         .ripple {
             position: absolute;
             border-radius: 50%;
@@ -1260,82 +1280,78 @@ document.addEventListener('DOMContentLoaded', function() {
             overflow: hidden;
         }
     `;
-    document.head.appendChild(style);
+        document.head.appendChild(style);
 
-    // Lazy loading for images
-    const imageObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src || img.src;
-                img.classList.add('loaded');
-                imageObserver.unobserve(img);
-            }
-        });
-    });
-
-    document.querySelectorAll('.room-image').forEach(img => {
-        imageObserver.observe(img);
-    });
-
-    // Search form auto-suggestion
-    const guestsSelect = document.querySelector('select[name="guests"]');
-    if (guestsSelect) {
-        guestsSelect.addEventListener('change', function() {
-            const guests = parseInt(this.value);
-            const roomTypeSelect = document.querySelector('select[name="room_type"]');
-            
-            if (roomTypeSelect && guests > 4) {
-                // Suggest suite or presidential for large groups
-                if (roomTypeSelect.querySelector('option[value="Suite"]')) {
-                    roomTypeSelect.value = 'Suite';
+        // Lazy loading for images
+        const imageObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src || img.src;
+                    img.classList.add('loaded');
+                    imageObserver.unobserve(img);
                 }
+            });
+        });
+
+        document.querySelectorAll('.room-image').forEach(img => {
+            imageObserver.observe(img);
+        });
+
+        // Search form auto-suggestion
+        const guestsSelect = document.querySelector('select[name="guests"]');
+        if (guestsSelect) {
+            guestsSelect.addEventListener('change', function () {
+                const guests = parseInt(this.value);
+                const roomTypeSelect = document.querySelector('select[name="room_type"]');
+
+                if (roomTypeSelect && guests > 4) {
+                    // Suggest suite or presidential for large groups
+                    if (roomTypeSelect.querySelector('option[value="Suite"]')) {
+                        roomTypeSelect.value = 'Suite';
+                    }
+                }
+            });
+        }
+
+        // Add parallax effect to hero background
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.hero-section');
+            if (parallax) {
+                const speed = scrolled * 0.5;
+                parallax.style.backgroundPosition = `center ${speed}px`;
             }
         });
-    }
-    // Enhanced hero interactions
-    const heroTitle = document.querySelector('.hero-title');
-    const heroBadge = document.querySelector('.hero-badge');
-    const heroStats = document.querySelectorAll('.hero-stat-number');
-    
-    // Add parallax effect to hero background
-    window.addEventListener('scroll', () => {
-        const scrolled = window.pageYOffset;
-        const parallax = document.querySelector('.hero-section');
-        if (parallax) {
-            const speed = scrolled * 0.5;
-            parallax.style.backgroundPosition = `center ${speed}px`;
+
+        // Animate hero stats numbers
+        function animateHeroStats() {
+            heroStats.forEach(stat => {
+                const finalValue = stat.textContent.replace(/[^\d]/g, '');
+                if (finalValue && finalValue > 0) {
+                    let currentValue = 0;
+                    const increment = Math.ceil(finalValue / 30);
+                    const timer = setInterval(() => {
+                        currentValue += increment;
+                        if (currentValue >= finalValue) {
+                            currentValue = finalValue;
+                            clearInterval(timer);
+                        }
+
+                        if (stat.textContent.includes('★')) {
+                            stat.textContent = currentValue + '.9★';
+                        } else if (stat.textContent.includes('m')) {
+                            stat.textContent = currentValue + 'm';
+                        } else if (stat.textContent.includes('+')) {
+                            stat.textContent = currentValue + '+';
+                        } else {
+                            stat.textContent = currentValue;
+                        }
+                    }, 50);
+                }
+            });
         }
     });
-    
-    // Animate hero stats numbers
-    function animateHeroStats() {
-        heroStats.forEach(stat => {
-            const finalValue = stat.textContent.replace(/[^\d]/g, '');
-            if (finalValue && finalValue > 0) {
-                let currentValue = 0;
-                const increment = Math.ceil(finalValue / 30);
-                const timer = setInterval(() => {
-                    currentValue += increment;
-                    if (currentValue >= finalValue) {
-                        currentValue = finalValue;
-                        clearInterval(timer);
-                    }
-                    
-                    if (stat.textContent.includes('★')) {
-                        stat.textContent = currentValue + '.9★';
-                    } else if (stat.textContent.includes('m')) {
-                        stat.textContent = currentValue + 'm';
-                    } else if (stat.textContent.includes('+')) {
-                        stat.textContent = currentValue + '+';
-                    } else {
-                        stat.textContent = currentValue;
-                    }
-                }, 50);
-            }
-        });
-    }
-});
 </script>
 
 <?php

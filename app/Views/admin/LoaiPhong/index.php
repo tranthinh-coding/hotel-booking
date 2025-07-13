@@ -5,6 +5,65 @@ ob_start();
 ?>
 
 <div class="space-y-6">
+    <!-- Success/Error Messages -->
+    <?php if (isset($_GET['success'])): ?>
+        <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg" role="alert">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-check-circle text-green-400"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-medium">
+                        <?php
+                        switch ($_GET['success']) {
+                            case 'created':
+                                echo 'Loại phòng đã được thêm thành công!';
+                                break;
+                            case 'updated':
+                                echo 'Loại phòng đã được cập nhật thành công!';
+                                break;
+                            case 'deleted':
+                                echo 'Loại phòng đã được xóa thành công!';
+                                break;
+                            default:
+                                echo 'Thao tác thành công!';
+                        }
+                        ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['error'])): ?>
+        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg" role="alert">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-exclamation-circle text-red-400"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-medium">
+                        <?php
+                        switch ($_GET['error']) {
+                            case 'notfound':
+                                echo 'Loại phòng không tìm thấy!';
+                                break;
+                            case 'hasrooms':
+                                echo 'Không thể xóa loại phòng này vì vẫn còn phòng đang sử dụng loại phòng này!';
+                                break;
+                            case 'deletefailed':
+                                echo 'Có lỗi xảy ra khi xóa loại phòng!';
+                                break;
+                            default:
+                                echo 'Có lỗi xảy ra, vui lòng thử lại!';
+                        }
+                        ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
     <!-- Header Actions -->
     <div class="flex justify-between items-center">
         <div>
@@ -15,7 +74,8 @@ ob_start();
             </nav>
         </div>
         <div>
-            <a href="/admin/loai-phong/create" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
+            <a href="/admin/loai-phong/create"
+                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
                 <i class="fas fa-plus mr-2"></i>
                 Thêm loại phòng
             </a>
@@ -24,81 +84,151 @@ ob_start();
 
     <!-- Search and Filters -->
     <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <form method="GET" action="/admin/loai-phong" class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
-                <input type="text" 
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                       placeholder="Tìm kiếm loại phòng..." 
-                       id="searchInput">
+                <input type="text" name="search" value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Tìm kiếm loại phòng..." id="searchInput">
             </div>
             <div>
-                <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                        id="statusFilter">
+                <select name="status"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    id="statusFilter">
                     <option value="">Tất cả trạng thái</option>
-                    <option value="active">Hoạt động</option>
-                    <option value="inactive">Không hoạt động</option>
+                    <option value="active" <?= ($_GET['status'] ?? '') === 'active' ? 'selected' : '' ?>>Hoạt động</option>
+                    <option value="inactive" <?= ($_GET['status'] ?? '') === 'inactive' ? 'selected' : '' ?>>Không hoạt
+                        động</option>
                 </select>
             </div>
             <div>
-                <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                        id="priceFilter">
+                <select name="price"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    id="priceFilter">
                     <option value="">Tất cả giá</option>
-                    <option value="under_1m">Dưới 1 triệu</option>
-                    <option value="1m_to_2m">1-2 triệu</option>
-                    <option value="over_2m">Trên 2 triệu</option>
+                    <option value="under_1m" <?= ($_GET['price'] ?? '') === 'under_1m' ? 'selected' : '' ?>>Dưới 1 triệu
+                    </option>
+                    <option value="1m_to_2m" <?= ($_GET['price'] ?? '') === '1m_to_2m' ? 'selected' : '' ?>>1-2 triệu
+                    </option>
+                    <option value="over_2m" <?= ($_GET['price'] ?? '') === 'over_2m' ? 'selected' : '' ?>>Trên 2 triệu
+                    </option>
                 </select>
             </div>
-        </div>
+            <div class="flex space-x-2">
+                <button type="submit"
+                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
+                    <i class="fas fa-search mr-2"></i>
+                    Tìm kiếm
+                </button>
+                <a href="/admin/loai-phong"
+                    class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors inline-flex items-center">
+                    <i class="fas fa-times mr-2"></i>
+                    Xóa bộ lọc
+                </a>
+            </div>
+        </form>
     </div>
 
     <!-- Room Types Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="roomTypesGrid">
         <?php if (!empty($loaiPhongs)): ?>
             <?php foreach ($loaiPhongs as $loaiPhong): ?>
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300">
-                    <div class="h-48 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                        <i class="fas fa-bed text-6xl text-white opacity-80"></i>
-                    </div>
-                    
-                    <div class="p-6">
-                        <div class="mb-4">
-                            <h3 class="text-xl font-semibold text-gray-900 mb-2">
-                                <?= htmlspecialchars($loaiPhong->ten ?? $loaiPhong['ten']) ?>
-                            </h3>
-                            <p class="text-gray-600">
-                                Mã loại: <span class="font-medium"><?= htmlspecialchars($loaiPhong->ma_loai_phong ?? $loaiPhong['ma_loai_phong']) ?></span>
-                            </p>
+                <?php if ($loaiPhong && is_object($loaiPhong)): ?>
+                    <div
+                        class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 room-card">
+                        <div class="h-48 bg-gray-100 overflow-hidden relative">
+                            <?php 
+                            $imageUrl = $loaiPhong->hinh_anh; // Controller đã xử lý URL rồi
+                            ?>
+                            
+                            <?php if (!empty($imageUrl)): ?>
+                                <img src="<?= htmlspecialchars($imageUrl) ?>"
+                                    alt="<?= htmlspecialchars($loaiPhong->ten ?? 'Loại phòng') ?>"
+                                    class="w-full h-full object-cover hover:scale-105 transition-transform duration-300 room-image"
+                                    data-room-id="<?= $loaiPhong->ma_loai_phong ?>"
+                                    onload="this.classList.remove('image-loading'); this.parentElement.querySelector('.loading-placeholder')?.remove();"
+                                    onerror="showImageError(this, '<?= htmlspecialchars($loaiPhong->ten ?? 'Loại phòng') ?>')">
+                                <!-- Loading placeholder -->
+                                <div class="loading-placeholder absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
+                                    <i class="fas fa-spinner fa-spin text-gray-400 text-2xl"></i>
+                                </div>
+                            <?php else: ?>
+                                <div class="h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                                    <div class="text-center">
+                                        <i class="fas fa-bed text-6xl text-white opacity-80 mb-2"></i>
+                                        <p class="text-white text-sm opacity-70">Chưa có ảnh</p>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
                         </div>
 
-                        <div class="flex justify-between items-center">
-                            <div class="flex space-x-2">
-                                <a href="/admin/loai-phong/edit/<?= $loaiPhong->ma_loai_phong ?? $loaiPhong['ma_loai_phong'] ?>" 
-                                   class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                    <i class="fas fa-edit mr-1"></i>Sửa
-                                </a>
-                                <button onclick="deleteRoomType('<?= $loaiPhong->ma_loai_phong ?? $loaiPhong['ma_loai_phong'] ?>')" 
-                                        class="text-red-600 hover:text-red-800 text-sm font-medium">
-                                    <i class="fas fa-trash mr-1"></i>Xóa
-                                </button>
+                        <div class="p-6">
+                            <div class="mb-4">
+                                <h3 class="text-xl font-semibold text-gray-900 mb-2">
+                                    <?= htmlspecialchars($loaiPhong->ten ?? 'Chưa có tên') ?>
+                                </h3>
+                                <p class="text-gray-600 mb-1">
+                                    Mã loại: <span
+                                        class="font-medium"><?= htmlspecialchars($loaiPhong->ma_loai_phong ?? 'N/A') ?></span>
+                                </p>
+                                <?php if (!empty($loaiPhong->mo_ta)): ?>
+                                    <p class="text-gray-500 text-sm line-clamp-2 mb-2">
+                                        <?= htmlspecialchars(substr($loaiPhong->mo_ta, 0, 100)) ?>
+                                        <?= strlen($loaiPhong->mo_ta) > 100 ? '...' : '' ?>
+                                    </p>
+                                <?php endif; ?>
+                                <div class="flex items-center text-sm text-gray-500">
+                                    <i class="fas fa-door-open mr-1"></i>
+                                    <span><?= is_object($loaiPhong) && method_exists($loaiPhong, 'countPhongs') ? $loaiPhong->countPhongs() : 0 ?>
+                                        phòng</span>
+                                </div>
                             </div>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                Hoạt động
-                            </span>
+
+                            <div class="flex justify-between items-center">
+                                <div class="flex space-x-2">
+                                    <a href="/admin/loai-phong/edit?id=<?= $loaiPhong->ma_loai_phong ?? '' ?>"
+                                        class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                        <i class="fas fa-edit mr-1"></i>Sửa
+                                    </a>
+                                    <button onclick="deleteRoomType('<?= $loaiPhong->ma_loai_phong ?? '' ?>')"
+                                        class="text-red-600 hover:text-red-800 text-sm font-medium">
+                                        <i class="fas fa-trash mr-1"></i>Xóa
+                                    </button>
+                                </div>
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    Hoạt động
+                                </span>
+                            </div>
                         </div>
                     </div>
-                </div>
+                <?php endif; ?>
             <?php endforeach; ?>
         <?php else: ?>
-            <div class="col-span-full">
+            <div class="col-span-full" id="emptyState">
                 <div class="text-center py-12 bg-white rounded-xl border border-gray-200">
                     <i class="fas fa-bed text-4xl text-gray-400 mb-4"></i>
-                    <h3 class="text-lg font-medium text-gray-900 mb-2">Chưa có loại phòng nào</h3>
-                    <p class="text-gray-500 mb-6">Hãy thêm loại phòng đầu tiên để bắt đầu</p>
-                    <a href="/admin/loai-phong/create" 
-                       class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
-                        <i class="fas fa-plus mr-2"></i>
-                        Thêm loại phòng
-                    </a>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">
+                        <?php if (!empty($_GET['search'])): ?>
+                            Không tìm thấy loại phòng nào
+                        <?php else: ?>
+                            Chưa có loại phòng nào
+                        <?php endif; ?>
+                    </h3>
+                    <p class="text-gray-500 mb-6">
+                        <?php if (!empty($_GET['search'])): ?>
+                            Thử tìm kiếm với từ khóa khác hoặc <a href="/admin/loai-phong"
+                                class="text-blue-600 hover:underline">xem tất cả</a>
+                        <?php else: ?>
+                            Hãy thêm loại phòng đầu tiên để bắt đầu
+                        <?php endif; ?>
+                    </p>
+                    <?php if (empty($_GET['search'])): ?>
+                        <a href="/admin/loai-phong/create"
+                            class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
+                            <i class="fas fa-plus mr-2"></i>
+                            Thêm loại phòng
+                        </a>
+                    <?php endif; ?>
                 </div>
             </div>
         <?php endif; ?>
@@ -106,168 +236,340 @@ ob_start();
 </div>
 
 <script>
-function deleteRoomType(id) {
-    if (confirm('Bạn có chắc chắn muốn xóa loại phòng này?')) {
-        fetch(`/admin/loai-phong/delete/${id}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
-        .then(response => {
-            if (response.ok) {
-                location.reload();
-            } else {
-                alert('Có lỗi xảy ra khi xóa loại phòng');
-            }
-        })
-        .catch(error => {
-            alert('Có lỗi xảy ra khi xóa loại phòng');
-        });
-    }
-}
+    function deleteRoomType(id) {
+        if (confirm('Bạn có chắc chắn muốn xóa loại phòng này?')) {
+            // Tạo form ẩn để submit
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/admin/loai-phong/delete';
 
-// Search functionality
-document.getElementById('searchInput')?.addEventListener('input', function() {
-    const searchTerm = this.value.toLowerCase();
-    const roomCards = document.querySelectorAll('.grid > div:not(.col-span-full)');
-    
-    roomCards.forEach(card => {
-        const roomName = card.querySelector('h3').textContent.toLowerCase();
-        const roomCode = card.querySelector('span.font-medium').textContent.toLowerCase();
+            // Thêm hidden input cho ID
+            const idInput = document.createElement('input');
+            idInput.type = 'hidden';
+            idInput.name = 'id';
+            idInput.value = id;
+            form.appendChild(idInput);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+    // Xử lý lỗi ảnh
+    function showImageError(imgElement, roomName) {
+        const errorHTML = `
+            <div class="h-full bg-gradient-to-br from-red-100 to-orange-100 flex items-center justify-center border-2 border-dashed border-red-300">
+                <div class="text-center p-4">
+                    <i class="fas fa-exclamation-triangle text-3xl text-red-400 mb-2"></i>
+                    <p class="text-red-600 text-sm font-medium">Không thể tải ảnh</p>
+                    <p class="text-red-500 text-xs mt-1">${roomName}</p>
+                    <button onclick="retryLoadImage(this)" class="mt-2 text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition-colors">
+                        <i class="fas fa-redo mr-1"></i>Thử lại
+                    </button>
+                </div>
+            </div>
+        `;
+        imgElement.parentElement.innerHTML = errorHTML;
+    }
+
+    // Thử tải lại ảnh
+    function retryLoadImage(button) {
+        const container = button.closest('.h-48');
+        const roomCard = button.closest('.room-card');
+        const roomId = roomCard?.querySelector('[data-room-id]')?.getAttribute('data-room-id');
         
-        if (roomName.includes(searchTerm) || roomCode.includes(searchTerm)) {
-            card.style.display = 'block';
-        } else {
-            card.style.display = 'none';
+        if (roomId) {
+            // Reload trang để thử lại
+            window.location.reload();
+        }
+    }
+
+    // Xử lý lazy loading cho ảnh
+    document.addEventListener('DOMContentLoaded', function() {
+        const images = document.querySelectorAll('.room-image');
+        
+        // Intersection Observer cho lazy loading
+        if ('IntersectionObserver' in window) {
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.classList.add('image-loading');
+                        observer.unobserve(img);
+                    }
+                });
+            });
+
+            images.forEach(img => {
+                imageObserver.observe(img);
+            });
+        }
+
+        // Thêm tooltip cho ảnh
+        images.forEach(img => {
+            img.setAttribute('title', 'Click để xem ảnh chi tiết');
+            img.style.cursor = 'pointer';
+            
+            img.addEventListener('click', function() {
+                openImageModal(this.src, this.alt);
+            });
+        });
+    });
+
+    // Modal xem ảnh chi tiết
+    function openImageModal(src, alt) {
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50';
+        modal.innerHTML = `
+            <div class="relative max-w-4xl max-h-full p-4">
+                <button onclick="this.parentElement.parentElement.remove()" 
+                        class="absolute top-2 right-2 text-white bg-black bg-opacity-50 rounded-full w-8 h-8 flex items-center justify-center hover:bg-opacity-75 transition-all">
+                    <i class="fas fa-times"></i>
+                </button>
+                <img src="${src}" alt="${alt}" class="max-w-full max-h-full rounded-lg shadow-2xl">
+                <p class="text-white text-center mt-2 text-sm">${alt}</p>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Đóng modal khi click vào nền
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.remove();
+            }
+        });
+
+        // Đóng modal bằng ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                modal.remove();
+            }
+        }, { once: true });
+    }
+
+    // Search functionality - Real-time search
+    document.getElementById('searchInput')?.addEventListener('input', function () {
+        const searchTerm = this.value.toLowerCase();
+        const roomCards = document.querySelectorAll('#roomTypesGrid .room-card');
+        const emptyState = document.getElementById('emptyState');
+
+        // Nếu search term rỗng, hiển thị tất cả và ẩn empty state tùy chỉnh
+        if (searchTerm === '') {
+            roomCards.forEach(card => {
+                card.style.display = 'block';
+            });
+
+            // Xóa thông báo tìm kiếm nếu có
+            const noResultsDiv = document.getElementById('no-search-results');
+            if (noResultsDiv) {
+                noResultsDiv.remove();
+            }
+
+            // Hiển thị lại empty state gốc nếu không có cards
+            if (emptyState && roomCards.length === 0) {
+                emptyState.style.display = 'block';
+            }
+            return;
+        }
+
+        // Ẩn empty state gốc khi đang tìm kiếm
+        if (emptyState) {
+            emptyState.style.display = 'none';
+        }
+
+        let hasVisibleCards = false;
+
+        // Lọc các cards
+        roomCards.forEach(card => {
+            const roomName = card.querySelector('h3')?.textContent.toLowerCase() || '';
+            const roomCode = card.querySelector('span.font-medium')?.textContent.toLowerCase() || '';
+
+            if (roomName.includes(searchTerm) || roomCode.includes(searchTerm)) {
+                card.style.display = 'block';
+                hasVisibleCards = true;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // Hiển thị/ẩn thông báo không tìm thấy kết quả
+        const noResultsDiv = document.getElementById('no-search-results');
+
+        if (!hasVisibleCards && searchTerm !== '') {
+            if (!noResultsDiv) {
+                const gridContainer = document.getElementById('roomTypesGrid');
+                const noResults = document.createElement('div');
+                noResults.id = 'no-search-results';
+                noResults.className = 'col-span-full text-center py-8 text-gray-500';
+                noResults.innerHTML = `
+                <div class="bg-white rounded-xl border border-gray-200 p-8">
+                    <i class="fas fa-search text-4xl mb-4 text-gray-400"></i>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Không tìm thấy loại phòng nào</h3>
+                    <p class="text-gray-500">Không có loại phòng nào phù hợp với từ khóa "<strong>${searchTerm}</strong>"</p>
+                </div>
+            `;
+                gridContainer.appendChild(noResults);
+            } else {
+                // Cập nhật từ khóa tìm kiếm
+                const searchKeyword = noResultsDiv.querySelector('strong');
+                if (searchKeyword) {
+                    searchKeyword.textContent = searchTerm;
+                }
+            }
+        } else if (noResultsDiv) {
+            noResultsDiv.remove();
         }
     });
-});
+
+    // Form submit on Enter key
+    document.getElementById('searchInput')?.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            this.closest('form').submit();
+        }
+    });
 </script>
 
 <?php
 $content = ob_get_clean();
 include __DIR__ . '/../../layouts/admin.php';
 ?>
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="text-success fw-bold fs-5">800,000 VNĐ/đêm</span>
-                                    <span class="badge bg-success">Hoạt động</span>
-                                </div>
-                                <small class="text-muted">Diện tích: 25m² | Sức chứa: 2 người</small>
-                                <div class="mt-2">
-                                    <a href="/admin/loaiphong/show/1" class="btn btn-info btn-sm">
-                                        <i class="fas fa-eye"></i> Xem
-                                    </a>
-                                    <a href="/admin/loaiphong/edit/1" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-edit"></i> Sửa
-                                    </a>
-                                    <button class="btn btn-danger btn-sm" onclick="deleteRoomType(1)">
-                                        <i class="fas fa-trash"></i> Xóa
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <img src="https://via.placeholder.com/400x250/28a745/ffffff?text=Deluxe+Room" 
-                             class="card-img-top" alt="Deluxe Room">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">Phòng Deluxe</h5>
-                            <p class="card-text">Phòng cao cấp với view đẹp và không gian rộng rãi, thiết kế hiện đại và sang trọng.</p>
-                            <div class="mt-auto">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="text-success fw-bold fs-5">1,500,000 VNĐ/đêm</span>
-                                    <span class="badge bg-success">Hoạt động</span>
-                                </div>
-                                <small class="text-muted">Diện tích: 35m² | Sức chứa: 3 người</small>
-                                <div class="mt-2">
-                                    <a href="/admin/loaiphong/show/2" class="btn btn-info btn-sm">
-                                        <i class="fas fa-eye"></i> Xem
-                                    </a>
-                                    <a href="/admin/loaiphong/edit/2" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-edit"></i> Sửa
-                                    </a>
-                                    <button class="btn btn-danger btn-sm" onclick="deleteRoomType(2)">
-                                        <i class="fas fa-trash"></i> Xóa
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <img src="https://via.placeholder.com/400x250/dc3545/ffffff?text=Suite+Room" 
-                             class="card-img-top" alt="Suite Room">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">Phòng Suite</h5>
-                            <p class="card-text">Phòng hạng sang với không gian sống riêng biệt, phòng tắm đôi và ban công view thành phố.</p>
-                            <div class="mt-auto">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="text-success fw-bold fs-5">2,500,000 VNĐ/đêm</span>
-                                    <span class="badge bg-success">Hoạt động</span>
-                                </div>
-                                <small class="text-muted">Diện tích: 50m² | Sức chứa: 4 người</small>
-                                <div class="mt-2">
-                                    <a href="/admin/loaiphong/show/3" class="btn btn-info btn-sm">
-                                        <i class="fas fa-eye"></i> Xem
-                                    </a>
-                                    <a href="/admin/loaiphong/edit/3" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-edit"></i> Sửa
-                                    </a>
-                                    <button class="btn btn-danger btn-sm" onclick="deleteRoomType(3)">
-                                        <i class="fas fa-trash"></i> Xóa
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pagination -->
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item disabled">
-                        <span class="page-link">Trước</span>
-                    </li>
-                    <li class="page-item active">
-                        <span class="page-link">1</span>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">2</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">Sau</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </div>
-</div>
-
-<script>
-function deleteRoomType(id) {
-    if (confirm('Bạn có chắc chắn muốn xóa loại phòng này? Hành động này không thể hoàn tác.')) {
-        // Ajax delete request here
-        console.log('Deleting room type with ID: ' + id);
+<style>
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
-}
 
-// Search functionality
-document.getElementById('searchInput').addEventListener('input', function() {
-    // Implement search logic
-});
+    .search-highlight {
+        background-color: #fef3c7;
+        padding: 0 2px;
+        border-radius: 2px;
+    }
 
-document.getElementById('statusFilter').addEventListener('change', function() {
-    // Implement status filter logic
-});
+    /* Custom hover effects for cards */
+    .room-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
 
-document.getElementById('priceFilter').addEventListener('change', function() {
-    // Implement price filter logic
-});
-</script>
+    /* Loading state for images */
+    .image-loading {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+    }
+
+    .loading-placeholder {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+    }
+
+    @keyframes loading {
+        0% {
+            background-position: 200% 0;
+        }
+        100% {
+            background-position: -200% 0;
+        }
+    }
+
+    /* Image container styles */
+    .room-image {
+        transition: all 0.3s ease;
+    }
+
+    .room-image:hover {
+        filter: brightness(1.1);
+    }
+
+    /* Error state styles */
+    .image-error {
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        border: 2px dashed #f87171;
+    }
+
+    /* Modal styles */
+    .image-modal {
+        backdrop-filter: blur(4px);
+        animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* Responsive image adjustments */
+    @media (max-width: 768px) {
+        .h-48 {
+            height: 12rem;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .h-48 {
+            height: 10rem;
+        }
+    }
+
+    /* No image state styles */
+    .no-image-placeholder {
+        background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .no-image-placeholder::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+        animation: shine 3s infinite;
+    }
+
+    @keyframes shine {
+        0% {
+            transform: translateX(-100%) translateY(-100%) rotate(45deg);
+        }
+        100% {
+            transform: translateX(100%) translateY(100%) rotate(45deg);
+        }
+    }
+
+    /* Tooltip styles */
+    [title] {
+        position: relative;
+    }
+
+    /* Custom scrollbar for modal if needed */
+    .modal-content::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .modal-content::-webkit-scrollbar-track {
+        background: rgba(0,0,0,0.1);
+        border-radius: 4px;
+    }
+
+    .modal-content::-webkit-scrollbar-thumb {
+        background: rgba(0,0,0,0.3);
+        border-radius: 4px;
+    }
+
+    .modal-content::-webkit-scrollbar-thumb:hover {
+        background: rgba(0,0,0,0.5);
+    }
+</style>

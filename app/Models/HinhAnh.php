@@ -17,4 +17,51 @@ class HinhAnh extends Model
         'anh',
         'ma_phong',
     ];
+
+    /**
+     * Get phòng của hình ảnh này
+     */
+    public function phong()
+    {
+        return Phong::find($this->ma_phong);
+    }
+
+    /**
+     * Get all images for a room
+     */
+    public static function getByPhong($maPhong)
+    {
+        return static::where('ma_phong', '=', $maPhong)->get();
+    }
+
+    /**
+     * Get main image for a room (first image)
+     */
+    public static function getMainImage($maPhong)
+    {
+        $images = static::where('ma_phong', '=', $maPhong)->get();
+        return !empty($images) ? $images[0] : null;
+    }
+
+    /**
+     * Delete image and file
+     */
+    public function deleteWithFile()
+    {
+        // Delete physical file
+        if (!empty($this->anh)) {
+            deleteFile($this->anh);
+        }
+        
+        // Delete record
+        return $this->delete();
+    }
+
+    /**
+     * Get image URL
+     */
+    public function getImageUrl()
+    {
+        return !empty($this->anh) ? '/public/uploads/' . $this->anh : null;
+    }
 }

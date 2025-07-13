@@ -29,14 +29,14 @@ class AdminDanhGiaController
     public function index()
     {
         $danhGias = DanhGia::all();
-        view('Admin.DanhGia/index', ['danhGias' => $danhGias]);
+        view('Admin.DanhGia.index', ['danhGias' => $danhGias]);
     }
 
     public function create()
     {
         $taiKhoans = TaiKhoan::all();
         $phongs = Phong::all();
-        view('Admin.DanhGia/create', ['taiKhoans' => $taiKhoans, 'phongs' => $phongs]);
+        view('Admin.DanhGia.create', ['taiKhoans' => $taiKhoans, 'phongs' => $phongs]);
     }
 
     public function store()
@@ -61,7 +61,7 @@ class AdminDanhGiaController
             redirect('/admin/danh-gia?error=notfound');
         }
 
-        view('Admin.DanhGia/show', ['danhGia' => $danhGia]);
+        view('Admin.DanhGia.show', ['danhGia' => $danhGia]);
     }
 
     public function edit($id)
@@ -74,7 +74,7 @@ class AdminDanhGiaController
             redirect('/admin/danh-gia?error=notfound');
         }
 
-        view('Admin.DanhGia/edit', ['danhGia' => $danhGia, 'taiKhoans' => $taiKhoans, 'phongs' => $phongs]);
+        view('Admin.DanhGia.edit', ['danhGia' => $danhGia, 'taiKhoans' => $taiKhoans, 'phongs' => $phongs]);
     }
 
     public function update($id)

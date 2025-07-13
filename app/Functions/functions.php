@@ -642,3 +642,172 @@ if (!function_exists('csrf_field')) {
         return '<input type="hidden" name="_token" value="' . htmlspecialchars($token) . '">';
     }
 }
+
+if (!function_exists('saveFile')) {
+    /**
+     * Save uploaded file to uploads directory
+     *
+     * @param array $file The $_FILES array element (e.g., $_FILES['image'])
+     * @param string $subFolder Sub folder in uploads directory (optional)
+     * @return string|false Returns filename on success, false on failure
+     */
+    function saveFile($file): string|false
+    {
+        // Kiểm tra file có được upload không
+        if (!isset($file['tmp_name']) || !is_uploaded_file($file['tmp_name'])) {
+            return false;
+        }
+
+        // Kiểm tra có lỗi upload không
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            return false;
+        }
+
+        // Kiểm tra kích thước file (tối đa 5MB)
+        $maxSize = 5 * 1024 * 1024; // 5MB
+        if ($file['size'] > $maxSize) {
+            return false;
+        }
+
+        // Kiểm tra loại file (chỉ cho phép ảnh)
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
+
+        if (!in_array($mimeType, $allowedTypes)) {
+            return false;
+        }
+
+        // Tạo tên file unique
+        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $fileName = uniqid() . '_' . time() . '.' . strtolower($extension);
+
+        // Tạo đường dẫn thư mục
+        $uploadDir = __DIR__ . '/../../public/uploads/';
+
+        // Tạo thư mục nếu chưa tồn tại
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+
+        // Đường dẫn file đầy đủ
+        $filePath = $uploadDir . $fileName;
+
+        // Di chuyển file
+        if (move_uploaded_file($file['tmp_name'], $filePath)) {
+            return $fileName;
+        }
+
+        return false;
+    }
+}
+
+if (!function_exists('deleteFile')) {
+    /**
+     * Delete file from uploads directory
+     *
+     * @param string $fileName File name to delete
+     * @param string $subFolder Sub folder in uploads directory (optional)
+     * @return bool Returns true on success, false on failure
+     */
+    function deleteFile(string $fileName): bool
+    {
+        if (empty($fileName)) {
+            return false;
+        }
+
+        // Tạo đường dẫn file
+        $uploadDir = __DIR__ . '/../../public/uploads/';
+        $filePath = $uploadDir . $fileName;
+
+        // Kiểm tra file có tồn tại không
+        if (!file_exists($filePath)) {
+            return false;
+        }
+
+        // Xóa file
+        return unlink($filePath);
+    }
+}
+
+if (!function_exists('getFileUrl')) {
+    /**
+     * Get URL for uploaded file
+     *
+     * @param string $fileName File name
+     * @param string $subFolder Sub folder in uploads directory (optional)
+     * @return string|null Returns URL on success, null if file doesn't exist
+     */
+    function getFileUrl(string $fileName): string|null
+    {
+        if (empty($fileName)) {
+            return null;
+        }
+
+        // Tạo đường dẫn file để kiểm tra tồn tại
+        $uploadDir = __DIR__ . '/../../public/uploads/';
+        $filePath = $uploadDir . $fileName;
+
+        // Kiểm tra file có tồn tại không
+        if (!file_exists($filePath)) {
+            return null;
+        }
+
+        // Tạo URL
+        $url = '/public/uploads/' . $fileName;
+
+        return $url;
+    }
+}
+
+if (!function_exists('validateImageFile')) {
+    /**
+     * Validate uploaded image file
+     *
+     * @param array $file The $_FILES array element
+     * @return array Returns validation result with 'valid' boolean and 'error' message
+     */
+    function validateImageFile($file): array
+    {
+        // Kiểm tra file có được upload không
+        if (!isset($file['tmp_name']) || !is_uploaded_file($file['tmp_name'])) {
+            return ['valid' => false, 'error' => 'Không có file được upload'];
+        }
+
+        // Kiểm tra có lỗi upload không
+        switch ($file['error']) {
+            case UPLOAD_ERR_OK:
+                break;
+            case UPLOAD_ERR_NO_FILE:
+                return ['valid' => false, 'error' => 'Không có file được chọn'];
+            case UPLOAD_ERR_INI_SIZE:
+            case UPLOAD_ERR_FORM_SIZE:
+                return ['valid' => false, 'error' => 'File quá lớn'];
+            default:
+                return ['valid' => false, 'error' => 'Có lỗi xảy ra khi upload file'];
+        }
+
+        // Kiểm tra kích thước file (tối đa 5MB)
+        $maxSize = 5 * 1024 * 1024; // 5MB
+        if ($file['size'] > $maxSize) {
+            return ['valid' => false, 'error' => 'File không được vượt quá 5MB'];
+        }
+
+        // Kiểm tra loại file (chỉ cho phép ảnh)
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
+
+        $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+
+        if (!in_array($mimeType, $allowedTypes) || !in_array($extension, $allowedExtensions)) {
+            return ['valid' => false, 'error' => 'Chỉ chấp nhận file ảnh (JPG, PNG, GIF, WebP)'];
+        }
+
+        return ['valid' => true, 'error' => ''];
+    }
+}

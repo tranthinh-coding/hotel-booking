@@ -5,7 +5,6 @@ namespace HotelBooking\Enums;
 class TrangThaiPhong
 {
     const CON_TRONG = 'Còn trống';
-    const DA_DAT = 'Đã đặt';
     const BAO_TRI = 'Bảo trì';
     const DANG_DON_DEP = 'Đang dọn dẹp';
     
@@ -13,7 +12,6 @@ class TrangThaiPhong
     {
         return [
             self::CON_TRONG,
-            self::DA_DAT,
             self::BAO_TRI,
             self::DANG_DON_DEP
         ];
@@ -23,7 +21,6 @@ class TrangThaiPhong
     {
         $labels = [
             self::CON_TRONG => 'Còn trống',
-            self::DA_DAT => 'Đã đặt',
             self::BAO_TRI => 'Bảo trì',
             self::DANG_DON_DEP => 'Đang dọn dẹp'
         ];
@@ -35,7 +32,6 @@ class TrangThaiPhong
     {
         $colors = [
             self::CON_TRONG => 'green',
-            self::DA_DAT => 'red',
             self::BAO_TRI => 'yellow',
             self::DANG_DON_DEP => 'blue'
         ];

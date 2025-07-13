@@ -16,7 +16,7 @@ abstract class Model
     protected $primaryKey = 'id';
 
     /** Row data storage */
-    protected $data = [];
+    public $data = [];
 
     // Get all records
     public static function all()
@@ -84,7 +84,7 @@ abstract class Model
         return static::query()->whereRaw($expr);
     }
 
-    // Where clause
+    // Where clause - returns a query builder that can chain to get()
     public static function where($column, $operator = '=', $value = null)
     {
         // If only 2 parameters, assume operator is '='
@@ -93,7 +93,57 @@ abstract class Model
             $operator = '=';
         }
         
-        return static::query()->where($column, $operator, $value);
+        $instance = new static();
+        $query = DB::table($instance->table)->select('*')->where($column, $operator, $value);
+        
+        // Return a custom object that can handle get()
+        return new class($query, get_class($instance)) {
+            private $query;
+            private $modelClass;
+            
+            public function __construct($query, $modelClass) {
+                $this->query = $query;
+                $this->modelClass = $modelClass;
+            }
+            
+            public function get() {
+                $rows = $this->query->get();
+                $results = [];
+                
+                foreach ($rows as $row) {
+                    $model = new $this->modelClass();
+                    $model->data = $row;
+                    $results[] = $model;
+                }
+                
+                return $results;
+            }
+            
+            public function where($column, $operator = '=', $value = null) {
+                if (func_num_args() === 2) {
+                    $value = $operator;
+                    $operator = '=';
+                }
+                $this->query->where($column, $operator, $value);
+                return $this;
+            }
+        };
+    }
+
+    // Execute query and return model instances
+    public static function get()
+    {
+        $instance = new static();
+        $rows = DB::table($instance->table)->select('*')->get();
+
+        $results = [];
+        foreach ($rows as $row) {
+            $model = new static();
+            $model->data = $row;
+            $results[] = $model;
+        }
+        
+        return $results;
     }
 
     // Create a new record

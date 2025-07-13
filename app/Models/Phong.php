@@ -2,6 +2,9 @@
 
 namespace HotelBooking\Models;
 
+// Add import for HinhAnh
+use HotelBooking\Models\HinhAnh;
+
 /**
  * @property string $ma_phong
  * @property string $ten_phong
@@ -17,10 +20,10 @@ class Phong extends Model
     protected $attributes = [
         'ma_phong',
         'ten_phong',
-        'loai_phong',
         'mo_ta',
         'gia',
-        'ma_loai_phong'
+        'ma_loai_phong',
+        'trang_thai'
     ];
 
     /**
@@ -106,5 +109,30 @@ class Phong extends Model
         $bookedRoomIds = array_column($conflictingBookings, 'ma_phong');
         
         return !in_array($roomId, $bookedRoomIds);
+    }
+
+    /**
+     * Get all images for this room
+     */
+    public function hinhAnhs()
+    {
+        return HinhAnh::where('ma_phong', '=', $this->ma_phong)->get();
+    }
+
+    /**
+     * Get main image for this room
+     */
+    public function getMainImage()
+    {
+        return HinhAnh::getMainImage($this->ma_phong);
+    }
+
+    /**
+     * Get main image URL for this room
+     */
+    public function getMainImageUrl()
+    {
+        $mainImage = $this->getMainImage();
+        return $mainImage ? $mainImage->getImageUrl() : null;
     }
 }

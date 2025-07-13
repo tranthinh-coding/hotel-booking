@@ -28,13 +28,13 @@ class AdminHoaDonController
     public function index()
     {
         $hoaDons = HoaDon::all();
-        view('Admin.HoaDon/index', ['hoaDons' => $hoaDons]);
+        view('Admin.HoaDon.index', ['hoaDons' => $hoaDons]);
     }
 
     public function create()
     {
         $taiKhoans = TaiKhoan::all();
-        view('Admin.HoaDon/create', ['taiKhoans' => $taiKhoans]);
+        view('Admin.HoaDon.create', ['taiKhoans' => $taiKhoans]);
     }
 
     public function store()
@@ -57,7 +57,7 @@ class AdminHoaDonController
             redirect('/admin/hoa-don?error=notfound');
         }
 
-        view('Admin.HoaDon/show', ['hoaDon' => $hoaDon]);
+        view('Admin.HoaDon.show', ['hoaDon' => $hoaDon]);
     }
 
     public function edit($id)
@@ -69,7 +69,7 @@ class AdminHoaDonController
             redirect('/admin/hoa-don?error=notfound');
         }
 
-        view('Admin.HoaDon/edit', ['hoaDon' => $hoaDon, 'taiKhoans' => $taiKhoans]);
+        view('Admin.HoaDon.edit', ['hoaDon' => $hoaDon, 'taiKhoans' => $taiKhoans]);
     }
 
     public function update($id)

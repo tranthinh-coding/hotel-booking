@@ -27,12 +27,12 @@ class AdminTaiKhoanController
     public function index()
     {
         $taiKhoans = TaiKhoan::all();
-        view('Admin.TaiKhoan/index', ['taiKhoans' => $taiKhoans]);
+        view('Admin.TaiKhoan.index', ['taiKhoans' => $taiKhoans]);
     }
 
     public function create()
     {
-        view('Admin.TaiKhoan/create');
+        view('Admin.TaiKhoan.create');
     }
 
     public function store()
@@ -61,7 +61,7 @@ class AdminTaiKhoanController
             redirect('/admin/tai-khoan?error=notfound');
         }
 
-        view('Admin.TaiKhoan/edit', ['taiKhoan' => $taiKhoan]);
+        view('Admin.TaiKhoan.edit', ['taiKhoan' => $taiKhoan]);
     }
 
     public function update($id)

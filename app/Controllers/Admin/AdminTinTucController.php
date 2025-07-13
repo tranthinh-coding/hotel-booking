@@ -28,13 +28,13 @@ class AdminTinTucController
     public function index()
     {
         $tinTucs = TinTuc::all();
-        view('Admin.TinTuc/index', ['tinTucs' => $tinTucs]);
+        view('Admin.TinTuc.index', ['tinTucs' => $tinTucs]);
     }
 
     public function create()
     {
         $taiKhoans = TaiKhoan::all();
-        view('Admin.TinTuc/create', ['taiKhoans' => $taiKhoans]);
+        view('Admin.TinTuc.create', ['taiKhoans' => $taiKhoans]);
     }
 
     public function store()
@@ -60,7 +60,7 @@ class AdminTinTucController
             redirect('/admin/tin-tuc?error=notfound');
         }
 
-        view('Admin.TinTuc/edit', ['tinTuc' => $tinTuc, 'taiKhoans' => $taiKhoans]);
+        view('Admin.TinTuc.edit', ['tinTuc' => $tinTuc, 'taiKhoans' => $taiKhoans]);
     }
 
     public function update($id)
