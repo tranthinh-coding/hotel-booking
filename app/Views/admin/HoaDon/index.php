@@ -22,38 +22,6 @@ ob_start();
         </div>
     </div>
 
-    <!-- Search and Filters -->
-    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-                <input type="text" 
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                       placeholder="Tìm kiếm hóa đơn..." 
-                       id="searchInput">
-            </div>
-            <div>
-                <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                        id="statusFilter">
-                    <option value="">Tất cả trạng thái</option>
-                    <option value="pending">Chờ xử lý</option>
-                    <option value="confirmed">Đã xác nhận</option>
-                    <option value="paid">Đã thanh toán</option>
-                    <option value="cancelled">Đã hủy</option>
-                </select>
-            </div>
-            <div>
-                <input type="date" 
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                       id="dateFilter">
-            </div>
-            <div>
-                <button class="w-full bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors">
-                    <i class="fas fa-filter mr-2"></i>Lọc
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- Statistics Cards -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
@@ -101,6 +69,38 @@ ob_start();
                 <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
                     <i class="fas fa-money-bill-wave text-purple-600 text-xl"></i>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+                <input type="text" 
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                       placeholder="Tìm kiếm hóa đơn..." 
+                       id="searchInput">
+            </div>
+            <div>
+                <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                        id="statusFilter">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="pending">Chờ xử lý</option>
+                    <option value="confirmed">Đã xác nhận</option>
+                    <option value="paid">Đã thanh toán</option>
+                    <option value="cancelled">Đã hủy</option>
+                </select>
+            </div>
+            <div>
+                <input type="date" 
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                       id="dateFilter">
+            </div>
+            <div>
+                <button class="w-full bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors">
+                    <i class="fas fa-filter mr-2"></i>Lọc
+                </button>
             </div>
         </div>
     </div>
@@ -165,9 +165,9 @@ ob_start();
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex space-x-2">
-                                        <a href="/admin/hoa-don/view/<?= $hoaDon->ma_hoa_don ?? $hoaDon['ma_hoa_don'] ?>" 
+                                        <a href="/admin/hoa-don/view?id=<?= $hoaDon->ma_hoa_don ?? $hoaDon['ma_hoa_don'] ?>" 
                                            class="text-blue-600 hover:text-blue-900">Xem</a>
-                                        <a href="/admin/hoa-don/edit/<?= $hoaDon->ma_hoa_don ?? $hoaDon['ma_hoa_don'] ?>" 
+                                        <a href="/admin/hoa-don/edit?id=<?= $hoaDon->ma_hoa_don ?? $hoaDon['ma_hoa_don'] ?>" 
                                            class="text-green-600 hover:text-green-900">Sửa</a>
                                         <button onclick="deleteInvoice('<?= $hoaDon->ma_hoa_don ?? $hoaDon['ma_hoa_don'] ?>')" 
                                                 class="text-red-600 hover:text-red-900">Xóa</button>
@@ -233,92 +233,3 @@ document.getElementById('dateFilter')?.addEventListener('change', function() {
 $content = ob_get_clean();
 include __DIR__ . '/../../layouts/admin.php';
 ?>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>#HD001</td>
-                            <td>Nguyễn Văn A</td>
-                            <td>15/12/2024</td>
-                            <td class="text-success fw-bold">1,500,000 VNĐ</td>
-                            <td><span class="badge bg-success">Đã thanh toán</span></td>
-                            <td>Phòng 101 - Deluxe</td>
-                            <td>
-                                <a href="/admin/hoadon/show/1" class="btn btn-info btn-sm" title="Xem chi tiết">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a href="/admin/hoadon/edit/1" class="btn btn-warning btn-sm" title="Chỉnh sửa">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <button class="btn btn-danger btn-sm" onclick="deleteInvoice(1)" title="Xóa">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#HD002</td>
-                            <td>Trần Thị B</td>
-                            <td>14/12/2024</td>
-                            <td class="text-success fw-bold">2,000,000 VNĐ</td>
-                            <td><span class="badge bg-warning">Chờ xử lý</span></td>
-                            <td>Phòng 205 - Suite</td>
-                            <td>
-                                <a href="/admin/hoadon/show/2" class="btn btn-info btn-sm" title="Xem chi tiết">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a href="/admin/hoadon/edit/2" class="btn btn-warning btn-sm" title="Chỉnh sửa">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <button class="btn btn-danger btn-sm" onclick="deleteInvoice(2)" title="Xóa">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Pagination -->
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item disabled">
-                        <span class="page-link">Trước</span>
-                    </li>
-                    <li class="page-item active">
-                        <span class="page-link">1</span>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">2</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">3</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">Sau</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </div>
-</div>
-
-<script>
-function deleteInvoice(id) {
-    if (confirm('Bạn có chắc chắn muốn xóa hóa đơn này?')) {
-        // Ajax delete request here
-        console.log('Deleting invoice with ID: ' + id);
-    }
-}
-
-// Search functionality
-document.getElementById('searchInput').addEventListener('input', function() {
-    // Implement search logic
-});
-
-document.getElementById('statusFilter').addEventListener('change', function() {
-    // Implement status filter logic
-});
-
-document.getElementById('dateFilter').addEventListener('change', function() {
-    // Implement date filter logic
-});
-</script>

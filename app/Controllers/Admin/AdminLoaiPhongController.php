@@ -32,19 +32,49 @@ class AdminLoaiPhongController
     {
         try {
             // Lấy model instances trực tiếp (không cần chuyển đổi)
-            $loaiPhongs = LoaiPhong::where('ten', 'LIKE', '%' . get('search', '') . '%')
-                ->get();
+            $loaiPhongs = LoaiPhong::where('ten', 'LIKE', '%' . get('search', '') . '%')->get();
 
             // Xử lý đường dẫn ảnh
             foreach ($loaiPhongs as $loaiPhong) {
                 $loaiPhong->hinh_anh = getFileUrl($loaiPhong->hinh_anh);
             }
-            view('Admin.LoaiPhong.index', ['loaiPhongs' => $loaiPhongs]);
+
+            // Get statistics for room types using SQL queries
+            $stats = [
+                'total' => LoaiPhong::newQuery()->count(),
+                'active' => LoaiPhong::where('trang_thai', 'hoat_dong')->count(),
+                'inactive' => LoaiPhong::where('trang_thai', 'ngung_hoat_dong')->count(),
+                'total_rooms' => Phong::newQuery()->count(),
+                'empty_types' => 0
+            ];
+
+            // For empty_types, count room types with zero rooms
+            // This is acceptable since room types are typically not many
+            $allLoaiPhongs = LoaiPhong::all();
+            foreach ($allLoaiPhongs as $loaiPhong) {
+                $roomCount = Phong::where('ma_loai_phong', $loaiPhong->ma_loai_phong)->count();
+                if ($roomCount === 0) {
+                    $stats['empty_types']++;
+                }
+            }
+
+            view('Admin.LoaiPhong.index', [
+                'loaiPhongs' => $loaiPhongs, 
+                'stats' => $stats
+            ]);
         } catch (Exception $e) {
-            dd($e->getMessage()); // Debugging line, remove in production
-            error_log("Error in AdminLoaiPhongController::index: " . $e->getMessage());
-            error_log("Stack trace: " . $e->getTraceAsString());
-            view('Admin.LoaiPhong.index', ['loaiPhongs' => []]);
+            // Default stats if error occurs
+            $stats = [
+                'total' => 0,
+                'active' => 0,
+                'inactive' => 0,
+                'total_rooms' => 0,
+                'empty_types' => 0
+            ];
+            view('Admin.LoaiPhong.index', [
+                'loaiPhongs' => [],
+                'stats' => $stats
+            ]);
         }
     }
 
@@ -57,7 +87,8 @@ class AdminLoaiPhongController
     {
         $data = [
             'ten' => post('ten', ''),
-            'mo_ta' => post('mo_ta', '')
+            'mo_ta' => post('mo_ta', ''),
+            'trang_thai' => post('trang_thai', \HotelBooking\Enums\TrangThaiLoaiPhong::HOAT_DONG)
         ];
 
         // Xử lý upload ảnh
@@ -87,7 +118,6 @@ class AdminLoaiPhongController
                 deleteFile($data['hinh_anh']);
             }
 
-            error_log("Error creating room type: " . $e->getMessage());
             redirect('/admin/loai-phong/create?error=' . urlencode('Có lỗi xảy ra khi tạo loại phòng'));
         }
     }
@@ -125,7 +155,8 @@ class AdminLoaiPhongController
 
         $data = [
             'ten' => post('ten', $loaiPhong->ten),
-            'mo_ta' => post('mo_ta', $loaiPhong->mo_ta ?? '')
+            'mo_ta' => post('mo_ta', $loaiPhong->mo_ta ?? ''),
+            'trang_thai' => post('trang_thai', $loaiPhong->trang_thai ?? \HotelBooking\Enums\TrangThaiLoaiPhong::HOAT_DONG)
         ];
 
         $oldImage = $loaiPhong->hinh_anh; // Lưu tên ảnh cũ
@@ -165,14 +196,13 @@ class AdminLoaiPhongController
                 deleteFile($oldImage);
             }
 
-            redirect('/admin/loai-phong?success=updated');
+            redirect('/admin/loai-phong/show?id=' . $id . '&success=updated');
         } catch (Exception $e) {
             // Nếu có lỗi khi update record, xóa file mới đã upload
             if (isset($data['hinh_anh']) && $data['hinh_anh'] !== null) {
                 deleteFile($data['hinh_anh']);
             }
 
-            error_log("Error updating room type: " . $e->getMessage());
             redirect('/admin/loai-phong/edit?id=' . $id . '&error=' . urlencode('Có lỗi xảy ra khi cập nhật loại phòng'));
         }
     }
@@ -212,8 +242,150 @@ class AdminLoaiPhongController
 
             redirect('/admin/loai-phong?success=deleted');
         } catch (Exception $e) {
-            error_log("Error deleting room type: " . $e->getMessage());
             redirect('/admin/loai-phong?error=deletefailed');
+        }
+    }
+
+    public function show()
+    {
+        $id = get('id');
+        if (!$id) {
+            redirect('/admin/loai-phong?error=notfound');
+        }
+
+        $loaiPhong = LoaiPhong::find($id);
+        if (!$loaiPhong) {
+            redirect('/admin/loai-phong?error=notfound');
+        }
+
+        // Xử lý đường dẫn ảnh
+        $loaiPhong->hinh_anh = getFileUrl($loaiPhong->hinh_anh);
+
+        // Get paginated rooms
+        $page = (int)(get('page') ?: 1);
+        $rooms = $loaiPhong->getPhongsPaginated($page, 25);
+        $totalRooms = $loaiPhong->countPhongs();
+
+        // Get statistics for this room type using SQL queries
+        $stats = [
+            'total' => Phong::where('ma_loai_phong', $id)->count(),
+            'available' => Phong::where('ma_loai_phong', $id)->where('trang_thai', \HotelBooking\Enums\TrangThaiPhong::CON_TRONG)->count(),
+            'cleaning' => Phong::where('ma_loai_phong', $id)->where('trang_thai', \HotelBooking\Enums\TrangThaiPhong::DANG_DON_DEP)->count(),
+            'maintenance' => Phong::where('ma_loai_phong', $id)->where('trang_thai', \HotelBooking\Enums\TrangThaiPhong::BAO_TRI)->count(),
+            'deactivated' => Phong::where('ma_loai_phong', $id)->where('trang_thai', \HotelBooking\Enums\TrangThaiPhong::NGUNG_HOAT_DONG)->count()
+        ];
+
+        // Get available rooms for adding (all rooms) with room type names
+        $availableRooms = Phong::all();
+        
+        // Get all room types in one query to avoid N+1 problem
+        $allRoomTypes = [];
+        $roomTypeData = LoaiPhong::all();
+        foreach ($roomTypeData as $roomType) {
+            $allRoomTypes[$roomType->ma_loai_phong] = $roomType->ten;
+        }
+        
+        // Assign room type names using the lookup array
+        foreach ($availableRooms as $room) {
+            $room->loaiPhongName = $room->ma_loai_phong ? ($allRoomTypes[$room->ma_loai_phong] ?? null) : null;
+        }
+
+        view('Admin.LoaiPhong.show', [
+            'loaiPhong' => $loaiPhong,
+            'rooms' => $rooms,
+            'totalRooms' => $totalRooms,
+            'availableRooms' => $availableRooms,
+            'stats' => $stats
+        ]);
+    }
+
+    public function deactivate()
+    {
+        $id = post('id');
+        if (!$id) {
+            redirect('/admin/loai-phong?error=notfound');
+        }
+
+        $loaiPhong = LoaiPhong::find($id);
+        if (!$loaiPhong) {
+            redirect('/admin/loai-phong?error=notfound');
+        }
+
+        // Update status to deactivated
+        $data = ['trang_thai' => \HotelBooking\Enums\TrangThaiLoaiPhong::NGUNG_HOAT_DONG];
+        if ($loaiPhong->update($data)) {
+            redirect('/admin/loai-phong?success=deactivated');
+        } else {
+            redirect('/admin/loai-phong?error=deactivate_failed');
+        }
+    }
+
+    public function reactivate()
+    {
+        $id = post('id');
+        if (!$id) {
+            redirect('/admin/loai-phong?error=notfound');
+        }
+
+        $loaiPhong = LoaiPhong::find($id);
+        if (!$loaiPhong) {
+            redirect('/admin/loai-phong?error=notfound');
+        }
+
+        // Update status to active
+        $data = ['trang_thai' => \HotelBooking\Enums\TrangThaiLoaiPhong::HOAT_DONG];
+        if ($loaiPhong->update($data)) {
+            redirect('/admin/loai-phong?success=reactivated');
+        } else {
+            redirect('/admin/loai-phong?error=reactivate_failed');
+        }
+    }
+
+    public function addRoom()
+    {
+        $loaiPhongId = post('loai_phong_id');
+        $phongId = post('phong_id');
+
+        if (!$loaiPhongId || !$phongId) {
+            redirect('/admin/loai-phong?error=missing_data');
+        }
+
+        $loaiPhong = LoaiPhong::find($loaiPhongId);
+        $phong = Phong::find($phongId);
+
+        if (!$loaiPhong || !$phong) {
+            redirect('/admin/loai-phong/show?id=' . $loaiPhongId . '&error=room_not_found');
+        }
+
+        // Update room's room type
+        $data = ['ma_loai_phong' => $loaiPhongId];
+        if ($phong->update($data)) {
+            redirect('/admin/loai-phong/show?id=' . $loaiPhongId . '&success=room_added');
+        } else {
+            redirect('/admin/loai-phong/show?id=' . $loaiPhongId . '&error=operation_failed');
+        }
+    }
+
+    public function removeRoom()
+    {
+        $loaiPhongId = post('loai_phong_id');
+        $phongId = post('phong_id');
+
+        if (!$loaiPhongId || !$phongId) {
+            redirect('/admin/loai-phong?error=missing_data');
+        }
+
+        $phong = Phong::find($phongId);
+        if (!$phong) {
+            redirect('/admin/loai-phong/show?id=' . $loaiPhongId . '&error=room_not_found');
+        }
+
+        // Remove room from room type (set to null)
+        $data = ['ma_loai_phong' => null];
+        if ($phong->update($data)) {
+            redirect('/admin/loai-phong/show?id=' . $loaiPhongId . '&success=room_removed');
+        } else {
+            redirect('/admin/loai-phong/show?id=' . $loaiPhongId . '&error=operation_failed');
         }
     }
 }

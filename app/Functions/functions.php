@@ -799,7 +799,7 @@ if (!function_exists('getFileUrl')) {
      */
     function getFileUrl(string|null $fileName): string|null
     {
-        if (empty($fileName)) {
+        if (isEmpty($fileName)) {
             return null;
         }
 

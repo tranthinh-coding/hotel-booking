@@ -10,6 +10,7 @@ namespace HotelBooking\Models;
  * @property string $noi_dung
  * @property string $ngay_dang
  * @property string $trang_thai
+ * @property int $luot_xem
  */
 class TinTuc extends Model
 {
@@ -24,5 +25,6 @@ class TinTuc extends Model
         'noi_dung',
         'ngay_dang',
         'trang_thai',
+        'luot_xem',
     ];
 }

@@ -1,84 +1,205 @@
 <?php
-$title = 'Quản lý Tài khoản - Ocean Pearl Hotel';
+$title = 'Quản lý Tài khoản - Ocean Pearl Hotel Admin';
 $pageTitle = 'Quản lý Tài khoản';
 ob_start();
 ?>
 
 <div class="space-y-6">
-    <!-- Header với nút thêm mới -->
+    <!-- Success/Error Messages -->
+    <?php if (isset($_GET['success'])): ?>
+        <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg" role="alert">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-check-circle text-green-400"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-medium">
+                        <?php if ($_GET['success'] === 'created'): ?>
+                            Tài khoản đã được tạo thành công!
+                        <?php elseif ($_GET['success'] === 'updated'): ?>
+                            Tài khoản đã được cập nhật thành công!
+                        <?php endif; ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['error'])): ?>
+        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg" role="alert">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-exclamation-circle text-red-400"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-medium">
+                        <?php if ($_GET['error'] === 'notfound'): ?>
+                            Không tìm thấy tài khoản!
+                        <?php elseif ($_GET['error'] === 'missing_id'): ?>
+                            Thiếu mã tài khoản!
+                        <?php else: ?>
+                            Có lỗi xảy ra!
+                        <?php endif; ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <!-- Breadcrumb -->
     <div class="flex justify-between items-center">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">Quản lý Tài khoản</h1>
-            <p class="text-gray-600 mt-1">Quản lý thông tin tài khoản người dùng</p>
+            <nav class="text-sm text-gray-500">
+                <a href="/admin/dashboard" class="hover:text-gray-700">Dashboard</a>
+                <span class="mx-2">/</span>
+                <span class="text-gray-900">Tài khoản</span>
+            </nav>
         </div>
-        <a href="/admin/tai-khoan/create" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
-            <i class="fas fa-plus mr-2"></i>
-            Thêm tài khoản
-        </a>
+        <div>
+            <a href="/admin/tai-khoan/create"
+                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
+                <i class="fas fa-plus mr-2"></i>
+                Thêm tài khoản
+            </a>
+        </div>
     </div>
 
-    <!-- Bộ lọc -->
-    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-        <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Tìm kiếm</label>
-                <input type="text" name="search" placeholder="Tên, email, SĐT..." 
-                       value="<?= htmlspecialchars(get('search', '')) ?>"
-                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm">Tổng tài khoản</p>
+                    <p class="text-2xl font-bold text-gray-900"><?= $stats['total'] ?? 0 ?></p>
+                </div>
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-users text-blue-600 text-xl"></i>
+                </div>
             </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Phân quyền</label>
-                <select name="role" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    <option value="">Tất cả</option>
-                    <option value="Khách hàng" <?= get('role') === 'Khách hàng' ? 'selected' : '' ?>>Khách hàng</option>
-                    <option value="Lễ tân" <?= get('role') === 'Lễ tân' ? 'selected' : '' ?>>Lễ tân</option>
-                    <option value="Quản lý" <?= get('role') === 'Quản lý' ? 'selected' : '' ?>>Quản lý</option>
-                </select>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm">Khách hàng</p>
+                    <p class="text-2xl font-bold text-green-600"><?= $stats['customers'] ?? 0 ?></p>
+                </div>
+                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-user text-green-600 text-xl"></i>
+                </div>
             </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Trạng thái</label>
-                <select name="status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    <option value="">Tất cả</option>
-                    <option value="active" <?= get('status') === 'active' ? 'selected' : '' ?>>Hoạt động</option>
-                    <option value="inactive" <?= get('status') === 'inactive' ? 'selected' : '' ?>>Không hoạt động</option>
-                </select>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm">Nhân viên</p>
+                    <p class="text-2xl font-bold text-blue-600"><?= $stats['staff'] ?? 0 ?></p>
+                </div>
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-user-tie text-blue-600 text-xl"></i>
+                </div>
             </div>
-            <div class="flex items-end">
-                <button type="submit" class="w-full bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
-                    <i class="fas fa-search mr-2"></i>Tìm kiếm
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm">Quản lý</p>
+                    <p class="text-2xl font-bold text-red-600"><?= $stats['managers'] ?? 0 ?></p>
+                </div>
+                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-user-shield text-red-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tìm kiếm và lọc -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <form method="GET" class="space-y-4">
+            <!-- Hàng đầu tiên: Các ô input -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tìm kiếm</label>
+                    <input type="text" name="search" placeholder="Tên, email, SĐT..."
+                        value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Phân quyền</label>
+                    <select name="role"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Tất cả</option>
+                        <option value="Khách hàng" <?= ($_GET['role'] ?? '') === 'Khách hàng' ? 'selected' : '' ?>>Khách
+                            hàng</option>
+                        <option value="Lễ tân" <?= ($_GET['role'] ?? '') === 'Lễ tân' ? 'selected' : '' ?>>Lễ tân</option>
+                        <option value="Quản lý" <?= ($_GET['role'] ?? '') === 'Quản lý' ? 'selected' : '' ?>>Quản lý
+                        </option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Sắp xếp</label>
+                    <select name="sort"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="ngay_tao" <?= ($_GET['sort'] ?? '') === 'ngay_tao' ? 'selected' : '' ?>>Ngày tạo
+                        </option>
+                        <option value="ho_ten" <?= ($_GET['sort'] ?? '') === 'ho_ten' ? 'selected' : '' ?>>Họ tên</option>
+                        <option value="mail" <?= ($_GET['sort'] ?? '') === 'mail' ? 'selected' : '' ?>>Email</option>
+                    </select>
+                </div>
+            </div>
+            <!-- Hàng thứ hai: Nút bấm -->
+            <div class="flex justify-end space-x-3">
+                <a href="/admin/tai-khoan"
+                    class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors inline-flex items-center">
+                    <i class="fas fa-times mr-2"></i>Xóa lọc
+                </a>
+                <button type="submit"
+                    class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
+                    <i class="fas fa-search mr-2"></i>Lọc
                 </button>
             </div>
         </form>
     </div>
 
     <!-- Bảng dữ liệu -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Thông tin tài khoản
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Liên hệ
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Phân quyền
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Ngày tạo
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Trạng thái
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Thao tác
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    <?php if (!empty($taiKhoans)): ?>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-gray-900">Danh sách tài khoản</h3>
+                <span class="text-sm text-gray-500">
+                    <?= count($taiKhoans ?? []) ?> tài khoản
+                </span>
+            </div>
+        </div>
+
+        <?php if (isNotEmpty($taiKhoans)): ?>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Thông tin tài khoản
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Liên hệ
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Phân quyền
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Ngày tạo
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Trạng thái
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Thao tác
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
                         <?php foreach ($taiKhoans as $taiKhoan): ?>
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -111,92 +232,53 @@ ob_start();
                                     ];
                                     $colorClass = $roleColors[$taiKhoan->phan_quyen] ?? 'bg-gray-100 text-gray-800';
                                     ?>
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?= $colorClass ?>">
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?= $colorClass ?>">
                                         <?= htmlspecialchars($taiKhoan->phan_quyen) ?>
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <?= date('d/m/Y', strtotime($taiKhoan->created_at ?? 'now')) ?>
+                                    <?= date('d/m/Y', strtotime($taiKhoan->ngay_tao ?? 'now')) ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                         Hoạt động
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex space-x-2">
-                                        <a href="/admin/tai-khoan/<?= $taiKhoan->ma_tai_khoan ?>" 
-                                           class="text-blue-600 hover:text-blue-900">
-                                            <i class="fas fa-eye"></i>
+                                        <a href="/admin/tai-khoan/show?id=<?= $taiKhoan->ma_tai_khoan ?>"
+                                            class="text-blue-600 hover:text-blue-900">
+                                            <i class="fas fa-eye mr-1"></i>Xem
                                         </a>
-                                        <a href="/admin/tai-khoan/<?= $taiKhoan->ma_tai_khoan ?>/edit" 
-                                           class="text-yellow-600 hover:text-yellow-900">
-                                            <i class="fas fa-edit"></i>
+                                        <a href="/admin/tai-khoan/edit?id=<?= $taiKhoan->ma_tai_khoan ?>"
+                                            class="text-green-600 hover:text-green-900">
+                                            <i class="fas fa-edit mr-1"></i>Sửa
                                         </a>
-                                        <button onclick="confirmDelete(<?= $taiKhoan->ma_tai_khoan ?>)" 
-                                                class="text-red-600 hover:text-red-900">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
                                     </div>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="6" class="px-6 py-4 text-center text-gray-500">
-                                <div class="py-8">
-                                    <i class="fas fa-users text-4xl mb-3"></i>
-                                    <p>Không có tài khoản nào</p>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
+                    </tbody>
+                </table>
+            </div>
+        <?php else: ?>
+            <div class="text-center py-12">
+                <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-users text-4xl text-gray-400"></i>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">Chưa có tài khoản nào</h3>
+                <p class="text-gray-500 mb-6">Bắt đầu tạo tài khoản đầu tiên cho hệ thống</p>
+                <a href="/admin/tai-khoan/create"
+                    class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-plus mr-2"></i>
+                    Tạo tài khoản mới
+                </a>
+            </div>
+        <?php endif; ?>
     </div>
-
-    <!-- Pagination -->
-    <?php if (!empty($pagination)): ?>
-        <div class="flex justify-between items-center">
-            <div class="text-sm text-gray-700">
-                Hiển thị <?= $pagination['from'] ?> - <?= $pagination['to'] ?> trong tổng số <?= $pagination['total'] ?> tài khoản
-            </div>
-            <div class="flex space-x-2">
-                <?php if ($pagination['current_page'] > 1): ?>
-                    <a href="?page=<?= $pagination['current_page'] - 1 ?>" class="px-3 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">Trước</a>
-                <?php endif; ?>
-                
-                <?php for ($i = max(1, $pagination['current_page'] - 2); $i <= min($pagination['last_page'], $pagination['current_page'] + 2); $i++): ?>
-                    <a href="?page=<?= $i ?>" class="px-3 py-2 <?= $i === $pagination['current_page'] ? 'bg-blue-600 text-white' : 'bg-white border border-gray-300 hover:bg-gray-50' ?> rounded-lg">
-                        <?= $i ?>
-                    </a>
-                <?php endfor; ?>
-                
-                <?php if ($pagination['current_page'] < $pagination['last_page']): ?>
-                    <a href="?page=<?= $pagination['current_page'] + 1 ?>" class="px-3 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">Sau</a>
-                <?php endif; ?>
-            </div>
-        </div>
-    <?php endif; ?>
 </div>
-
-<script>
-function confirmDelete(id) {
-    if (confirm('Bạn có chắc chắn muốn xóa tài khoản này?')) {
-        fetch(`/admin/tai-khoan/${id}/delete`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        }).then(response => {
-            if (response.ok) {
-                location.reload();
-            }
-        });
-    }
-}
-</script>
 
 <?php
 $content = ob_get_clean();

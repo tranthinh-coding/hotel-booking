@@ -25,6 +25,7 @@ ob_start();
 
                 <div class="p-6">
                     <form action="/admin/loai-phong/store" method="POST" enctype="multipart/form-data" class="space-y-6">
+                        <input type="hidden" name="MAX_FILE_SIZE" value="5242880"> <!-- 5MB -->
                         <div>
                             <label for="ten" class="block text-sm font-medium text-gray-700 mb-2">
                                 Tên loại phòng <span class="text-red-500">*</span>
@@ -43,6 +44,23 @@ ob_start();
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="Mô tả chi tiết về loại phòng này, các đặc điểm nổi bật..."></textarea>
                             <p class="mt-1 text-sm text-gray-500">Mô tả sẽ giúp khách hàng hiểu rõ hơn về loại phòng</p>
+                        </div>
+
+                        <div>
+                            <label for="trang_thai" class="block text-sm font-medium text-gray-700 mb-2">
+                                Trạng thái <span class="text-red-500">*</span>
+                            </label>
+                            <select id="trang_thai" name="trang_thai"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                required>
+                                <option value="<?= \HotelBooking\Enums\TrangThaiLoaiPhong::HOAT_DONG ?>" selected>
+                                    <?= \HotelBooking\Enums\TrangThaiLoaiPhong::getLabel(\HotelBooking\Enums\TrangThaiLoaiPhong::HOAT_DONG) ?>
+                                </option>
+                                <option value="<?= \HotelBooking\Enums\TrangThaiLoaiPhong::NGUNG_HOAT_DONG ?>">
+                                    <?= \HotelBooking\Enums\TrangThaiLoaiPhong::getLabel(\HotelBooking\Enums\TrangThaiLoaiPhong::NGUNG_HOAT_DONG) ?>
+                                </option>
+                            </select>
+                            <p class="mt-1 text-sm text-gray-500">Chọn trạng thái ban đầu cho loại phòng</p>
                         </div>
 
                         <div>

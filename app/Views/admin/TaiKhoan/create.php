@@ -1,10 +1,21 @@
 <?php
-$title = 'Thêm Tài khoản - Ocean Pearl Hotel';
+$title = 'Thêm Tài khoản - Ocean Pearl Hotel Admin';
 $pageTitle = 'Thêm Tài khoản';
 ob_start();
 ?>
 
 <div class="max-w-4xl mx-auto space-y-6">
+    <!-- Breadcrumb -->
+    <div>
+        <nav class="text-sm text-gray-500">
+            <a href="/admin/dashboard" class="hover:text-gray-700">Dashboard</a>
+            <span class="mx-2">/</span>
+            <a href="/admin/tai-khoan" class="hover:text-gray-700">Tài khoản</a>
+            <span class="mx-2">/</span>
+            <span class="text-gray-900">Thêm mới</span>
+        </nav>
+    </div>
+
     <!-- Header -->
     <div class="flex items-center justify-between">
         <div>
@@ -19,7 +30,7 @@ ob_start();
 
     <!-- Form -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <form method="POST" action="/admin/tai-khoan" class="space-y-6">
+        <form method="POST" action="/admin/tai-khoan/store" class="space-y-6">
             <!-- Thông tin cơ bản -->
             <div>
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Thông tin cơ bản</h3>

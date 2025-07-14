@@ -3,6 +3,7 @@
 namespace HotelBooking\Models;
 
 use HotelBooking\Enums\TrangThaiPhong;
+use HotelBooking\Enums\TrangThaiLoaiPhong;
 
 class LoaiPhong extends Model
 {
@@ -14,6 +15,7 @@ class LoaiPhong extends Model
         'ten',
         'mo_ta',
         'hinh_anh',
+        'trang_thai'
     ];
 
     /**
@@ -46,7 +48,7 @@ class LoaiPhong extends Model
      */
     public function getOccupiedRooms()
     {
-        return $this->phongs()->where('trang_thai', '=', TrangThaiPhong::DA_DAT)->get();
+        return $this->phongs()->where('trang_thai', '=', TrangThaiPhong::DANG_DON_DEP)->get();
     }
 
     /**
@@ -55,5 +57,33 @@ class LoaiPhong extends Model
     public function getMaintenanceRooms()
     {
         return $this->phongs()->where('trang_thai', '=', TrangThaiPhong::BAO_TRI)->get();
+    }
+
+    /**
+     * Get deactivated rooms of this type
+     */
+    public function getDeactivatedRooms()
+    {
+        return $this->phongs()->where('trang_thai', '=', TrangThaiPhong::NGUNG_HOAT_DONG)->get();
+    }
+
+    /**
+     * Get rooms with pagination
+     */
+    public function getPhongsPaginated($page = 1, $perPage = 25)
+    {
+        $allRooms = $this->phongs()->get();
+        $total = count($allRooms);
+        $offset = ($page - 1) * $perPage;
+        $rooms = array_slice($allRooms, $offset, $perPage);
+        
+        return [
+            'data' => $rooms,
+            'total' => $total,
+            'per_page' => $perPage,
+            'current_page' => $page,
+            'last_page' => ceil($total / $perPage),
+            'has_more' => $offset + $perPage < $total
+        ];
     }
 }

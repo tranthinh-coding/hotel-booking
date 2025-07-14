@@ -1,487 +1,262 @@
-<?php 
-ob_start(); 
-$title = 'Quản lý Đánh giá';
+<?php
+$title = 'Quản lý Đánh giá - Ocean Pearl Hotel Admin';
+$pageTitle = 'Quản lý Đánh giá';
+ob_start();
 ?>
 
-<!-- Page Header -->
-<div class="mb-8">
+<div class="space-y-6">
+    <!-- Success/Error Messages -->
+    <?php if (isset($_GET['success'])): ?>
+        <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg" role="alert">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-check-circle text-green-400"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-medium">
+                        <?php if ($_GET['success'] === 'created'): ?>
+                            Đánh giá đã được tạo thành công!
+                        <?php elseif ($_GET['success'] === 'updated'): ?>
+                            Đánh giá đã được cập nhật thành công!
+                        <?php endif; ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['error'])): ?>
+        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg" role="alert">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-exclamation-circle text-red-400"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-medium">
+                        <?php if ($_GET['error'] === 'notfound'): ?>
+                            Không tìm thấy đánh giá!
+                        <?php elseif ($_GET['error'] === 'missing_id'): ?>
+                            Thiếu mã đánh giá!
+                        <?php else: ?>
+                            Có lỗi xảy ra!
+                        <?php endif; ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <!-- Breadcrumb -->
     <div class="flex justify-between items-center">
         <div>
-            <h1 class="text-3xl font-bold text-gray-900">Quản lý Đánh giá</h1>
-            <nav class="text-sm text-gray-600 mt-2">
-                <a href="/admin/dashboard" class="hover:text-blue-600">Dashboard</a>
+            <nav class="text-sm text-gray-500">
+                <a href="/admin/dashboard" class="hover:text-gray-700">Dashboard</a>
                 <span class="mx-2">/</span>
-                <span class="text-gray-400">Đánh giá</span>
+                <span class="text-gray-900">Đánh giá</span>
             </nav>
         </div>
     </div>
-</div>
 
-<!-- Statistics Cards -->
-<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-    <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-yellow-500">
-        <div class="flex items-center">
-            <div class="flex-shrink-0">
-                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-yellow-100 text-yellow-600">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
-                    </svg>
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm">Tổng đánh giá</p>
+                    <p class="text-2xl font-bold text-gray-900"><?= $stats['total'] ?? 0 ?></p>
+                </div>
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-comments text-blue-600 text-xl"></i>
                 </div>
             </div>
-            <div class="ml-5 w-0 flex-1">
-                <dl>
-                    <dt class="text-sm font-medium text-gray-500 truncate">Điểm trung bình</dt>
-                    <dd class="text-2xl font-bold text-yellow-600">4.6/5</dd>
-                </dl>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm">Điểm trung bình</p>
+                    <p class="text-2xl font-bold text-yellow-600"><?= $stats['average_rating'] ?? 0 ?>/5</p>
+                </div>
+                <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-star text-yellow-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm">5 sao</p>
+                    <p class="text-2xl font-bold text-green-600"><?= $stats['five_star'] ?? 0 ?></p>
+                </div>
+                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-heart text-green-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm">4 sao</p>
+                    <p class="text-2xl font-bold text-blue-600"><?= $stats['four_star'] ?? 0 ?></p>
+                </div>
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-thumbs-up text-blue-600 text-xl"></i>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-blue-500">
-        <div class="flex items-center">
-            <div class="flex-shrink-0">
-                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-blue-100 text-blue-600">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
+    <!-- Tìm kiếm và lọc -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <form method="GET" class="space-y-4">
+            <!-- Hàng đầu tiên: Các ô input -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tìm kiếm</label>
+                    <input type="text" name="search" placeholder="Nội dung đánh giá..."
+                        value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Điểm số</label>
+                    <select name="rating"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Tất cả</option>
+                        <option value="5" <?= ($_GET['rating'] ?? '') === '5' ? 'selected' : '' ?>>5 sao</option>
+                        <option value="4" <?= ($_GET['rating'] ?? '') === '4' ? 'selected' : '' ?>>4 sao</option>
+                        <option value="3" <?= ($_GET['rating'] ?? '') === '3' ? 'selected' : '' ?>>3 sao</option>
+                        <option value="2" <?= ($_GET['rating'] ?? '') === '2' ? 'selected' : '' ?>>2 sao</option>
+                        <option value="1" <?= ($_GET['rating'] ?? '') === '1' ? 'selected' : '' ?>>1 sao</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Sắp xếp</label>
+                    <select name="sort"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="ngay_danh_gia" <?= ($_GET['sort'] ?? '') === 'ngay_danh_gia' ? 'selected' : '' ?>>Ngày đánh giá</option>
+                        <option value="diem_so" <?= ($_GET['sort'] ?? '') === 'diem_so' ? 'selected' : '' ?>>Điểm số</option>
+                        <option value="noi_dung" <?= ($_GET['sort'] ?? '') === 'noi_dung' ? 'selected' : '' ?>>Nội dung</option>
+                    </select>
                 </div>
             </div>
-            <div class="ml-5 w-0 flex-1">
-                <dl>
-                    <dt class="text-sm font-medium text-gray-500 truncate">Tổng đánh giá</dt>
-                    <dd class="text-2xl font-bold text-blue-600">248</dd>
-                </dl>
+            <!-- Hàng thứ hai: Nút bấm -->
+            <div class="flex justify-end space-x-3">
+                <a href="/admin/danh-gia"
+                    class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors inline-flex items-center">
+                    <i class="fas fa-times mr-2"></i>Xóa lọc
+                </a>
+                <button type="submit"
+                    class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
+                    <i class="fas fa-search mr-2"></i>Lọc
+                </button>
             </div>
-        </div>
+        </form>
     </div>
 
-    <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-orange-500">
-        <div class="flex items-center">
-            <div class="flex-shrink-0">
-                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-orange-100 text-orange-600">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                </div>
-            </div>
-            <div class="ml-5 w-0 flex-1">
-                <dl>
-                    <dt class="text-sm font-medium text-gray-500 truncate">Chờ duyệt</dt>
-                    <dd class="text-2xl font-bold text-orange-600">15</dd>
-                </dl>
+    <!-- Bảng dữ liệu -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-gray-900">Danh sách đánh giá</h3>
+                <span class="text-sm text-gray-500">
+                    <?= count($danhGias ?? []) ?> đánh giá
+                </span>
             </div>
         </div>
-    </div>
 
-    <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-500">
-        <div class="flex items-center">
-            <div class="flex-shrink-0">
-                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-green-100 text-green-600">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
+        <?php if (isNotEmpty($danhGias)): ?>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Khách hàng
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Phòng
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Điểm số
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Nội dung
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Ngày đánh giá
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Thao tác
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <?php foreach ($danhGias as $danhGia): ?>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-10 w-10">
+                                            <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                                <i class="fas fa-user text-blue-600"></i>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900">
+                                                Khách hàng #<?= $danhGia->ma_tai_khoan ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">Phòng #<?= $danhGia->ma_phong ?></div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                                            <i class="fas fa-star <?= $i <= $danhGia->diem_so ? 'text-yellow-400' : 'text-gray-300' ?>"></i>
+                                        <?php endfor; ?>
+                                        <span class="ml-2 text-sm text-gray-600">(<?= $danhGia->diem_so ?>)</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-gray-900 max-w-xs truncate">
+                                        <?= htmlspecialchars($danhGia->noi_dung ?? '') ?>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <?= date('d/m/Y', strtotime($danhGia->ngay_danh_gia ?? 'now')) ?>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <div class="flex space-x-2">
+                                        <a href="/admin/danh-gia/show?id=<?= $danhGia->ma_danh_gia ?>" 
+                                           class="text-blue-600 hover:text-blue-900">
+                                            <i class="fas fa-eye mr-1"></i>Xem
+                                        </a>
+                                        <a href="/admin/danh-gia/edit?id=<?= $danhGia->ma_danh_gia ?>" 
+                                           class="text-green-600 hover:text-green-900">
+                                            <i class="fas fa-edit mr-1"></i>Sửa
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php else: ?>
+            <div class="text-center py-12">
+                <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-comments text-4xl text-gray-400"></i>
                 </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">Chưa có đánh giá nào</h3>
+                <p class="text-gray-500 mb-6">Chưa có khách hàng nào đánh giá dịch vụ</p>
             </div>
-            <div class="ml-5 w-0 flex-1">
-                <dl>
-                    <dt class="text-sm font-medium text-gray-500 truncate">Đã duyệt</dt>
-                    <dd class="text-2xl font-bold text-green-600">233</dd>
-                </dl>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Rating Distribution -->
-<div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-    <h3 class="text-lg font-medium text-gray-900 mb-4">Phân phối đánh giá</h3>
-    <div class="space-y-3">
-        <div class="flex items-center">
-            <span class="text-sm font-medium text-gray-700 w-8">5★</span>
-            <div class="flex-1 mx-3">
-                <div class="bg-gray-200 rounded-full h-3">
-                    <div class="bg-yellow-500 h-3 rounded-full" style="width: 68%"></div>
-                </div>
-            </div>
-            <span class="text-sm text-gray-600">168 (68%)</span>
-        </div>
-        <div class="flex items-center">
-            <span class="text-sm font-medium text-gray-700 w-8">4★</span>
-            <div class="flex-1 mx-3">
-                <div class="bg-gray-200 rounded-full h-3">
-                    <div class="bg-blue-500 h-3 rounded-full" style="width: 22%"></div>
-                </div>
-            </div>
-            <span class="text-sm text-gray-600">55 (22%)</span>
-        </div>
-        <div class="flex items-center">
-            <span class="text-sm font-medium text-gray-700 w-8">3★</span>
-            <div class="flex-1 mx-3">
-                <div class="bg-gray-200 rounded-full h-3">
-                    <div class="bg-yellow-400 h-3 rounded-full" style="width: 8%"></div>
-                </div>
-            </div>
-            <span class="text-sm text-gray-600">20 (8%)</span>
-        </div>
-        <div class="flex items-center">
-            <span class="text-sm font-medium text-gray-700 w-8">2★</span>
-            <div class="flex-1 mx-3">
-                <div class="bg-gray-200 rounded-full h-3">
-                    <div class="bg-red-500 h-3 rounded-full" style="width: 2%"></div>
-                </div>
-            </div>
-            <span class="text-sm text-gray-600">5 (2%)</span>
-        </div>
-        <div class="flex items-center">
-            <span class="text-sm font-medium text-gray-700 w-8">1★</span>
-            <div class="flex-1 mx-3">
-                <div class="bg-gray-200 rounded-full h-3">
-                    <div class="bg-red-600 h-3 rounded-full" style="width: 0%"></div>
-                </div>
-            </div>
-            <span class="text-sm text-gray-600">0 (0%)</span>
-        </div>
-    </div>
-</div>
-
-<!-- Search and Filters -->
-<div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Tìm kiếm</label>
-            <input type="text" 
-                   id="searchInput" 
-                   placeholder="Tìm kiếm đánh giá..." 
-                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-        </div>
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Điểm số</label>
-            <select id="ratingFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                <option value="">Tất cả điểm</option>
-                <option value="5">5 sao</option>
-                <option value="4">4 sao</option>
-                <option value="3">3 sao</option>
-                <option value="2">2 sao</option>
-                <option value="1">1 sao</option>
-            </select>
-        </div>
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Trạng thái</label>
-            <select id="statusFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                <option value="">Tất cả trạng thái</option>
-                <option value="pending">Chờ duyệt</option>
-                <option value="approved">Đã duyệt</option>
-                <option value="rejected">Từ chối</option>
-            </select>
-        </div>
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Loại đánh giá</label>
-            <select id="typeFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                <option value="">Tất cả loại</option>
-                <option value="room">Phòng</option>
-                <option value="service">Dịch vụ</option>
-                <option value="general">Tổng thể</option>
-            </select>
-        </div>
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Ngày đánh giá</label>
-            <input type="date" 
-                   id="dateFilter" 
-                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-        </div>
-    </div>
-</div>
-
-<!-- Reviews List -->
-<div class="bg-white rounded-xl shadow-lg overflow-hidden">
-
-    <div class="p-6">
-        <div class="space-y-6" id="reviewsList">
-            <!-- Review Item 1 -->
-            <div class="border-b border-gray-200 pb-6 last:border-b-0">
-                <div class="flex justify-between items-start">
-                    <div class="flex-1">
-                        <div class="flex items-center mb-3">
-                            <div class="flex-shrink-0">
-                                <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                                    <span class="text-blue-600 font-medium">A</span>
-                                </div>
-                            </div>
-                            <div class="ml-3">
-                                <h4 class="text-sm font-medium text-gray-900">Nguyễn Văn A</h4>
-                                <div class="flex items-center">
-                                    <div class="flex text-yellow-400">
-                                        <span>★★★★★</span>
-                                    </div>
-                                    <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                        Đã duyệt
-                                    </span>
-                                </div>
-                                <p class="text-xs text-gray-500 mt-1">15/12/2024 | Phòng Deluxe 201</p>
-                            </div>
-                        </div>
-                        <p class="text-gray-700 mb-3">Phòng rất sạch sẽ, view đẹp hướng biển. Nhân viên phục vụ nhiệt tình và chuyên nghiệp. Sẽ quay lại lần sau!</p>
-                        <div class="flex flex-wrap gap-2 mb-3">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                Vệ sinh: 5/5
-                            </span>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                Dịch vụ: 5/5
-                            </span>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                Vị trí: 4/5
-                            </span>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                Giá cả: 4/5
-                            </span>
-                        </div>
-                    </div>
-                    <div class="flex flex-col space-y-2 ml-4">
-                        <button onclick="approveReview(1)" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            Duyệt
-                        </button>
-                        <button onclick="rejectReview(1)" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                            Từ chối
-                        </button>
-                        <button onclick="replyReview(1)" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
-                            </svg>
-                            Phản hồi
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Review Item 2 -->
-            <div class="border-b border-gray-200 pb-6 last:border-b-0">
-                <div class="flex justify-between items-start">
-                    <div class="flex-1">
-                        <div class="flex items-center mb-3">
-                            <div class="flex-shrink-0">
-                                <div class="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center">
-                                    <span class="text-purple-600 font-medium">B</span>
-                                </div>
-                            </div>
-                            <div class="ml-3">
-                                <h4 class="text-sm font-medium text-gray-900">Trần Thị B</h4>
-                                <div class="flex items-center">
-                                    <div class="flex text-yellow-400">
-                                        <span>★★★★☆</span>
-                                    </div>
-                                    <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                        Chờ duyệt
-                                    </span>
-                                </div>
-                                <p class="text-xs text-gray-500 mt-1">14/12/2024 | Dịch vụ Spa</p>
-                            </div>
-                        </div>
-                        <p class="text-gray-700 mb-3">Dịch vụ spa rất tuyệt vời, thư giãn hoàn toàn. Tuy nhiên thời gian chờ hơi lâu. Nhìn chung vẫn hài lòng.</p>
-                        <div class="flex flex-wrap gap-2 mb-3">
-                                        <span class="badge bg-light text-dark me-1">Chất lượng: 5/5</span>
-                                        <span class="badge bg-light text-dark me-1">Thời gian: 3/5</span>
-                                        <span class="badge bg-light text-dark">Giá cả: 4/5</span>
-                                    </div>
-                                </div>
-                                <div class="btn-group-vertical">
-                                    <button class="btn btn-sm btn-success" onclick="approveReview(2)">
-                                        <i class="fas fa-check"></i> Duyệt
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" onclick="rejectReview(2)">
-                                        <i class="fas fa-times"></i> Từ chối
-                                    </button>
-                                    <button class="btn btn-sm btn-info" onclick="replyReview(2)">
-                                        <i class="fas fa-reply"></i> Phản hồi
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="list-group-item">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div class="flex-grow-1">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <strong class="me-3">Lê Văn C</strong>
-                                        <span class="text-warning">
-                                            ★★☆☆☆
-                                        </span>
-                                        <span class="badge bg-danger ms-2">Từ chối</span>
-                                        <small class="text-muted ms-3">13/12/2024 | Phòng Standard 105</small>
-                                    </div>
-                                    <p class="mb-2">Phòng có mùi ẩm mốc, điều hòa không hoạt động tốt. Rất thất vọng với chất lượng dịch vụ.</p>
-                                    <div class="mb-2">
-                                        <span class="badge bg-light text-dark me-1">Vệ sinh: 2/5</span>
-                                        <span class="badge bg-light text-dark me-1">Tiện nghi: 2/5</span>
-                                        <span class="badge bg-light text-dark">Dịch vụ: 3/5</span>
-                                    </div>
-                                    <div class="alert alert-danger p-2 mt-2">
-                                        <small><strong>Phản hồi:</strong> Chúng tôi xin lỗi về trải nghiệm không tốt. Đã kiểm tra và sửa chữa phòng 105. Mong quý khách cho cơ hội để cải thiện.</small>
-                                    </div>
-                                </div>
-                                <div class="btn-group-vertical">
-                                    <button class="btn btn-sm btn-success" onclick="approveReview(3)">
-                                        <i class="fas fa-check"></i> Duyệt
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" onclick="rejectReview(3)">
-                                        <i class="fas fa-times"></i> Từ chối
-                                    </button>
-                                    <button class="btn btn-sm btn-info" onclick="replyReview(3)">
-                                        <i class="fas fa-reply"></i> Phản hồi
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="list-group-item">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div class="flex-grow-1">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <strong class="me-3">Phạm Thị D</strong>
-                                        <span class="text-warning">
-                                            ★★★★★
-                                        </span>
-                                        <span class="badge bg-success ms-2">Đã duyệt</span>
-                                        <small class="text-muted ms-3">12/12/2024 | Tổng thể</small>
-                                    </div>
-                                    <p class="mb-2">Lần đầu tiên tôi có trải nghiệm tuyệt vời như vậy! Từ nhận phòng đến check-out đều hoàn hảo. Đặc biệt là bữa sáng rất ngon và đa dạng.</p>
-                                    <div class="mb-2">
-                                        <span class="badge bg-light text-dark me-1">Tổng thể: 5/5</span>
-                                        <span class="badge bg-light text-dark me-1">Ẩm thực: 5/5</span>
-                                        <span class="badge bg-light text-dark">Staff: 5/5</span>
-                                    </div>
-                                    <div class="alert alert-success p-2 mt-2">
-                                        <small><strong>Phản hồi:</strong> Cảm ơn quý khách đã dành thời gian đánh giá! Chúng tôi rất vui khi mang lại trải nghiệm tuyệt vời cho quý khách.</small>
-                                    </div>
-                                </div>
-                                <div class="btn-group-vertical">
-                                    <button class="btn btn-sm btn-success" onclick="approveReview(4)" disabled>
-                                        <i class="fas fa-check"></i> Đã duyệt
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" onclick="rejectReview(4)">
-                                        <i class="fas fa-times"></i> Từ chối
-                                    </button>
-                                    <button class="btn btn-sm btn-info" onclick="replyReview(4)">
-                                        <i class="fas fa-reply"></i> Phản hồi
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pagination -->
-            <nav aria-label="Page navigation" class="mt-4">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item disabled">
-                        <span class="page-link">Trước</span>
-                    </li>
-                    <li class="page-item active">
-                        <span class="page-link">1</span>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">2</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">3</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">Sau</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
+        <?php endif; ?>
     </div>
 </div>
 
-<!-- Reply Modal -->
-<div class="modal fade" id="replyModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Phản hồi đánh giá</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form id="replyForm">
-                    <input type="hidden" id="reviewId">
-                    <div class="mb-3">
-                        <label for="replyContent" class="form-label">Nội dung phản hồi</label>
-                        <textarea class="form-control" id="replyContent" rows="4" 
-                                  placeholder="Nhập phản hồi của bạn..."></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                <button type="button" class="btn btn-primary" onclick="submitReply()">Gửi phản hồi</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-function approveReview(id) {
-    if (confirm('Bạn có chắc chắn muốn duyệt đánh giá này?')) {
-        // Ajax request to approve review
-        console.log('Approving review with ID: ' + id);
-    }
-}
-
-function rejectReview(id) {
-    if (confirm('Bạn có chắc chắn muốn từ chối đánh giá này?')) {
-        // Ajax request to reject review
-        console.log('Rejecting review with ID: ' + id);
-    }
-}
-
-function replyReview(id) {
-    document.getElementById('reviewId').value = id;
-    document.getElementById('replyContent').value = '';
-    new bootstrap.Modal(document.getElementById('replyModal')).show();
-}
-
-function submitReply() {
-    const reviewId = document.getElementById('reviewId').value;
-    const content = document.getElementById('replyContent').value;
-    
-    if (!content.trim()) {
-        alert('Vui lòng nhập nội dung phản hồi!');
-        return;
-    }
-    
-    // Ajax request to submit reply
-    console.log('Submitting reply for review ID: ' + reviewId);
-    console.log('Reply content: ' + content);
-    
-    // Close modal
-    bootstrap.Modal.getInstance(document.getElementById('replyModal')).hide();
-}
-
-// Search and filter functionality
-document.getElementById('searchInput').addEventListener('input', function() {
-    // Implement search logic
-});
-
-document.getElementById('ratingFilter').addEventListener('change', function() {
-    // Implement rating filter logic
-});
-
-document.getElementById('statusFilter').addEventListener('change', function() {
-    // Implement status filter logic
-});
-
-document.getElementById('typeFilter').addEventListener('change', function() {
-    // Implement type filter logic
-});
-
-document.getElementById('dateFilter').addEventListener('change', function() {
-    // Implement date filter logic
-});
-</script>
+<?php
+$content = ob_get_clean();
+include __DIR__ . '/../../layouts/admin.php';
+?>

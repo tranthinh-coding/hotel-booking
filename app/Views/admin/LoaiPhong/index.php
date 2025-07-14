@@ -22,8 +22,11 @@ ob_start();
                             case 'updated':
                                 echo 'Loại phòng đã được cập nhật thành công!';
                                 break;
-                            case 'deleted':
-                                echo 'Loại phòng đã được xóa thành công!';
+                            case 'deactivated':
+                                echo 'Loại phòng đã được ngừng hoạt động thành công!';
+                                break;
+                            case 'reactivated':
+                                echo 'Loại phòng đã được kích hoạt lại thành công!';
                                 break;
                             default:
                                 echo 'Thao tác thành công!';
@@ -49,10 +52,10 @@ ob_start();
                                 echo 'Loại phòng không tìm thấy!';
                                 break;
                             case 'hasrooms':
-                                echo 'Không thể xóa loại phòng này vì vẫn còn phòng đang sử dụng loại phòng này!';
+                                echo 'Không thể ngừng hoạt động loại phòng này vì vẫn còn phòng đang hoạt động!';
                                 break;
-                            case 'deletefailed':
-                                echo 'Có lỗi xảy ra khi xóa loại phòng!';
+                            case 'deactivate_failed':
+                                echo 'Có lỗi xảy ra khi ngừng hoạt động loại phòng!';
                                 break;
                             default:
                                 echo 'Có lỗi xảy ra, vui lòng thử lại!';
@@ -79,6 +82,69 @@ ob_start();
                 <i class="fas fa-plus mr-2"></i>
                 Thêm loại phòng
             </a>
+        </div>
+    </div>
+
+    <!-- Thống kê tổng quan -->
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-layer-group text-blue-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-600">Tổng loại phòng</p>
+                    <p class="text-2xl font-bold text-gray-900"><?= $stats['total'] ?? 0 ?></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-600">Đang hoạt động</p>
+                    <p class="text-2xl font-bold text-gray-900"><?= $stats['active'] ?? 0 ?></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-power-off text-red-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-600">Ngừng hoạt động</p>
+                    <p class="text-2xl font-bold text-gray-900"><?= $stats['inactive'] ?? 0 ?></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-bed text-purple-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-600">Tổng phòng</p>
+                    <p class="text-2xl font-bold text-gray-900"><?= $stats['total_rooms'] ?? 0 ?></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-exclamation-triangle text-yellow-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-600">Chưa có phòng</p>
+                    <p class="text-2xl font-bold text-gray-900"><?= $stats['empty_types'] ?? 0 ?></p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -185,18 +251,33 @@ ob_start();
 
                             <div class="flex justify-between items-center">
                                 <div class="flex space-x-2">
+                                    <a href="/admin/loai-phong/show?id=<?= $loaiPhong->ma_loai_phong ?? '' ?>"
+                                        class="text-green-600 hover:text-green-800 text-sm font-medium">
+                                        <i class="fas fa-eye mr-1"></i>Xem
+                                    </a>
                                     <a href="/admin/loai-phong/edit?id=<?= $loaiPhong->ma_loai_phong ?? '' ?>"
                                         class="text-blue-600 hover:text-blue-800 text-sm font-medium">
                                         <i class="fas fa-edit mr-1"></i>Sửa
                                     </a>
-                                    <button onclick="deleteRoomType('<?= $loaiPhong->ma_loai_phong ?? '' ?>')"
-                                        class="text-red-600 hover:text-red-800 text-sm font-medium">
-                                        <i class="fas fa-trash mr-1"></i>Xóa
-                                    </button>
+                                    <?php if (($loaiPhong->trang_thai ?? 'hoat_dong') === 'hoat_dong'): ?>
+                                        <button onclick="deactivateRoomType('<?= $loaiPhong->ma_loai_phong ?? '' ?>')"
+                                            class="text-red-600 hover:text-red-800 text-sm font-medium">
+                                            <i class="fas fa-power-off mr-1"></i>Ngừng hoạt động
+                                        </button>
+                                    <?php else: ?>
+                                        <button onclick="reactivateRoomType('<?= $loaiPhong->ma_loai_phong ?? '' ?>')"
+                                            class="text-green-600 hover:text-green-800 text-sm font-medium">
+                                            <i class="fas fa-power-off mr-1"></i>Kích hoạt lại
+                                        </button>
+                                    <?php endif; ?>
                                 </div>
-                                <span
-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    Hoạt động
+                                <?php 
+                                $trangThai = $loaiPhong->trang_thai ?? 'hoat_dong';
+                                $statusColor = $trangThai === 'hoat_dong' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+                                $statusLabel = $trangThai === 'hoat_dong' ? 'Hoạt động' : 'Ngừng hoạt động';
+                                ?>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <?= $statusColor ?>">
+                                    <?= $statusLabel ?>
                                 </span>
                             </div>
                         </div>
@@ -236,14 +317,29 @@ ob_start();
 </div>
 
 <script>
-    function deleteRoomType(id) {
-        if (confirm('Bạn có chắc chắn muốn xóa loại phòng này?')) {
-            // Tạo form ẩn để submit
+    function deactivateRoomType(id) {
+        if (confirm('🔴 Bạn có chắc chắn muốn ngừng hoạt động loại phòng này?\n\nLoại phòng sẽ được đánh dấu là "Ngừng hoạt động" và:\n• Không thể tạo phòng mới với loại này\n• Vẫn giữ nguyên tất cả dữ liệu\n• Có thể kích hoạt lại bất cứ lúc nào')) {
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = '/admin/loai-phong/delete';
+            form.action = '/admin/loai-phong/deactivate';
 
-            // Thêm hidden input cho ID
+            const idInput = document.createElement('input');
+            idInput.type = 'hidden';
+            idInput.name = 'id';
+            idInput.value = id;
+            form.appendChild(idInput);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+    function reactivateRoomType(id) {
+        if (confirm('🟢 Bạn có chắc chắn muốn kích hoạt lại loại phòng này?\n\nLoại phòng sẽ được đánh dấu là "Hoạt động" và có thể được sử dụng trở lại.')) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/admin/loai-phong/reactivate';
+
             const idInput = document.createElement('input');
             idInput.type = 'hidden';
             idInput.name = 'id';

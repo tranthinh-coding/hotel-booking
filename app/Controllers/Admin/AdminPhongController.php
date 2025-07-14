@@ -76,32 +76,14 @@ class AdminPhongController
             }
         });
         
-        // Get statistics
-        $allPhongs = Phong::all();
+        // Get statistics using SQL queries instead of PHP filtering
         $stats = [
-            'total' => count($allPhongs),
-            'available' => 0,
-            'cleaning' => 0,
-            'maintenance' => 0,
-            'deactivated' => 0
+            'total' => Phong::newQuery()->count(),
+            'available' => Phong::where('trang_thai', \HotelBooking\Enums\TrangThaiPhong::CON_TRONG)->count(),
+            'cleaning' => Phong::where('trang_thai', \HotelBooking\Enums\TrangThaiPhong::DANG_DON_DEP)->count(),
+            'maintenance' => Phong::where('trang_thai', \HotelBooking\Enums\TrangThaiPhong::BAO_TRI)->count(),
+            'deactivated' => Phong::where('trang_thai', \HotelBooking\Enums\TrangThaiPhong::NGUNG_HOAT_DONG)->count()
         ];
-        
-        foreach ($allPhongs as $phong) {
-            switch ($phong->trang_thai) {
-                case \HotelBooking\Enums\TrangThaiPhong::CON_TRONG:
-                    $stats['available']++;
-                    break;
-                case \HotelBooking\Enums\TrangThaiPhong::BAO_TRI:
-                    $stats['maintenance']++;
-                    break;
-                case \HotelBooking\Enums\TrangThaiPhong::DANG_DON_DEP:
-                    $stats['cleaning']++;
-                    break;
-                case \HotelBooking\Enums\TrangThaiPhong::NGUNG_HOAT_DONG:
-                    $stats['deactivated']++;
-                    break;
-            }
-        }
         
         // Get room types for filter
         $loaiPhongs = LoaiPhong::all();
@@ -127,9 +109,6 @@ class AdminPhongController
         $tenPhong = trim(post('ten_phong', ''));
         $maLoaiPhong = post('ma_loai_phong', null);
         $gia = post('gia', 0);
-        
-        // Debug - Log received data
-        error_log("Received data: ten_phong=" . $tenPhong . ", ma_loai_phong=" . $maLoaiPhong . ", gia=" . $gia);
         
         if (empty($tenPhong)) {
             $errors[] = 'Tên phòng không được để trống';
@@ -170,9 +149,6 @@ class AdminPhongController
             $phong = Phong::create($data);
             $maPhong = $phong->ma_phong;
 
-            // Debug - Log the room ID
-            error_log("Created room with ID: " . $maPhong);
-
             // Xử lý upload nhiều ảnh
             if (isset($_FILES['hinh_anh']) && is_array($_FILES['hinh_anh']['name'])) {
                 $uploadedImages = [];
@@ -204,9 +180,6 @@ class AdminPhongController
                         if ($fileName) {
                             $uploadedImages[] = $fileName;
                             
-                            // Debug - Log before inserting image
-                            error_log("Inserting image for room ID: " . $maPhong . ", filename: " . $fileName);
-                            
                             // Lưu vào bảng hinh_anh
                             HinhAnh::create([
                                 'ma_phong' => (int)$maPhong,
@@ -228,8 +201,6 @@ class AdminPhongController
                     deleteFile($uploadedFile);
                 }
             }
-
-            error_log("Error creating room: " . $e->getMessage());
             redirect('/admin/phong/create?error=' . urlencode('Có lỗi xảy ra khi tạo phòng: ' . $e->getMessage()));
         }
     }
@@ -250,7 +221,7 @@ class AdminPhongController
         
         view('Admin.Phong.edit', [
             'phong' => $phong, 
-            'loaiPhongs' => $loaiPhongs
+            'loaiPhongs' => $loaiPhongs ?: []
         ]);
     }
 
@@ -275,7 +246,7 @@ class AdminPhongController
         ];
 
         $phong->update($data);
-        redirect('/admin/phong?success=updated');
+        redirect('/admin/phong/show?id=' . $id . '&success=updated');
     }
 
     public function show()
@@ -353,7 +324,6 @@ class AdminPhongController
             
             redirect('/admin/phong?success=deactivated');
         } catch (Exception $e) {
-            error_log("Error deactivating room: " . $e->getMessage());
             redirect('/admin/phong?error=deactivate_failed');
         }
     }
@@ -380,8 +350,84 @@ class AdminPhongController
             
             redirect('/admin/phong?success=reactivated');
         } catch (Exception $e) {
-            error_log("Error reactivating room: " . $e->getMessage());
             redirect('/admin/phong?error=reactivate_failed');
+        }
+    }
+
+    /**
+     * Add image to room
+     */
+    public function addImage()
+    {
+        try {
+            $maPhong = post('ma_phong');
+            
+            if (!$maPhong) {
+                redirect('/admin/phong?error=missing_id');
+                return;
+            }
+
+            // Check if room exists
+            $phong = Phong::find($maPhong);
+            if (!$phong) {
+                redirect('/admin/phong?error=notfound');
+                return;
+            }
+
+            // Check if file was uploaded
+            if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+                redirect("/admin/phong/show?id={$maPhong}&error=upload_failed");
+                return;
+            }
+
+            // Validate and save file
+            $fileName = saveFile($_FILES['image']);
+            if (!$fileName) {
+                redirect("/admin/phong/show?id={$maPhong}&error=invalid_file");
+                return;
+            }
+
+            // Create image record
+            HinhAnh::create([
+                'ma_phong' => $maPhong,
+                'anh' => $fileName
+            ]);
+
+            redirect("/admin/phong/show?id={$maPhong}&success=image_added");
+        } catch (Exception $e) {
+            $maPhong = post('ma_phong');
+            redirect("/admin/phong/show?id={$maPhong}&error=add_image_failed");
+        }
+    }
+
+    /**
+     * Delete room image
+     */
+    public function deleteImage()
+    {
+        try {
+            $imageId = post('image_id');
+            $maPhong = post('ma_phong');
+            
+            if (!$imageId) {
+                redirect("/admin/phong/show?id={$maPhong}&error=missing_image_id");
+                return;
+            }
+
+            // Find the image
+            $image = HinhAnh::find($imageId);
+            if (!$image) {
+                redirect("/admin/phong/show?id={$maPhong}&error=image_not_found");
+                return;
+            }
+
+            // Delete the image file and record
+            $image->deleteWithFile();
+
+            redirect("/admin/phong/show?id={$maPhong}&success=image_deleted");
+        } catch (Exception $e) {
+            $maPhong = post('ma_phong');
+            redirect("/admin/phong/show?id={$maPhong}&error=delete_image_failed");
         }
     }
 }

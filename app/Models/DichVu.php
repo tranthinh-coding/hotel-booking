@@ -6,6 +6,8 @@ namespace HotelBooking\Models;
  * @property int $ma_dich_vu
  * @property string $ten_dich_vu
  * @property int $gia
+ * @property string $trang_thai
+ * @property string $hinh_anh
  */
 class DichVu extends Model
 {
@@ -16,5 +18,7 @@ class DichVu extends Model
         'ma_dich_vu',
         'ten_dich_vu',
         'gia',
+        'trang_thai',
+        'hinh_anh',
     ];
 }

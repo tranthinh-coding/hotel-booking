@@ -5,30 +5,220 @@ ob_start();
 ?>
 
 <div class="space-y-6">
-    <!-- Header Actions -->
+    <!-- Breadcrumb -->
     <div class="flex justify-between items-center">
-        <div>
-            <nav class="text-sm text-gray-500">
-                <a href="/admin/dashboard" class="hover:text-gray-700">Dashboard</a>
-                <span class="mx-2">/</span>
-                <span class="text-gray-900">Dịch vụ</span>
-            </nav>
+        <nav class="text-sm text-gray-500">
+            <a href="/admin/dashboard" class="hover:text-gray-700">Dashboard</a>
+            <span class="mx-2">/</span>
+            <span class="text-gray-900">Quản lý Dịch vụ</span>
+        </nav>
+        <a href="/admin/dich-vu/create"
+            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
+            <i class="fas fa-plus mr-2"></i>
+            Thêm dịch vụ
+        </a>
+    </div>
+
+    <!-- Thông báo -->
+    <?php if (isset($_GET['success'])): ?>
+        <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+            <div class="flex items-center">
+                <i class="fas fa-check-circle mr-2"></i>
+                <span>
+                    <?php
+                    switch ($_GET['success']) {
+                        case 'created':
+                            echo 'Tạo dịch vụ thành công!';
+                            break;
+                        case 'updated':
+                            echo 'Cập nhật dịch vụ thành công!';
+                            break;
+                        case 'deleted':
+                            echo 'Xóa dịch vụ thành công!';
+                            break;
+                        default:
+                            echo 'Thao tác thành công!';
+                    }
+                    ?>
+                </span>
+            </div>
         </div>
-        <div>
-            <a href="/admin/dich-vu/create" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
-                <i class="fas fa-plus mr-2"></i>
-                Thêm dịch vụ
-            </a>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['error'])): ?>
+        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+            <div class="flex items-center">
+                <i class="fas fa-exclamation-triangle mr-2"></i>
+                <span>
+                    <?php
+                    switch ($_GET['error']) {
+                        case 'notfound':
+                            echo 'Dịch vụ không tồn tại!';
+                            break;
+                        case 'validation':
+                            echo 'Dữ liệu không hợp lệ!';
+                            break;
+                        default:
+                            echo 'Có lỗi xảy ra!';
+                    }
+                    ?>
+                </span>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <!-- Thống kê nhanh -->
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-concierge-bell text-blue-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-600">Tổng dịch vụ</p>
+                    <p class="text-2xl font-bold text-gray-900"><?= $stats['total'] ?? 0 ?></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-600">Đang hoạt động</p>
+                    <p class="text-2xl font-bold text-gray-900"><?= $stats['active'] ?? 0 ?></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-times-circle text-red-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-600">Ngừng hoạt động</p>
+                    <p class="text-2xl font-bold text-gray-900"><?= $stats['inactive'] ?? 0 ?></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-chart-line text-yellow-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-600">Giá trung bình</p>
+                    <p class="text-xl font-bold text-gray-900"><?= number_format($stats['avg_price'] ?? 0, 0, ',', '.') ?>₫</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-crown text-purple-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-600">Giá cao nhất</p>
+                    <p class="text-xl font-bold text-gray-900"><?= number_format($stats['max_price'] ?? 0, 0, ',', '.') ?>₫</p>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Services Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <?php if (!empty($dichVus)): ?>
+    <!-- Bộ lọc -->
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <form method="GET" class="space-y-4">
+            <!-- Hàng đầu tiên: 4 cột tìm kiếm -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tìm kiếm</label>
+                    <input type="text" name="search" placeholder="Tên dịch vụ..."
+                        value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Trạng thái</label>
+                    <select name="trang_thai"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Tất cả</option>
+                        <?php
+                        $trangThaiList = \HotelBooking\Enums\TrangThaiDichVu::all();
+                        foreach ($trangThaiList as $status): ?>
+                            <option value="<?= $status ?>" <?= ($_GET['trang_thai'] ?? '') === $status ? 'selected' : '' ?>>
+                                <?= \HotelBooking\Enums\TrangThaiDichVu::getLabel($status) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Giá từ</label>
+                    <input type="number" name="min_price" placeholder="0"
+                        value="<?= htmlspecialchars($_GET['min_price'] ?? '') ?>"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Giá đến</label>
+                    <input type="number" name="max_price" placeholder="1000000"
+                        value="<?= htmlspecialchars($_GET['max_price'] ?? '') ?>"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+            </div>
+            <!-- Hàng thứ hai: Sắp xếp và nút bấm -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Sắp xếp</label>
+                    <select name="sort"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="ten_dich_vu" <?= ($_GET['sort'] ?? '') === 'ten_dich_vu' ? 'selected' : '' ?>>Tên dịch vụ</option>
+                        <option value="gia" <?= ($_GET['sort'] ?? '') === 'gia' ? 'selected' : '' ?>>Giá dịch vụ</option>
+                        <option value="ma_dich_vu" <?= ($_GET['sort'] ?? '') === 'ma_dich_vu' ? 'selected' : '' ?>>Mã dịch vụ</option>
+                    </select>
+                </div>
+                <div class="md:col-span-3 flex justify-end items-end space-x-3">
+                    <a href="/admin/dich-vu"
+                        class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors inline-flex items-center">
+                        <i class="fas fa-times mr-2"></i>Xóa lọc
+                    </a>
+                    <button type="submit"
+                        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
+                        <i class="fas fa-search mr-2"></i>Lọc
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Danh sách dịch vụ -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <?php if (isNotEmpty($dichVus)): ?>
             <?php foreach ($dichVus as $dichVu): ?>
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300">
-                    <div class="h-48 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                        <i class="fas fa-concierge-bell text-6xl text-white opacity-80"></i>
+                    <div class="h-48 bg-gray-200">
+                        <?php if (isNotEmpty($dichVu->hinh_anh)): ?>
+                            <?php $imageUrl = getFileUrl($dichVu->hinh_anh); ?>
+                            <?php if ($imageUrl): ?>
+                                <img src="<?= htmlspecialchars($imageUrl) ?>" 
+                                     alt="<?= htmlspecialchars($dichVu->ten_dich_vu) ?>"
+                                     class="w-full h-full object-cover"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600" style="display: none;">
+                                    <i class="fas fa-concierge-bell text-6xl text-white opacity-80"></i>
+                                </div>
+                            <?php else: ?>
+                                <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
+                                    <i class="fas fa-concierge-bell text-6xl text-white opacity-80"></i>
+                                </div>
+                            <?php endif; ?>
+                        <?php else: ?>
+                            <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
+                                <i class="fas fa-concierge-bell text-6xl text-white opacity-80"></i>
+                            </div>
+                        <?php endif; ?>
                     </div>
                     
                     <div class="p-6">
@@ -36,8 +226,8 @@ ob_start();
                             <h3 class="text-xl font-semibold text-gray-900 mb-2">
                                 <?= htmlspecialchars($dichVu->ten_dich_vu ?? $dichVu['ten_dich_vu']) ?>
                             </h3>
-                            <p class="text-gray-600">
-                                Mã dịch vụ: <span class="font-medium"><?= htmlspecialchars($dichVu->ma_dich_vu ?? $dichVu['ma_dich_vu']) ?></span>
+                            <p class="text-gray-600 text-sm">
+                                Mã: <span class="font-medium"><?= htmlspecialchars($dichVu->ma_dich_vu ?? $dichVu['ma_dich_vu']) ?></span>
                             </p>
                         </div>
 
@@ -51,18 +241,23 @@ ob_start();
                         </div>
 
                         <div class="flex justify-between items-center">
-                            <div class="flex space-x-2">
-                                <a href="/admin/dich-vu/edit/<?= $dichVu->ma_dich_vu ?? $dichVu['ma_dich_vu'] ?>" 
-                                   class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                            <div class="flex space-x-3">
+                                <a href="/admin/dich-vu/show?id=<?= $dichVu->ma_dich_vu ?? $dichVu['ma_dich_vu'] ?>" 
+                                   class="text-green-600 hover:text-green-800 text-sm font-medium inline-flex items-center">
+                                    <i class="fas fa-eye mr-1"></i>Xem
+                                </a>
+                                <a href="/admin/dich-vu/edit?id=<?= $dichVu->ma_dich_vu ?? $dichVu['ma_dich_vu'] ?>" 
+                                   class="text-blue-600 hover:text-blue-800 text-sm font-medium inline-flex items-center">
                                     <i class="fas fa-edit mr-1"></i>Sửa
                                 </a>
-                                <button onclick="deleteService('<?= $dichVu->ma_dich_vu ?? $dichVu['ma_dich_vu'] ?>')" 
-                                        class="text-red-600 hover:text-red-800 text-sm font-medium">
-                                    <i class="fas fa-trash mr-1"></i>Xóa
-                                </button>
                             </div>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                Hoạt động
+                            <?php
+                            $status = $dichVu->trang_thai ?? \HotelBooking\Enums\TrangThaiDichVu::HOAT_DONG;
+                            $statusClass = \HotelBooking\Enums\TrangThaiDichVu::getColor($status);
+                            $statusLabel = \HotelBooking\Enums\TrangThaiDichVu::getLabel($status);
+                            ?>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <?= $statusClass ?>">
+                                <?= $statusLabel ?>
                             </span>
                         </div>
                     </div>
@@ -85,312 +280,9 @@ ob_start();
     </div>
 </div>
 
-<script>
-function deleteService(id) {
-    if (confirm('Bạn có chắc chắn muốn xóa dịch vụ này?')) {
-        fetch(`/admin/dich-vu/delete/${id}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
-        .then(response => {
-            if (response.ok) {
-                location.reload();
-            } else {
-                alert('Có lỗi xảy ra khi xóa dịch vụ');
-            }
-        })
-        .catch(error => {
-            alert('Có lỗi xảy ra khi xóa dịch vụ');
-        });
-    }
-}
-</script>
-
 <?php
 $content = ob_get_clean();
 include __DIR__ . '/../../layouts/admin.php';
 ?>
-            <div class="row mb-3">
-                <div class="col-md-4">
-                    <input type="text" class="form-control" placeholder="Tìm kiếm dịch vụ..." id="searchInput">
-                </div>
-                <div class="col-md-3">
-                    <select class="form-select" id="categoryFilter">
-                        <option value="">Tất cả danh mục</option>
-                        <option value="ansung">Ăn uống</option>
-                        <option value="giaitat">Giải trí</option>
-                        <option value="thetao">Thể thao</option>
-                        <option value="spa">Spa & Wellness</option>
-                        <option value="khac">Khác</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <select class="form-select" id="statusFilter">
-                        <option value="">Tất cả trạng thái</option>
-                        <option value="active">Hoạt động</option>
-                        <option value="inactive">Tạm dừng</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <select class="form-select" id="priceFilter">
-                        <option value="">Tất cả giá</option>
-                        <option value="free">Miễn phí</option>
-                        <option value="paid">Có phí</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100">
-                        <img src="https://via.placeholder.com/400x250/007bff/ffffff?text=Restaurant" 
-                             class="card-img-top" alt="Restaurant Service">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">Nhà hàng cao cấp</h5>
-                            <p class="card-text">Thưởng thức các món ăn tinh tế từ đầu bếp 5 sao với view tuyệt đẹp hướng biển.</p>
-                            <div class="mt-auto">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="text-success fw-bold">500,000 VNĐ/người</span>
-                                    <span class="badge bg-success">Hoạt động</span>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="badge bg-primary">Ăn uống</span>
-                                    <small class="text-muted">
-                                        <i class="fas fa-clock"></i> 6:00 - 23:00
-                                    </small>
-                                </div>
-                                <div class="btn-group w-100" role="group">
-                                    <a href="/admin/dichvu/show/1" class="btn btn-info btn-sm">
-                                        <i class="fas fa-eye"></i> Xem
-                                    </a>
-                                    <a href="/admin/dichvu/edit/1" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-edit"></i> Sửa
-                                    </a>
-                                    <button class="btn btn-danger btn-sm" onclick="deleteService(1)">
-                                        <i class="fas fa-trash"></i> Xóa
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100">
-                        <img src="https://via.placeholder.com/400x250/28a745/ffffff?text=Spa" 
-                             class="card-img-top" alt="Spa Service">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">Spa & Massage</h5>
-                            <p class="card-text">Dịch vụ spa thư giãn với các liệu pháp massage truyền thống và hiện đại.</p>
-                            <div class="mt-auto">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="text-success fw-bold">800,000 VNĐ/90 phút</span>
-                                    <span class="badge bg-success">Hoạt động</span>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="badge bg-info">Spa & Wellness</span>
-                                    <small class="text-muted">
-                                        <i class="fas fa-clock"></i> 9:00 - 21:00
-                                    </small>
-                                </div>
-                                <div class="btn-group w-100" role="group">
-                                    <a href="/admin/dichvu/show/2" class="btn btn-info btn-sm">
-                                        <i class="fas fa-eye"></i> Xem
-                                    </a>
-                                    <a href="/admin/dichvu/edit/2" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-edit"></i> Sửa
-                                    </a>
-                                    <button class="btn btn-danger btn-sm" onclick="deleteService(2)">
-                                        <i class="fas fa-trash"></i> Xóa
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100">
-                        <img src="https://via.placeholder.com/400x250/ffc107/ffffff?text=Pool" 
-                             class="card-img-top" alt="Pool Service">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">Hồ bơi vô cực</h5>
-                            <p class="card-text">Hồ bơi ngoài trời với view 360 độ, mở cửa 24/7 cho khách lưu trú.</p>
-                            <div class="mt-auto">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="text-success fw-bold">Miễn phí</span>
-                                    <span class="badge bg-success">Hoạt động</span>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="badge bg-warning text-dark">Thể thao</span>
-                                    <small class="text-muted">
-                                        <i class="fas fa-clock"></i> 24/7
-                                    </small>
-                                </div>
-                                <div class="btn-group w-100" role="group">
-                                    <a href="/admin/dichvu/show/3" class="btn btn-info btn-sm">
-                                        <i class="fas fa-eye"></i> Xem
-                                    </a>
-                                    <a href="/admin/dichvu/edit/3" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-edit"></i> Sửa
-                                    </a>
-                                    <button class="btn btn-danger btn-sm" onclick="deleteService(3)">
-                                        <i class="fas fa-trash"></i> Xóa
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100">
-                        <img src="https://via.placeholder.com/400x250/6f42c1/ffffff?text=Gym" 
-                             class="card-img-top" alt="Gym Service">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">Phòng gym hiện đại</h5>
-                            <p class="card-text">Phòng tập gym với trang thiết bị hiện đại và huấn luyện viên cá nhân.</p>
-                            <div class="mt-auto">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="text-success fw-bold">200,000 VNĐ/ngày</span>
-                                    <span class="badge bg-warning text-dark">Tạm dừng</span>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="badge bg-warning text-dark">Thể thao</span>
-                                    <small class="text-muted">
-                                        <i class="fas fa-clock"></i> 6:00 - 22:00
-                                    </small>
-                                </div>
-                                <div class="btn-group w-100" role="group">
-                                    <a href="/admin/dichvu/show/4" class="btn btn-info btn-sm">
-                                        <i class="fas fa-eye"></i> Xem
-                                    </a>
-                                    <a href="/admin/dichvu/edit/4" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-edit"></i> Sửa
-                                    </a>
-                                    <button class="btn btn-danger btn-sm" onclick="deleteService(4)">
-                                        <i class="fas fa-trash"></i> Xóa
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100">
-                        <img src="https://via.placeholder.com/400x250/e83e8c/ffffff?text=Transfer" 
-                             class="card-img-top" alt="Transfer Service">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">Đưa đón sân bay</h5>
-                            <p class="card-text">Dịch vụ đưa đón sân bay 24/7 với xe sang trọng và tài xế chuyên nghiệp.</p>
-                            <div class="mt-auto">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="text-success fw-bold">1,000,000 VNĐ/chuyến</span>
-                                    <span class="badge bg-success">Hoạt động</span>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="badge bg-secondary">Khác</span>
-                                    <small class="text-muted">
-                                        <i class="fas fa-clock"></i> 24/7
-                                    </small>
-                                </div>
-                                <div class="btn-group w-100" role="group">
-                                    <a href="/admin/dichvu/show/5" class="btn btn-info btn-sm">
-                                        <i class="fas fa-eye"></i> Xem
-                                    </a>
-                                    <a href="/admin/dichvu/edit/5" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-edit"></i> Sửa
-                                    </a>
-                                    <button class="btn btn-danger btn-sm" onclick="deleteService(5)">
-                                        <i class="fas fa-trash"></i> Xóa
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100">
-                        <img src="https://via.placeholder.com/400x250/20c997/ffffff?text=Karaoke" 
-                             class="card-img-top" alt="Karaoke Service">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">Karaoke VIP</h5>
-                            <p class="card-text">Phòng karaoke VIP với âm thanh chất lượng cao và hệ thống đèn hiện đại.</p>
-                            <div class="mt-auto">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="text-success fw-bold">300,000 VNĐ/giờ</span>
-                                    <span class="badge bg-success">Hoạt động</span>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="badge bg-success">Giải trí</span>
-                                    <small class="text-muted">
-                                        <i class="fas fa-clock"></i> 19:00 - 02:00
-                                    </small>
-                                </div>
-                                <div class="btn-group w-100" role="group">
-                                    <a href="/admin/dichvu/show/6" class="btn btn-info btn-sm">
-                                        <i class="fas fa-eye"></i> Xem
-                                    </a>
-                                    <a href="/admin/dichvu/edit/6" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-edit"></i> Sửa
-                                    </a>
-                                    <button class="btn btn-danger btn-sm" onclick="deleteService(6)">
-                                        <i class="fas fa-trash"></i> Xóa
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pagination -->
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item disabled">
-                        <span class="page-link">Trước</span>
-                    </li>
-                    <li class="page-item active">
-                        <span class="page-link">1</span>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">2</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">Sau</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </div>
-</div>
-
-<script>
-function deleteService(id) {
-    if (confirm('Bạn có chắc chắn muốn xóa dịch vụ này?')) {
-        // Ajax delete request here
-        console.log('Deleting service with ID: ' + id);
-    }
-}
-
-// Search functionality
-document.getElementById('searchInput').addEventListener('input', function() {
-    // Implement search logic
-});
-
-document.getElementById('categoryFilter').addEventListener('change', function() {
-    // Implement category filter logic
-});
-
-document.getElementById('statusFilter').addEventListener('change', function() {
-    // Implement status filter logic
-});
-
-document.getElementById('priceFilter').addEventListener('change', function() {
-    // Implement price filter logic
-});
-</script>
+ 
+ 

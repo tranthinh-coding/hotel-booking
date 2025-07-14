@@ -131,8 +131,6 @@ class AuthController
             $mailSender = new MailSender();
             $mailSender->sendWelcomeEmail($data['mail'], $data['ho_ten']);
         } catch (\Exception $e) {
-            error_log("Failed to send welcome email: " . $e->getMessage());
-            // Don't interrupt registration flow if email fails
         }
 
         clear_old_input();
@@ -254,7 +252,6 @@ class AuthController
                 flash_warning('Có lỗi khi gửi email. Link reset: <a href="/reset-password?token=' . $resetToken . '">Click để reset</a>');
             }
         } catch (\Exception $e) {
-            error_log("Failed to send password reset email: " . $e->getMessage());
             flash_warning('Có lỗi khi gửi email. Link reset: <a href="/reset-password?token=' . $resetToken . '">Click để reset</a>');
         }
         

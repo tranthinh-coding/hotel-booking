@@ -28,6 +28,66 @@ ob_start();
         </div>
     </div>
 
+    <!-- Thông báo -->
+    <?php if (isset($_GET['success'])): ?>
+        <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+            <div class="flex items-center">
+                <i class="fas fa-check-circle mr-2"></i>
+                <span>
+                    <?php
+                    switch ($_GET['success']) {
+                        case 'image_added':
+                            echo 'Thêm hình ảnh thành công!';
+                            break;
+                        case 'image_deleted':
+                            echo 'Xóa hình ảnh thành công!';
+                            break;
+                        case 'updated':
+                            echo 'Cập nhật thông tin phòng thành công!';
+                            break;
+                        default:
+                            echo 'Thao tác thành công!';
+                    }
+                    ?>
+                </span>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['error'])): ?>
+        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+            <div class="flex items-center">
+                <i class="fas fa-exclamation-triangle mr-2"></i>
+                <span>
+                    <?php
+                    switch ($_GET['error']) {
+                        case 'upload_failed':
+                            echo 'Upload hình ảnh thất bại!';
+                            break;
+                        case 'invalid_file':
+                            echo 'File không hợp lệ! Chỉ chấp nhận ảnh JPG, PNG, GIF, WebP.';
+                            break;
+                        case 'add_image_failed':
+                            echo 'Thêm hình ảnh thất bại! Vui lòng thử lại.';
+                            break;
+                        case 'image_not_found':
+                            echo 'Không tìm thấy hình ảnh!';
+                            break;
+                        case 'delete_image_failed':
+                            echo 'Xóa hình ảnh thất bại! Vui lòng thử lại.';
+                            break;
+                        case 'missing_image_id':
+                            echo 'Thiếu thông tin hình ảnh!';
+                            break;
+                        default:
+                            echo 'Có lỗi xảy ra!';
+                    }
+                    ?>
+                </span>
+            </div>
+        </div>
+    <?php endif; ?>
+
     <!-- Thông tin cơ bản -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100">
@@ -130,18 +190,29 @@ ob_start();
             <!-- Hình ảnh phòng -->
             <div>
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">Hình ảnh phòng</h3>
-                <?php if (!empty($hinhAnhs)): ?>
+                <?php if (!isEmpty($hinhAnhs)): ?>
                     <div class="grid grid-cols-2 gap-4">
                         <?php foreach ($hinhAnhs as $index => $hinhAnh): ?>
                             <div class="relative group">
-                                <img src="<?= htmlspecialchars($hinhAnh->duong_dan) ?>" 
+                                <img src="<?= htmlspecialchars($hinhAnh->getImageUrl()) ?>" 
                                      alt="Hình ảnh phòng" 
-                                     class="w-full h-32 object-cover rounded-lg">
+                                     class="w-full h-32 object-cover rounded-lg"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="w-full h-32 bg-gray-200 rounded-lg flex items-center justify-center" style="display: none;">
+                                    <i class="fas fa-image text-gray-400 text-2xl"></i>
+                                </div>
+                                <!-- Overlay with actions -->
                                 <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
-                                    <button onclick="viewImage('<?= htmlspecialchars($hinhAnh->duong_dan) ?>')" 
-                                            class="text-white hover:text-blue-300">
-                                        <i class="fas fa-expand text-xl"></i>
-                                    </button>
+                                    <div class="flex space-x-2">
+                                        <button onclick="viewImage('<?= htmlspecialchars($hinhAnh->getImageUrl()) ?>')" 
+                                                class="text-white hover:text-blue-300 p-2 bg-blue-600 rounded-lg">
+                                            <i class="fas fa-expand"></i>
+                                        </button>
+                                        <button onclick="confirmDeleteImage(<?= $hinhAnh->ma_hinh_anh ?>, '<?= htmlspecialchars($hinhAnh->anh) ?>')" 
+                                                class="text-white hover:text-red-300 p-2 bg-red-600 rounded-lg">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -152,6 +223,15 @@ ob_start();
                         <p>Chưa có hình ảnh cho phòng này</p>
                     </div>
                 <?php endif; ?>
+                
+                <!-- Nút thêm ảnh -->
+                <div class="mt-4">
+                    <button onclick="openAddImageModal()"
+                            class="w-full border-2 border-dashed border-gray-300 rounded-lg p-4 text-gray-500 hover:border-blue-500 hover:text-blue-500 transition-colors">
+                        <i class="fas fa-plus text-2xl mb-2"></i>
+                        <p>Thêm hình ảnh</p>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -198,6 +278,33 @@ ob_start();
     </div>
 </div>
 
+<!-- Modal thêm ảnh -->
+<div id="addImageModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-lg max-w-md w-full p-6">
+            <h3 class="text-lg font-semibold mb-4">Thêm hình ảnh phòng</h3>
+            <form id="addImageForm" method="POST" action="/admin/phong/add-image" enctype="multipart/form-data">
+                <input type="hidden" name="ma_phong" value="<?= $phong->ma_phong ?>">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Chọn hình ảnh</label>
+                    <input type="file" name="image" accept="image/*" required
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <p class="text-sm text-gray-500 mt-1">Chấp nhận: JPG, PNG, GIF, WebP (tối đa 5MB)</p>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeAddImageModal()"
+                            class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
+                        Hủy
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                        Thêm ảnh
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Modal đổi trạng thái -->
 <div id="statusModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
     <div class="flex items-center justify-center min-h-screen p-4">
@@ -240,6 +347,39 @@ function viewImage(src) {
 
 function closeImageModal() {
     document.getElementById('imageModal').classList.add('hidden');
+}
+
+function openAddImageModal() {
+    document.getElementById('addImageModal').classList.remove('hidden');
+}
+
+function closeAddImageModal() {
+    document.getElementById('addImageModal').classList.add('hidden');
+}
+
+function confirmDeleteImage(imageId, filename) {
+    if (confirm('🗑️ Bạn có chắc chắn muốn xóa hình ảnh này?\n\nHành động này không thể hoàn tác!')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/admin/phong/delete-image';
+        
+        // Add image ID as hidden input
+        const idInput = document.createElement('input');
+        idInput.type = 'hidden';
+        idInput.name = 'image_id';
+        idInput.value = imageId;
+        form.appendChild(idInput);
+        
+        // Add room ID for redirect
+        const roomInput = document.createElement('input');
+        roomInput.type = 'hidden';
+        roomInput.name = 'ma_phong';
+        roomInput.value = <?= $phong->ma_phong ?>;
+        form.appendChild(roomInput);
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
 }
 
 function changeRoomStatus(roomId) {
@@ -300,6 +440,12 @@ function confirmReactivate(roomId) {
 document.getElementById('imageModal').addEventListener('click', function(e) {
     if (e.target === this) {
         closeImageModal();
+    }
+});
+
+document.getElementById('addImageModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeAddImageModal();
     }
 });
 

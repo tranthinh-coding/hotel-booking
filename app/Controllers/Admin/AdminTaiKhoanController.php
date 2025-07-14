@@ -26,8 +26,71 @@ class AdminTaiKhoanController
 
     public function index()
     {
-        $taiKhoans = TaiKhoan::all();
-        view('Admin.TaiKhoan.index', ['taiKhoans' => $taiKhoans]);
+        // Get search parameters
+        $search = get('search', '');
+        $role = get('role', '');
+        $status = get('status', '');
+        $sort = get('sort', 'ngay_tao');
+
+        // Get all accounts
+        $allTaiKhoans = TaiKhoan::all();
+        $taiKhoans = $allTaiKhoans;
+        
+        // Apply search filter
+        if (!isEmpty($search)) {
+            $taiKhoans = array_filter($taiKhoans, function($tk) use ($search) {
+                return stripos($tk->ho_ten, $search) !== false ||
+                       stripos($tk->mail, $search) !== false ||
+                       stripos($tk->sdt ?? '', $search) !== false;
+            });
+        }
+
+        // Apply role filter
+        if (!isEmpty($role)) {
+            $taiKhoans = array_filter($taiKhoans, function($tk) use ($role) {
+                return $tk->phan_quyen === $role;
+            });
+        }
+
+        // Apply sorting
+        usort($taiKhoans, function($a, $b) use ($sort) {
+            if ($sort === 'ho_ten') {
+                return strcmp($a->ho_ten, $b->ho_ten);
+            } elseif ($sort === 'mail') {
+                return strcmp($a->mail, $b->mail);
+            } else {
+                return strtotime($b->ngay_tao ?? 'now') - strtotime($a->ngay_tao ?? 'now');
+            }
+        });
+
+        // Calculate statistics
+        $stats = [
+            'total' => count($allTaiKhoans),
+            'customers' => count(array_filter($allTaiKhoans, fn($tk) => $tk->phan_quyen === PhanQuyen::KHACH_HANG)),
+            'staff' => count(array_filter($allTaiKhoans, fn($tk) => $tk->phan_quyen === PhanQuyen::LE_TAN)),
+            'managers' => count(array_filter($allTaiKhoans, fn($tk) => $tk->phan_quyen === PhanQuyen::QUAN_LY)),
+        ];
+
+        view('Admin.TaiKhoan.index', [
+            'taiKhoans' => $taiKhoans,
+            'stats' => $stats
+        ]);
+    }
+
+    public function show()
+    {
+        $id = get('id');
+        if (!$id) {
+            redirect('/admin/tai-khoan?error=missing_id');
+        }
+
+        $taiKhoan = TaiKhoan::find($id);
+        
+        if (!$taiKhoan) {
+            redirect('/admin/tai-khoan?error=notfound');
+        }
+
+        view('Admin.TaiKhoan.show', ['taiKhoan' => $taiKhoan]);
     }
 
     public function create()
@@ -42,8 +105,9 @@ class AdminTaiKhoanController
             'mail' => post('mail', ''),
             'so_cccd' => post('so_cccd', ''),
             'sdt' => post('sdt', ''),
-            'phan_quyen' => post('phan_quyen', PhanQuyen::KHACH_HANG
-        )];
+            'phan_quyen' => post('phan_quyen', PhanQuyen::KHACH_HANG),
+            'ngay_tao' => date('Y-m-d H:i:s')
+        ];
 
         if (!empty($_POST['mat_khau'])) {
             $data['mat_khau'] = password_hash($_POST['mat_khau'], PASSWORD_DEFAULT);
@@ -53,8 +117,13 @@ class AdminTaiKhoanController
         redirect('/admin/tai-khoan?success=created');
     }
 
-    public function edit($id)
+    public function edit()
     {
+        $id = get('id');
+        if (!$id) {
+            redirect('/admin/tai-khoan?error=missing_id');
+        }
+
         $taiKhoan = TaiKhoan::find($id);
         
         if (!$taiKhoan) {
@@ -64,8 +133,13 @@ class AdminTaiKhoanController
         view('Admin.TaiKhoan.edit', ['taiKhoan' => $taiKhoan]);
     }
 
-    public function update($id)
+    public function update()
     {
+        $id = get('id');
+        if (!$id) {
+            redirect('/admin/tai-khoan?error=missing_id');
+        }
+
         $taiKhoan = TaiKhoan::find($id);
         if (!$taiKhoan) {
             redirect('/admin/tai-khoan?error=notfound');
@@ -76,8 +150,8 @@ class AdminTaiKhoanController
             'mail' => post('mail', $taiKhoan->mail),
             'so_cccd' => post('so_cccd', $taiKhoan->so_cccd),
             'sdt' => post('sdt', $taiKhoan->sdt),
-            'phan_quyen' => post('phan_quyen', $taiKhoan->phan_quyen
-        )];
+            'phan_quyen' => post('phan_quyen', $taiKhoan->phan_quyen)
+        ];
 
         if (!empty($_POST['mat_khau'])) {
             $data['mat_khau'] = password_hash($_POST['mat_khau'], PASSWORD_DEFAULT);
@@ -85,17 +159,6 @@ class AdminTaiKhoanController
 
         $taiKhoan->update($data);
         redirect('/admin/tai-khoan?success=updated');
-    }
-
-    public function destroy($id)
-    {
-        $taiKhoan = TaiKhoan::find($id);
-        if (!$taiKhoan) {
-            redirect('/admin/tai-khoan?error=notfound');
-        }
-
-        $taiKhoan->delete();
-        redirect('/admin/tai-khoan?success=deleted');
     }
 }
 

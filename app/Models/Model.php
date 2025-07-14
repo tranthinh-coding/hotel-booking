@@ -21,20 +21,7 @@ abstract class Model
     // Get all records
     public static function all()
     {
-        $instance = new static();
-        $rows = DB::table($instance->table)
-            ->select('*')
-            ->get();
-
-        $results = [];
-
-        foreach ($rows as $row) {
-            $model = new static();
-            $model->data = $row;
-            $results[] = $model;
-        }
-
-        return $results;
+        return static::get();
     }
 
     // Alias to find by primary key
@@ -78,13 +65,23 @@ abstract class Model
         return DB::table($instance->table);
     }
 
+    // Create a new QueryBuilder instance for this model
+    public static function newQuery()
+    {
+        $instance = new static();
+        $query = DB::table($instance->table)->select('*');
+        return new QueryBuilder($query, get_called_class());
+    }
+
     // Raw where
     public static function whereRaw($expr)
     {
-        return static::query()->whereRaw($expr);
+        $instance = new static();
+        $query = DB::table($instance->table)->select('*')->whereRaw($expr);
+        return new QueryBuilder($query, get_called_class());
     }
 
-    // Where clause - returns a query builder that can chain to get()
+    // Where clause - returns a query builder that can chain
     public static function where($column, $operator = '=', $value = null)
     {
         // If only 2 parameters, assume operator is '='
@@ -96,54 +93,37 @@ abstract class Model
         $instance = new static();
         $query = DB::table($instance->table)->select('*')->where($column, $operator, $value);
         
-        // Return a custom object that can handle get()
-        return new class($query, get_class($instance)) {
-            private $query;
-            private $modelClass;
-            
-            public function __construct($query, $modelClass) {
-                $this->query = $query;
-                $this->modelClass = $modelClass;
-            }
-            
-            public function get() {
-                $rows = $this->query->get();
-                $results = [];
-                
-                foreach ($rows as $row) {
-                    $model = new $this->modelClass();
-                    $model->data = $row;
-                    $results[] = $model;
-                }
-                
-                return $results;
-            }
-            
-            public function where($column, $operator = '=', $value = null) {
-                if (func_num_args() === 2) {
-                    $value = $operator;
-                    $operator = '=';
-                }
-                $this->query->where($column, $operator, $value);
-                return $this;
-            }
-        };
+        return new QueryBuilder($query, get_called_class());
+    }
+
+    // Get first record
+    public static function first()
+    {
+        return static::newQuery()->first();
+    }
+
+    // Count records
+    public static function count()
+    {
+        return static::newQuery()->count();
+    }
+
+    // Get average of a column
+    public static function avg($column)
+    {
+        return static::newQuery()->avg($column);
+    }
+
+    // Get maximum value of a column
+    public static function max($column)
+    {
+        return static::newQuery()->max($column);
     }
 
     // Execute query and return model instances
     public static function get()
     {
-        $instance = new static();
-        $rows = DB::table($instance->table)->select('*')->get();
-
-        $results = [];
-        foreach ($rows as $row) {
-            $model = new static();
-            $model->data = $row;
-            $results[] = $model;
-        }
-        
-        return $results;
+        return static::newQuery()->get();
     }
 
     // Create a new record

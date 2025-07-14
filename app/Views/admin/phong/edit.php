@@ -27,7 +27,7 @@ ob_start();
             <h2 class="text-xl font-semibold text-gray-900">Chỉnh sửa phòng: <?= htmlspecialchars($phong->ten_phong) ?></h2>
         </div>
 
-        <form method="POST" action="/admin/phong/update" class="p-6 space-y-6" enctype="multipart/form-data">
+        <form method="POST" action="/admin/phong/update" class="p-6 space-y-6">
             <!-- Hidden ID field -->
             <input type="hidden" name="id" value="<?= $phong->ma_phong ?>">
             
@@ -59,13 +59,15 @@ ob_start();
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 required>
                             <option value="">Chọn loại phòng</option>
-                            <?php if (!empty($loaiPhongs)): ?>
+                            <?php if (!empty($loaiPhongs) && is_array($loaiPhongs)): ?>
                                 <?php foreach ($loaiPhongs as $loai): ?>
                                     <option value="<?= $loai->ma_loai_phong ?>" 
                                             <?= $loai->ma_loai_phong == $phong->ma_loai_phong ? 'selected' : '' ?>>
-                                        <?= htmlspecialchars($loai->ten_loai_phong) ?>
+                                        <?= htmlspecialchars($loai->ten ?: '') ?>
                                     </option>
                                 <?php endforeach; ?>
+                            <?php else: ?>
+                                <option value="">Không có loại phòng nào</option>
                             <?php endif; ?>
                         </select>
                     </div>
@@ -105,9 +107,9 @@ ob_start();
                     </div>
                 </div>
 
-                <!-- Mô tả và hình ảnh -->
+                <!-- Mô tả -->
                 <div class="space-y-6">
-                    <h3 class="text-lg font-semibold text-gray-900">Mô tả và hình ảnh</h3>
+                    <h3 class="text-lg font-semibold text-gray-900">Mô tả</h3>
                     
                     <!-- Mô tả -->
                     <div>
@@ -119,48 +121,6 @@ ob_start();
                                   rows="6"
                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                   placeholder="Nhập mô tả chi tiết về phòng..."><?= htmlspecialchars($phong->mo_ta ?: '') ?></textarea>
-                    </div>
-
-                    <!-- Hình ảnh hiện tại -->
-                    <?php if (!empty($phong->hinh_anh)): ?>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Hình ảnh hiện tại</label>
-                        <div class="grid grid-cols-3 gap-3">
-                            <div class="relative">
-                                <img src="<?= htmlspecialchars($phong->hinh_anh) ?>" 
-                                     alt="Hình ảnh phòng hiện tại" 
-                                     class="w-full h-24 object-cover rounded-lg">
-                            </div>
-                        </div>
-                    </div>
-                    <?php endif; ?>
-
-                    <!-- Upload hình ảnh mới -->
-                    <div>
-                        <label for="hinh_anh" class="block text-sm font-medium text-gray-700 mb-2">
-                            Cập nhật hình ảnh
-                        </label>
-                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6">
-                            <div class="text-center">
-                                <i class="fas fa-cloud-upload-alt text-gray-400 text-3xl mb-3"></i>
-                                <div class="text-gray-600 mb-2">
-                                    <label for="hinh_anh" class="cursor-pointer text-blue-600 hover:text-blue-500">
-                                        Chọn file
-                                    </label>
-                                    hoặc kéo thả vào đây
-                                </div>
-                                <p class="text-xs text-gray-500">PNG, JPG, GIF tối đa 10MB</p>
-                            </div>
-                            <input type="file" 
-                                   id="hinh_anh" 
-                                   name="hinh_anh" 
-                                   accept="image/*"
-                                   class="hidden"
-                                   onchange="previewImage(this)">
-                        </div>
-                        <div id="preview" class="mt-3 hidden">
-                            <img id="preview-img" src="" alt="Preview" class="w-32 h-24 object-cover rounded-lg">
-                        </div>
                     </div>
 
                     <!-- Tiện nghi phòng -->
@@ -204,7 +164,7 @@ ob_start();
 
             <!-- Nút hành động -->
             <div class="flex justify-end space-x-4 pt-6 border-t border-gray-100">
-                <a href="/admin/phong/<?= $phong->ma_phong ?>"
+                <a href="/admin/phong/show?id=<?= $phong->ma_phong ?>"
                    class="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                     Hủy
                 </a>
@@ -218,42 +178,6 @@ ob_start();
 </div>
 
 <script>
-function previewImage(input) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById('preview-img').src = e.target.result;
-            document.getElementById('preview').classList.remove('hidden');
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-
-// Drag and drop functionality
-const dropZone = document.querySelector('.border-dashed');
-const fileInput = document.getElementById('hinh_anh');
-
-dropZone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dropZone.classList.add('border-blue-500', 'bg-blue-50');
-});
-
-dropZone.addEventListener('dragleave', (e) => {
-    e.preventDefault();
-    dropZone.classList.remove('border-blue-500', 'bg-blue-50');
-});
-
-dropZone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dropZone.classList.remove('border-blue-500', 'bg-blue-50');
-    
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-        fileInput.files = files;
-        previewImage(fileInput);
-    }
-});
-
 // Form validation
 document.querySelector('form').addEventListener('submit', function(e) {
     const tenPhong = document.getElementById('ten_phong').value.trim();

@@ -13,6 +13,7 @@ use HotelBooking\Enums\PhanQuyen;
  * @property string $mail
  * @property string $mat_khau
  * @property string $phan_quyen
+ * @property string $ngay_tao
  */
 class TaiKhoan extends Model
 {
@@ -27,6 +28,7 @@ class TaiKhoan extends Model
         'mail',
         'mat_khau',
         'phan_quyen',
+        'ngay_tao',
     ];
 
     public static function findByEmail($email)
@@ -84,6 +86,12 @@ class TaiKhoan extends Model
         if (isset($data['mat_khau'])) {
             $data['mat_khau'] = password_hash($data['mat_khau'], PASSWORD_DEFAULT);
         }
+        
+        // Set ngay_tao if not provided
+        if (!isset($data['ngay_tao'])) {
+            $data['ngay_tao'] = date('Y-m-d H:i:s');
+        }
+        
         return static::create($data);
     }
 
@@ -107,6 +115,10 @@ class TaiKhoan extends Model
                 return $this->sdt;
             case 'vai_tro':
                 return $this->phan_quyen;
+            case 'created_at':
+                return $this->ngay_tao;
+            case 'updated_at':
+                return $this->ngay_tao; // If you need updated_at, add another column
             default:
                 return parent::__get($property);
         }

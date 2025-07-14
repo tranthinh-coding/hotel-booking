@@ -51,43 +51,33 @@ class Phong extends Model
             return [];
         }
 
-        // Get all rooms first
+        // Get booked room IDs for the period using SQL
+        $bookedRoomIds = HoaDonPhong::query()
+            ->select('ma_phong')
+            ->where('check_in', '<', $checkoutDate)
+            ->where('check_out', '>', $checkinDate)
+            ->get();
+        
+        // Extract room IDs
+        $bookedIds = [];
+        foreach ($bookedRoomIds as $booking) {
+            $bookedIds[] = $booking['ma_phong'];
+        }
+
+        // Get available rooms using NOT IN
         $query = static::query();
+        
+        if (!empty($bookedIds)) {
+            $bookedIdsStr = implode(',', $bookedIds);
+            $query = $query->whereRaw("ma_phong NOT IN ($bookedIdsStr)");
+        }
         
         // Filter by room type if specified
         if (!empty($roomType)) {
-            $query = $query->where('loai_phong', '=', $roomType);
+            $query = $query->where('ma_loai_phong', '=', $roomType);
         }
         
-        $allRooms = $query->get();
-
-        // Get all conflicting bookings for the requested period
-        $conflictingBookings = HoaDonPhong::getConflictingBookings($checkinDate, $checkoutDate);
-        
-        // Get room IDs that are booked during the requested period
-        $bookedRoomIds = [];
-        foreach ($conflictingBookings as $booking) {
-            $bookedRoomIds[] = $booking['ma_phong'];
-        }
-        
-        // Filter out booked rooms
-        $availableRooms = [];
-        foreach ($allRooms as $room) {
-            // Handle both array and object returns from query
-            if (is_array($room)) {
-                $roomId = $room['ma_phong'];
-            } elseif (is_object($room) && isset($room->ma_phong)) {
-                $roomId = $room->ma_phong;
-            } elseif (is_object($room) && method_exists($room, '__get')) {
-                $roomId = $room->__get('ma_phong');
-            } else {
-                continue; // Skip invalid entries
-            }
-            
-            if (!in_array($roomId, $bookedRoomIds)) {
-                $availableRooms[] = $room;
-            }
-        }
+        $availableRooms = $query->get();
 
         return $availableRooms;
     }

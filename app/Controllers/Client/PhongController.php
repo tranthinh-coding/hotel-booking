@@ -20,7 +20,7 @@ class PhongController
             $phongs = Phong::searchAvailable($checkin, $checkout, $guests, $roomType);
         } else {
             // If no search criteria, show all active rooms (exclude deactivated)
-            $query = Phong::query();
+            $query = Phong::newQuery();
             if (!empty($roomType)) {
                 $query = $query->where('ma_loai_phong', '=', $roomType);
             }

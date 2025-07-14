@@ -86,15 +86,12 @@ class MailSender
             $result = mail($to, $encodedSubject, $body, implode("\r\n", $headers));
             
             if ($result) {
-                error_log("Email sent successfully to: {$to}");
                 return true;
             } else {
-                error_log("Failed to send email to: {$to}");
                 return false;
             }
             
         } catch (\Exception $e) {
-            error_log("Mail error: " . $e->getMessage());
             return false;
         }
     }

@@ -94,48 +94,63 @@ ob_start();
         </div>
     </div>
 
-    <!-- Tìm kiếm và lọc -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <form method="GET" class="space-y-4">
-            <!-- Hàng đầu tiên: Các ô input -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <!-- Search and Filter -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+        <div class="p-6">
+            <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <!-- Search -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Tìm kiếm</label>
-                    <input type="text" name="search" placeholder="Tiêu đề tin tức..."
-                        value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Tìm kiếm</label>
+                    <div class="relative">
+                        <input type="text"
+                               id="search"
+                               name="search"
+                               value="<?= htmlspecialchars(get('search', '')) ?>"
+                               placeholder="Tìm theo tiêu đề..."
+                               class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Status Filter -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Trạng thái</label>
-                    <select name="trang_thai"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">Tất cả</option>
-                        <option value="published" <?= ($_GET['trang_thai'] ?? '') === 'published' ? 'selected' : '' ?>>Đã xuất bản</option>
-                        <option value="draft" <?= ($_GET['trang_thai'] ?? '') === 'draft' ? 'selected' : '' ?>>Bản nháp</option>
+                    <label for="trang_thai" class="block text-sm font-medium text-gray-700 mb-2">Trạng thái</label>
+                    <select id="trang_thai" 
+                            name="trang_thai"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="published" <?= get('trang_thai') === 'published' ? 'selected' : '' ?>>Đã xuất bản</option>
+                        <option value="draft" <?= get('trang_thai') === 'draft' ? 'selected' : '' ?>>Bản nháp</option>
                     </select>
                 </div>
+
+                <!-- Sort -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Sắp xếp</label>
-                    <select name="sort"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        <option value="ngay_dang" <?= ($_GET['sort'] ?? '') === 'ngay_dang' ? 'selected' : '' ?>>Ngày đăng</option>
-                        <option value="tieu_de" <?= ($_GET['sort'] ?? '') === 'tieu_de' ? 'selected' : '' ?>>Tiêu đề</option>
-                        <option value="luot_xem" <?= ($_GET['sort'] ?? '') === 'luot_xem' ? 'selected' : '' ?>>Lượt xem</option>
+                    <label for="sort" class="block text-sm font-medium text-gray-700 mb-2">Sắp xếp</label>
+                    <select id="sort" 
+                            name="sort"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="ngay_dang" <?= get('sort', 'ngay_dang') === 'ngay_dang' ? 'selected' : '' ?>>Ngày đăng</option>
+                        <option value="tieu_de" <?= get('sort') === 'tieu_de' ? 'selected' : '' ?>>Tiêu đề</option>
+                        <option value="luot_xem" <?= get('sort') === 'luot_xem' ? 'selected' : '' ?>>Lượt xem</option>
                     </select>
                 </div>
-            </div>
-            <!-- Hàng thứ hai: Nút bấm -->
-            <div class="flex justify-end space-x-3">
-                <a href="/admin/tin-tuc"
-                    class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors inline-flex items-center">
-                    <i class="fas fa-times mr-2"></i>Xóa lọc
-                </a>
-                <button type="submit"
-                    class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
-                    <i class="fas fa-search mr-2"></i>Lọc
-                </button>
-            </div>
-        </form>
+
+                <!-- Actions -->
+                <div class="flex items-end space-x-2">
+                    <button type="submit"
+                            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-search mr-2"></i>Tìm kiếm
+                    </button>
+                    <a href="/admin/tin-tuc"
+                       class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">
+                        <i class="fas fa-refresh mr-2"></i>Reset
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Articles List -->
@@ -256,7 +271,6 @@ ob_start();
 .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
-    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
