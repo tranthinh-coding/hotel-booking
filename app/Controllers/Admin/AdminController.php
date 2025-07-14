@@ -88,7 +88,7 @@ class AdminController
             )
         ];
 
-        if (!empty($_POST['mat_khau'])) {
+        if (!$_POST['mat_khau']) {
             $data['mat_khau'] = password_hash($_POST['mat_khau'], PASSWORD_DEFAULT);
         }
 

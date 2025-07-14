@@ -40,7 +40,7 @@ class HinhAnh extends Model
     public static function getMainImage($maPhong)
     {
         $images = static::where('ma_phong', '=', $maPhong)->get();
-        return !empty($images) ? $images[0] : null;
+        return count($images) ? $images[0] : null;
     }
 
     /**
@@ -49,7 +49,7 @@ class HinhAnh extends Model
     public function deleteWithFile()
     {
         // Delete physical file
-        if (!empty($this->anh)) {
+        if (isNotEmpty($this->anh)) {
             deleteFile($this->anh);
         }
         
@@ -62,6 +62,6 @@ class HinhAnh extends Model
      */
     public function getImageUrl()
     {
-        return !empty($this->anh) ? '/public/uploads/' . $this->anh : null;
+        return isNotEmpty($this->anh) ? '/public/uploads/' . $this->anh : null;
     }
 }

@@ -33,8 +33,11 @@ ob_start();
                         case 'updated':
                             echo 'Cập nhật phòng thành công!';
                             break;
-                        case 'deleted':
-                            echo 'Xóa phòng thành công!';
+                        case 'deactivated':
+                            echo 'Ngừng hoạt động phòng thành công!';
+                            break;
+                        case 'reactivated':
+                            echo 'Kích hoạt lại phòng thành công!';
                             break;
                         default:
                             echo 'Thao tác thành công!';
@@ -55,6 +58,18 @@ ob_start();
                         case 'notfound':
                             echo 'Phòng không tồn tại!';
                             break;
+                        case 'missing_id':
+                            echo 'Thiếu thông tin mã phòng!';
+                            break;
+                        case 'deactivate_failed':
+                            echo 'Ngừng hoạt động phòng thất bại! Vui lòng thử lại.';
+                            break;
+                        case 'reactivate_failed':
+                            echo 'Kích hoạt lại phòng thất bại! Vui lòng thử lại.';
+                            break;
+                        case 'validation':
+                            echo 'Dữ liệu không hợp lệ!';
+                            break;
                         default:
                             echo 'Có lỗi xảy ra!';
                     }
@@ -64,10 +79,8 @@ ob_start();
         </div>
     <?php endif; ?>
 
-    <!-- Header với nút thêm mới -->
-
     <!-- Thống kê nhanh -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
             <div class="flex items-center">
                 <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
@@ -95,19 +108,19 @@ ob_start();
         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
             <div class="flex items-center">
                 <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
-                    <i class="fas fa-user-friends text-yellow-600 text-xl"></i>
+                    <i class="fas fa-broom text-yellow-600 text-xl"></i>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm text-gray-600">Đang bảo trì</p>
-                    <p class="text-2xl font-bold text-gray-900"><?= $stats['occupied'] ?? 0 ?></p>
+                    <p class="text-sm text-gray-600">Đang dọn dẹp</p>
+                    <p class="text-2xl font-bold text-gray-900"><?= $stats['cleaning'] ?? 0 ?></p>
                 </div>
             </div>
         </div>
 
         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
             <div class="flex items-center">
-                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
-                    <i class="fas fa-tools text-red-600 text-xl"></i>
+                <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-tools text-orange-600 text-xl"></i>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm text-gray-600">Bảo trì</p>
@@ -115,59 +128,79 @@ ob_start();
                 </div>
             </div>
         </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-power-off text-red-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-600">Ngừng hoạt động</p>
+                    <p class="text-2xl font-bold text-gray-900"><?= $stats['deactivated'] ?? 0 ?></p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Bộ lọc -->
     <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-        <form method="GET" class="grid grid-cols-1 md:grid-cols-5 gap-4">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Tìm kiếm</label>
-                <input type="text" name="search" placeholder="Tên phòng, số phòng..."
-                    value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Loại phòng</label>
-                <select name="loai_phong"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    <option value="">Tất cả</option>
-                    <?php if (!empty($loaiPhongs)): ?>
-                        <?php foreach ($loaiPhongs as $loai): ?>
-                            <option value="<?= $loai->ma_loai_phong ?>" <?= ($_GET['loai_phong'] ?? '') == $loai->ma_loai_phong ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($loai->ten) ?>
+        <form method="GET" class="space-y-4">
+            <!-- Hàng đầu tiên: 4 cột tìm kiếm -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tìm kiếm</label>
+                    <input type="text" name="search" placeholder="Tên phòng, số phòng..."
+                        value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Loại phòng</label>
+                    <select name="loai_phong"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Tất cả</option>
+                        <?php if (!empty($loaiPhongs)): ?>
+                            <?php foreach ($loaiPhongs as $loai): ?>
+                                <option value="<?= $loai->ma_loai_phong ?>" <?= ($_GET['loai_phong'] ?? '') == $loai->ma_loai_phong ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($loai->ten) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Trạng thái</label>
+                    <select name="trang_thai"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Tất cả</option>
+                        <?php
+                        $trangThaiList = \HotelBooking\Enums\TrangThaiPhong::all();
+                        foreach ($trangThaiList as $status): ?>
+                            <option value="<?= $status ?>" <?= ($_GET['trang_thai'] ?? '') === $status ? 'selected' : '' ?>>
+                                <?= \HotelBooking\Enums\TrangThaiPhong::getLabel($status) ?>
                             </option>
                         <?php endforeach; ?>
-                    <?php endif; ?>
-                </select>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Trạng thái</label>
-                <select name="trang_thai"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    <option value="">Tất cả</option>
-                    <?php
-                    $trangThaiList = \HotelBooking\Enums\TrangThaiPhong::all();
-                    foreach ($trangThaiList as $status): ?>
-                        <option value="<?= $status ?>" <?= ($_GET['trang_thai'] ?? '') === $status ? 'selected' : '' ?>>
-                            <?= \HotelBooking\Enums\TrangThaiPhong::getLabel($status) ?>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Sắp xếp</label>
+                    <select name="sort"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="ten_phong" <?= ($_GET['sort'] ?? '') === 'ten_phong' ? 'selected' : '' ?>>Tên phòng
                         </option>
-                    <?php endforeach; ?>
-                </select>
+                        <option value="gia" <?= ($_GET['sort'] ?? '') === 'gia' ? 'selected' : '' ?>>Giá phòng</option>
+                        <option value="ma_phong" <?= ($_GET['sort'] ?? '') === 'ma_phong' ? 'selected' : '' ?>>Mã phòng
+                        </option>
+                    </select>
+                </div>
             </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Sắp xếp</label>
-                <select name="sort"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    <option value="ten_phong" <?= ($_GET['sort'] ?? '') === 'ten_phong' ? 'selected' : '' ?>>Tên phòng
-                    </option>
-                    <option value="gia" <?= ($_GET['sort'] ?? '') === 'gia' ? 'selected' : '' ?>>Giá phòng</option>
-                    <option value="ma_phong" <?= ($_GET['sort'] ?? '') === 'ma_phong' ? 'selected' : '' ?>>Mã phòng
-                    </option>
-                </select>
-            </div>
-            <div class="flex items-end">
+            <!-- Hàng thứ hai: Nút bấm -->
+            <div class="flex justify-end space-x-3">
+                <a href="/admin/phong"
+                    class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors inline-flex items-center">
+                    <i class="fas fa-times mr-2"></i>Xóa lọc
+                </a>
                 <button type="submit"
-                    class="w-full bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                    class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
                     <i class="fas fa-search mr-2"></i>Lọc
                 </button>
             </div>
@@ -178,19 +211,23 @@ ob_start();
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         <?php if (!empty($phongs)): ?>
             <?php foreach ($phongs as $phong): ?>
+                <?php
+                // Add opacity for deactivated rooms
+                $cardOpacity = $phong->trang_thai === \HotelBooking\Enums\TrangThaiPhong::NGUNG_HOAT_DONG ? 'opacity-60' : '';
+                ?>
                 <div
-                    class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow">
+                    class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow <?= $cardOpacity ?>">
                     <!-- Hình ảnh phòng -->
                     <div class="relative h-48 bg-gray-200">
-                        <?php
-                        $mainImage = null;
-                        if (method_exists($phong, 'getMainImageUrl')) {
-                            $mainImage = $phong->getMainImageUrl();
-                        }
+                        <?php 
+                        $mainImage = $phong->getMainImageUrl(); 
                         ?>
                         <?php if ($mainImage): ?>
                             <img src="<?= htmlspecialchars($mainImage) ?>" alt="<?= htmlspecialchars($phong->ten_phong) ?>"
-                                class="w-full h-full object-cover">
+                                class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="w-full h-full flex items-center justify-center" style="display: none;">
+                                <i class="fas fa-bed text-gray-400 text-4xl"></i>
+                            </div>
                         <?php else: ?>
                             <div class="w-full h-full flex items-center justify-center">
                                 <i class="fas fa-bed text-gray-400 text-4xl"></i>
@@ -202,7 +239,8 @@ ob_start();
                         $statusColors = [
                             \HotelBooking\Enums\TrangThaiPhong::CON_TRONG => 'bg-green-500',
                             \HotelBooking\Enums\TrangThaiPhong::DANG_DON_DEP => 'bg-blue-500',
-                            \HotelBooking\Enums\TrangThaiPhong::BAO_TRI => 'bg-red-500'
+                            \HotelBooking\Enums\TrangThaiPhong::BAO_TRI => 'bg-yellow-500',
+                            \HotelBooking\Enums\TrangThaiPhong::NGUNG_HOAT_DONG => 'bg-red-500'
                         ];
                         $statusColor = $statusColors[$phong->trang_thai] ?? 'bg-gray-500';
                         ?>
@@ -220,11 +258,11 @@ ob_start();
                                 </button>
                                 <div
                                     class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
-                                    <a href="/admin/phong/<?= $phong->ma_phong ?>"
+                                    <a href="/admin/phong/show?id=<?= $phong->ma_phong ?>"
                                         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                                         <i class="fas fa-eye mr-2"></i>Xem chi tiết
                                     </a>
-                                    <a href="/admin/phong/<?= $phong->ma_phong ?>/edit"
+                                    <a href="/admin/phong/edit?id=<?= $phong->ma_phong ?>"
                                         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                                         <i class="fas fa-edit mr-2"></i>Chỉnh sửa
                                     </a>
@@ -233,10 +271,17 @@ ob_start();
                                         <i class="fas fa-sync mr-2"></i>Đổi trạng thái
                                     </button>
                                     <hr class="my-1">
-                                    <button onclick="confirmDelete(<?= $phong->ma_phong ?>)"
-                                        class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                                        <i class="fas fa-trash mr-2"></i>Xóa phòng
-                                    </button>
+                                    <?php if ($phong->trang_thai === \HotelBooking\Enums\TrangThaiPhong::NGUNG_HOAT_DONG): ?>
+                                        <button onclick="confirmReactivate(<?= $phong->ma_phong ?>)"
+                                            class="block w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-green-50">
+                                            <i class="fas fa-power-off mr-2"></i>Kích hoạt lại
+                                        </button>
+                                    <?php else: ?>
+                                        <button onclick="confirmDeactivate(<?= $phong->ma_phong ?>)"
+                                            class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                            <i class="fas fa-power-off mr-2"></i>Ngừng hoạt động
+                                        </button>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
@@ -260,18 +305,25 @@ ob_start();
                                 <?= number_format($phong->gia) ?> VNĐ
                             </span>
                             <div class="flex space-x-2">
-                                <a href="/admin/phong/<?= $phong->ma_phong ?>"
+                                <a href="/admin/phong/show?id=<?= $phong->ma_phong ?>"
                                     class="text-gray-400 hover:text-blue-600 transition-colors">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <a href="/admin/phong/<?= $phong->ma_phong ?>/edit"
+                                <a href="/admin/phong/edit?id=<?= $phong->ma_phong ?>"
                                     class="text-gray-400 hover:text-green-600 transition-colors">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <button onclick="confirmDelete(<?= $phong->ma_phong ?>)"
-                                    class="text-gray-400 hover:text-red-600 transition-colors">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                                <?php if ($phong->trang_thai === \HotelBooking\Enums\TrangThaiPhong::NGUNG_HOAT_DONG): ?>
+                                    <button onclick="confirmReactivate(<?= $phong->ma_phong ?>)"
+                                        class="text-gray-400 hover:text-green-600 transition-colors">
+                                        <i class="fas fa-power-off"></i>
+                                    </button>
+                                <?php else: ?>
+                                    <button onclick="confirmDeactivate(<?= $phong->ma_phong ?>)"
+                                        class="text-gray-400 hover:text-red-600 transition-colors">
+                                        <i class="fas fa-power-off"></i>
+                                    </button>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -297,7 +349,7 @@ ob_start();
         <div class="bg-white rounded-lg max-w-md w-full p-6">
             <h3 class="text-lg font-semibold mb-4">Đổi trạng thái phòng</h3>
             <form id="statusForm" method="POST">
-                <input type="hidden" name="ma_phong" id="statusRoomId">
+                <input type="hidden" name="id" id="statusRoomId">
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Trạng thái mới</label>
                     <select name="trang_thai" id="newStatus"
@@ -328,7 +380,7 @@ ob_start();
 <script>
     function changeRoomStatus(roomId) {
         document.getElementById('statusRoomId').value = roomId;
-        document.getElementById('statusForm').action = '/admin/phong/' + roomId + '/update-status';
+        document.getElementById('statusForm').action = '/admin/phong/update-status';
         document.getElementById('statusModal').classList.remove('hidden');
     }
 
@@ -336,11 +388,37 @@ ob_start();
         document.getElementById('statusModal').classList.add('hidden');
     }
 
-    function confirmDelete(roomId) {
-        if (confirm('Bạn có chắc chắn muốn xóa phòng này?')) {
+    function confirmDeactivate(roomId) {
+        if (confirm('🔴 Bạn có chắc chắn muốn ngừng hoạt động phòng này?\n\nPhòng sẽ được đánh dấu là "Ngừng hoạt động" và:\n• Không thể đặt phòng mới\n• Vẫn giữ nguyên tất cả dữ liệu\n• Có thể kích hoạt lại bất cứ lúc nào')) {
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = '/admin/phong/' + roomId + '/delete';
+            form.action = '/admin/phong/deactivate';
+
+            // Add ID as hidden input
+            const idInput = document.createElement('input');
+            idInput.type = 'hidden';
+            idInput.name = 'id';
+            idInput.value = roomId;
+            form.appendChild(idInput);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+    function confirmReactivate(roomId) {
+        if (confirm('🟢 Bạn có chắc chắn muốn kích hoạt lại phòng này?\n\nPhòng sẽ được đánh dấu là "Còn trống" và có thể được đặt phòng trở lại.')) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/admin/phong/reactivate';
+
+            // Add ID as hidden input
+            const idInput = document.createElement('input');
+            idInput.type = 'hidden';
+            idInput.name = 'id';
+            idInput.value = roomId;
+            form.appendChild(idInput);
+
             document.body.appendChild(form);
             form.submit();
         }

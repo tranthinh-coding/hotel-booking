@@ -81,8 +81,9 @@ class AdminPhongController
         $stats = [
             'total' => count($allPhongs),
             'available' => 0,
-            'occupied' => 0,
-            'maintenance' => 0
+            'cleaning' => 0,
+            'maintenance' => 0,
+            'deactivated' => 0
         ];
         
         foreach ($allPhongs as $phong) {
@@ -94,7 +95,10 @@ class AdminPhongController
                     $stats['maintenance']++;
                     break;
                 case \HotelBooking\Enums\TrangThaiPhong::DANG_DON_DEP:
-                    $stats['occupied']++;
+                    $stats['cleaning']++;
+                    break;
+                case \HotelBooking\Enums\TrangThaiPhong::NGUNG_HOAT_DONG:
+                    $stats['deactivated']++;
                     break;
             }
         }
@@ -230,20 +234,33 @@ class AdminPhongController
         }
     }
 
-    public function edit($id)
+    public function edit()
     {
+        $id = get('id');
+        if (!$id) {
+            redirect('/admin/phong?error=missing_id');
+        }
+
         $phong = Phong::find($id);
-        $loaiPhongs = LoaiPhong::all();
-        
         if (!$phong) {
             redirect('/admin/phong?error=notfound');
         }
 
-        view('Admin.Phong.edit', ['phong' => $phong, 'loaiPhongs' => $loaiPhongs]);
+        $loaiPhongs = LoaiPhong::all();
+        
+        view('Admin.Phong.edit', [
+            'phong' => $phong, 
+            'loaiPhongs' => $loaiPhongs
+        ]);
     }
 
-    public function update($id)
+    public function update()
     {
+        $id = post('id') ?: get('id');
+        if (!$id) {
+            redirect('/admin/phong?error=missing_id');
+        }
+
         $phong = Phong::find($id);
         if (!$phong) {
             redirect('/admin/phong?error=notfound');
@@ -254,16 +271,20 @@ class AdminPhongController
             'mo_ta' => post('mo_ta', $phong->mo_ta),
             'gia' => post('gia', $phong->gia),
             'ma_loai_phong' => post('ma_loai_phong', $phong->ma_loai_phong),
-            'so_khach_toi_da' => post('so_khach_toi_da', $phong->so_khach_toi_da),
-            'trang_thai' => post('trang_thai', $phong->trang_thai
-        )];
+            'trang_thai' => post('trang_thai', $phong->trang_thai)
+        ];
 
         $phong->update($data);
         redirect('/admin/phong?success=updated');
     }
 
-    public function show($id)
+    public function show()
     {
+        $id = get('id');
+        if (!$id) {
+            redirect('/admin/phong?error=missing_id');
+        }
+
         $phong = Phong::find($id);
         if (!$phong) {
             redirect('/admin/phong?error=notfound');
@@ -284,8 +305,13 @@ class AdminPhongController
         ]);
     }
 
-    public function updateStatus($id)
+    public function updateStatus()
     {
+        $id = post('id') ?: get('id');
+        if (!$id) {
+            redirect('/admin/phong?error=missing_id');
+        }
+
         $phong = Phong::find($id);
         if (!$phong) {
             redirect('/admin/phong?error=notfound');
@@ -308,8 +334,13 @@ class AdminPhongController
         redirect('/admin/phong?success=updated');
     }
 
-    public function destroy($id)
+    public function deactivate()
     {
+        $id = post('id') ?: get('id');
+        if (!$id) {
+            redirect('/admin/phong?error=missing_id');
+        }
+        
         $phong = Phong::find($id);
         if (!$phong) {
             redirect('/admin/phong?error=notfound');
@@ -317,21 +348,40 @@ class AdminPhongController
         }
 
         try {
-            // Delete all associated images first
-            $images = HinhAnh::getByPhong($phong->ma_phong);
-            foreach ($images as $image) {
-                $imageObj = new HinhAnh();
-                $imageObj->data = (array)$image;
-                $imageObj->deleteWithFile();
-            }
-
-            // Delete the room
-            $phong->delete();
+            // Update room status to "Ngừng hoạt động" instead of deleting
+            $phong->update(['trang_thai' => \HotelBooking\Enums\TrangThaiPhong::NGUNG_HOAT_DONG]);
             
-            redirect('/admin/phong?success=deleted');
+            redirect('/admin/phong?success=deactivated');
         } catch (Exception $e) {
-            error_log("Error deleting room: " . $e->getMessage());
-            redirect('/admin/phong?error=delete');
+            error_log("Error deactivating room: " . $e->getMessage());
+            redirect('/admin/phong?error=deactivate_failed');
+        }
+    }
+
+    /**
+     * Reactivate a room (set status back to available)
+     */
+    public function reactivate()
+    {
+        $id = post('id') ?: get('id');
+        if (!$id) {
+            redirect('/admin/phong?error=missing_id');
+        }
+        
+        $phong = Phong::find($id);
+        if (!$phong) {
+            redirect('/admin/phong?error=notfound');
+            return;
+        }
+
+        try {
+            // Set room status back to "Còn trống"
+            $phong->update(['trang_thai' => \HotelBooking\Enums\TrangThaiPhong::CON_TRONG]);
+            
+            redirect('/admin/phong?success=reactivated');
+        } catch (Exception $e) {
+            error_log("Error reactivating room: " . $e->getMessage());
+            redirect('/admin/phong?error=reactivate_failed');
         }
     }
 }

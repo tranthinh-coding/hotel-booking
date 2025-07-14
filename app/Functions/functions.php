@@ -91,6 +91,64 @@ if (!function_exists('back')) {
     }
 }
 
+if (!function_exists('isEmpty')) {
+    /**
+     * Custom empty function with better logic.
+     * This replaces PHP's empty() function with more robust checking.
+     * 
+     * @param mixed $value
+     * @return bool
+     */
+    function isEmpty($value): bool
+    {
+        // Null values are empty
+        if (is_null($value)) {
+            return true;
+        }
+        
+        // String handling: empty string or whitespace-only strings are empty
+        if (is_string($value)) {
+            return trim($value) === '';
+        }
+        
+        // Array handling: empty arrays are empty
+        if (is_array($value)) {
+            return count($value) === 0;
+        }
+        
+        // Numeric handling: 0 and 0.0 are NOT empty (different from PHP's empty)
+        if (is_numeric($value)) {
+            return false;
+        }
+        
+        // Boolean handling: false is empty, true is not
+        if (is_bool($value)) {
+            return $value === false;
+        }
+        
+        // Object handling: check if object has properties
+        if (is_object($value)) {
+            return count(get_object_vars($value)) === 0;
+        }
+        
+        // Default fallback to PHP's empty for other types
+        return empty($value);
+    }
+}
+
+if (!function_exists('isNotEmpty')) {
+    /**
+     * Check if a value is not empty using our custom isEmpty function.
+     * 
+     * @param mixed $value
+     * @return bool
+     */
+    function isNotEmpty($value): bool
+    {
+        return !isEmpty($value);
+    }
+}
+
 if (!function_exists('session_start_if_not_started')) {
     /**
      * Start session if not already started.

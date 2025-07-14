@@ -1035,7 +1035,7 @@ ob_start();
                                         <div class="room-price-unit">mỗi đêm</div>
                                     </div>
                                     <div class="room-actions">
-                                        <a href="/phong/<?= $phong->ma_phong ?>" class="room-btn btn-outline">
+                                        <a href="/phong/show?id=<?= $phong->ma_phong ?>" class="room-btn btn-outline">
                                             <i class="fas fa-eye"></i>
                                             Chi tiết
                                         </a>

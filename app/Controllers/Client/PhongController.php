@@ -19,11 +19,13 @@ class PhongController
         if (!empty($checkin) && !empty($checkout)) {
             $phongs = Phong::searchAvailable($checkin, $checkout, $guests, $roomType);
         } else {
-            // If no search criteria, show all rooms
+            // If no search criteria, show all active rooms (exclude deactivated)
             $query = Phong::query();
             if (!empty($roomType)) {
                 $query = $query->where('ma_loai_phong', '=', $roomType);
             }
+            // Exclude deactivated rooms from client view
+            $query = $query->where('trang_thai', '!=', \HotelBooking\Enums\TrangThaiPhong::NGUNG_HOAT_DONG);
             $phongs = $query->get();
         }
 
@@ -42,8 +44,13 @@ class PhongController
         ]);
     }
 
-    public function show($id)
+    public function show()
     {
+        $id = get('id');
+        if (!$id) {
+            redirect('/phong?error=missing_id');
+        }
+
         $phong = Phong::find($id);
         if (!$phong) {
             http_response_code(404);

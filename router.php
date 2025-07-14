@@ -41,26 +41,26 @@ Route::post('/reset-password', 'HotelBooking\Controllers\Auth\AuthController', '
 
 // Phòng (chỉ xem)
 Route::get('/phong', 'HotelBooking\Controllers\Client\PhongController', 'index');
-Route::get('/phong/{id}', 'HotelBooking\Controllers\Client\PhongController', 'show');
+Route::get('/phong/show', 'HotelBooking\Controllers\Client\PhongController', 'show');
 
 // Dịch vụ (chỉ xem)
 Route::get('/dich-vu', 'HotelBooking\Controllers\Client\DichVuController', 'index');
-Route::get('/dich-vu/{id}', 'HotelBooking\Controllers\Client\DichVuController', 'show');
+Route::get('/dich-vu/show', 'HotelBooking\Controllers\Client\DichVuController', 'show');
 
 // Đánh giá (khách hàng có thể đánh giá)
 Route::get('/danh-gia', 'HotelBooking\Controllers\Admin\AdminDanhGiaController', 'index');
 Route::get('/danh-gia/create', 'HotelBooking\Controllers\Admin\AdminDanhGiaController', 'create');
-Route::post('/danh-gia', 'HotelBooking\Controllers\Admin\AdminDanhGiaController', 'store');
-Route::get('/danh-gia/{id}', 'HotelBooking\Controllers\Admin\AdminDanhGiaController', 'show');
+Route::post('/danh-gia/store', 'HotelBooking\Controllers\Admin\AdminDanhGiaController', 'store');
+Route::get('/danh-gia/show', 'HotelBooking\Controllers\Admin\AdminDanhGiaController', 'show');
 
 // Tin tức (chỉ xem)
 Route::get('/tin-tuc', 'HotelBooking\Controllers\Client\TinTucController', 'index');
-Route::get('/tin-tuc/{id}', 'HotelBooking\Controllers\Client\TinTucController', 'show');
+Route::get('/tin-tuc/show', 'HotelBooking\Controllers\Client\TinTucController', 'show');
 
 // Đặt phòng (khách hàng)
 Route::get('/dat-phong', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'create');
-Route::post('/dat-phong', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'store');
-Route::get('/dat-phong/{id}', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'show');
+Route::post('/dat-phong/store', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'store');
+Route::get('/dat-phong/show', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'show');
 
 // ===== ADMIN ROUTES =====
 
@@ -80,11 +80,12 @@ Route::post('/admin/loai-phong/delete', 'HotelBooking\Controllers\Admin\AdminLoa
 Route::get('/admin/phong', 'HotelBooking\Controllers\Admin\AdminPhongController', 'index');
 Route::get('/admin/phong/create', 'HotelBooking\Controllers\Admin\AdminPhongController', 'create');
 Route::post('/admin/phong/store', 'HotelBooking\Controllers\Admin\AdminPhongController', 'store');
-Route::get('/admin/phong/{id}', 'HotelBooking\Controllers\Admin\AdminPhongController', 'show');
-Route::get('/admin/phong/{id}/edit', 'HotelBooking\Controllers\Admin\AdminPhongController', 'edit');
-Route::post('/admin/phong/{id}/update', 'HotelBooking\Controllers\Admin\AdminPhongController', 'update');
-Route::post('/admin/phong/{id}/update-status', 'HotelBooking\Controllers\Admin\AdminPhongController', 'updateStatus');
-Route::post('/admin/phong/{id}/delete', 'HotelBooking\Controllers\Admin\AdminPhongController', 'destroy');
+Route::get('/admin/phong/show', 'HotelBooking\Controllers\Admin\AdminPhongController', 'show');
+Route::get('/admin/phong/edit', 'HotelBooking\Controllers\Admin\AdminPhongController', 'edit');
+Route::post('/admin/phong/update', 'HotelBooking\Controllers\Admin\AdminPhongController', 'update');
+Route::post('/admin/phong/update-status', 'HotelBooking\Controllers\Admin\AdminPhongController', 'updateStatus');
+Route::post('/admin/phong/deactivate', 'HotelBooking\Controllers\Admin\AdminPhongController', 'deactivate');
+Route::post('/admin/phong/reactivate', 'HotelBooking\Controllers\Admin\AdminPhongController', 'reactivate');
 
 // Admin - Quản lý tài khoản
 Route::get('/admin/tai-khoan', 'HotelBooking\Controllers\Admin\AdminTaiKhoanController', 'index');
@@ -104,29 +105,29 @@ Route::post('/admin/dich-vu/delete', 'HotelBooking\Controllers\Admin\AdminDichVu
 
 // Admin - Quản lý hóa đơn
 Route::get('/admin/hoa-don', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'index');
-Route::get('/admin/hoa-don/{id}', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'show');
-Route::put('/admin/hoa-don/{id}', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'update');
-Route::delete('/admin/hoa-don/{id}', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'destroy');
+Route::get('/admin/hoa-don/show', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'show');
+Route::post('/admin/hoa-don/update', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'update');
+Route::post('/admin/hoa-don/delete', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'destroy');
 
 // Admin - Quản lý đánh giá
 Route::get('/admin/danh-gia', 'HotelBooking\Controllers\Admin\AdminDanhGiaController', 'index');
-Route::get('/admin/danh-gia/{id}', 'HotelBooking\Controllers\Admin\AdminDanhGiaController', 'show');
-Route::put('/admin/danh-gia/{id}', 'HotelBooking\Controllers\Admin\AdminDanhGiaController', 'update');
-Route::delete('/admin/danh-gia/{id}', 'HotelBooking\Controllers\Admin\AdminDanhGiaController', 'destroy');
+Route::get('/admin/danh-gia/show', 'HotelBooking\Controllers\Admin\AdminDanhGiaController', 'show');
+Route::post('/admin/danh-gia/update', 'HotelBooking\Controllers\Admin\AdminDanhGiaController', 'update');
+Route::post('/admin/danh-gia/delete', 'HotelBooking\Controllers\Admin\AdminDanhGiaController', 'destroy');
 
 // Admin - Quản lý tin tức
 Route::get('/admin/tin-tuc', 'HotelBooking\Controllers\Admin\AdminTinTucController', 'index');
 Route::get('/admin/tin-tuc/create', 'HotelBooking\Controllers\Admin\AdminTinTucController', 'create');
-Route::post('/admin/tin-tuc', 'HotelBooking\Controllers\Admin\AdminTinTucController', 'store');
-Route::get('/admin/tin-tuc/{id}/edit', 'HotelBooking\Controllers\Admin\AdminTinTucController', 'edit');
-Route::put('/admin/tin-tuc/{id}', 'HotelBooking\Controllers\Admin\AdminTinTucController', 'update');
-Route::delete('/admin/tin-tuc/{id}', 'HotelBooking\Controllers\Admin\AdminTinTucController', 'destroy');
+Route::post('/admin/tin-tuc/store', 'HotelBooking\Controllers\Admin\AdminTinTucController', 'store');
+Route::get('/admin/tin-tuc/edit', 'HotelBooking\Controllers\Admin\AdminTinTucController', 'edit');
+Route::post('/admin/tin-tuc/update', 'HotelBooking\Controllers\Admin\AdminTinTucController', 'update');
+Route::post('/admin/tin-tuc/delete', 'HotelBooking\Controllers\Admin\AdminTinTucController', 'destroy');
 
 // Admin - Quản lý hình ảnh
 Route::get('/admin/hinh-anh', 'HotelBooking\Controllers\Admin\AdminController', 'hinhAnhIndex');
 Route::get('/admin/hinh-anh/create', 'HotelBooking\Controllers\Admin\AdminController', 'hinhAnhCreate');
-Route::post('/admin/hinh-anh', 'HotelBooking\Controllers\Admin\AdminController', 'hinhAnhStore');
-Route::delete('/admin/hinh-anh/{id}', 'HotelBooking\Controllers\Admin\AdminController', 'hinhAnhDestroy');
+Route::post('/admin/hinh-anh/store', 'HotelBooking\Controllers\Admin\AdminController', 'hinhAnhStore');
+Route::post('/admin/hinh-anh/delete', 'HotelBooking\Controllers\Admin\AdminController', 'hinhAnhDestroy');
 
 // ===== API ROUTES =====
 
@@ -137,7 +138,7 @@ Route::get('/api/tin-tuc/search', 'HotelBooking\Controllers\Client\TinTucControl
 
 // API cho upload hình ảnh
 Route::post('/api/upload/image', 'HotelBooking\Controllers\Admin\AdminController', 'upload');
-Route::delete('/api/upload/image/{id}', 'HotelBooking\Controllers\Admin\AdminController', 'deleteUpload');
+Route::post('/api/upload/image/delete', 'HotelBooking\Controllers\Admin\AdminController', 'deleteUpload');
 
 // API cho báo cáo và thống kê
 Route::get('/api/admin/stats', 'HotelBooking\Controllers\Admin\AdminController', 'getStats');
