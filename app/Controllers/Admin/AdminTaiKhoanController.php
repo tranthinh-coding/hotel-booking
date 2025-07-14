@@ -4,6 +4,7 @@ namespace HotelBooking\Controllers\Admin;
 
 use HotelBooking\Models\TaiKhoan;
 use HotelBooking\Enums\PhanQuyen;
+use HotelBooking\Enums\TrangThaiTaiKhoan;
 
 class AdminTaiKhoanController
 {
@@ -52,6 +53,13 @@ class AdminTaiKhoanController
             });
         }
 
+        // Apply status filter
+        if (!isEmpty($status)) {
+            $taiKhoans = array_filter($taiKhoans, function($tk) use ($status) {
+                return ($tk->trang_thai ?? TrangThaiTaiKhoan::HOAT_DONG) === $status;
+            });
+        }
+
         // Apply sorting
         usort($taiKhoans, function($a, $b) use ($sort) {
             if ($sort === 'ho_ten') {
@@ -66,8 +74,9 @@ class AdminTaiKhoanController
         // Calculate statistics
         $stats = [
             'total' => count($allTaiKhoans),
-            'customers' => count(array_filter($allTaiKhoans, fn($tk) => $tk->phan_quyen === PhanQuyen::KHACH_HANG)),
-            'staff' => count(array_filter($allTaiKhoans, fn($tk) => $tk->phan_quyen === PhanQuyen::LE_TAN)),
+            'active' => count(array_filter($allTaiKhoans, fn($tk) => ($tk->trang_thai ?? TrangThaiTaiKhoan::HOAT_DONG) === TrangThaiTaiKhoan::HOAT_DONG)),
+            'suspended' => count(array_filter($allTaiKhoans, fn($tk) => ($tk->trang_thai ?? TrangThaiTaiKhoan::HOAT_DONG) === TrangThaiTaiKhoan::TAM_KHOA)),
+            'blocked' => count(array_filter($allTaiKhoans, fn($tk) => ($tk->trang_thai ?? TrangThaiTaiKhoan::HOAT_DONG) === TrangThaiTaiKhoan::BI_KHOA)),
             'managers' => count(array_filter($allTaiKhoans, fn($tk) => $tk->phan_quyen === PhanQuyen::QUAN_LY)),
         ];
 
@@ -159,6 +168,30 @@ class AdminTaiKhoanController
 
         $taiKhoan->update($data);
         redirect('/admin/tai-khoan?success=updated');
+    }
+
+    public function updateStatus()
+    {
+        $maTaiKhoan = post('ma_tai_khoan');
+        $trangThai = post('trang_thai');
+
+        if (isEmpty($maTaiKhoan) || isEmpty($trangThai)) {
+            redirect('/admin/tai-khoan?error=missing_data');
+        }
+
+        $taiKhoan = TaiKhoan::find($maTaiKhoan);
+        if (!$taiKhoan) {
+            redirect('/admin/tai-khoan?error=notfound');
+        }
+
+        // Validate status
+        if (!in_array($trangThai, TrangThaiTaiKhoan::all())) {
+            redirect('/admin/tai-khoan?error=invalid_status');
+        }
+
+        // Update status
+        $taiKhoan->update(['trang_thai' => $trangThai]);
+        redirect('/admin/tai-khoan?success=status_updated');
     }
 }
 

@@ -4,6 +4,7 @@ namespace HotelBooking\Models;
 
 use HotelBooking\Facades\DB;
 use HotelBooking\Enums\PhanQuyen;
+use HotelBooking\Enums\TrangThaiTaiKhoan;
 
 /**
  * @property int $ma_tai_khoan
@@ -13,6 +14,7 @@ use HotelBooking\Enums\PhanQuyen;
  * @property string $mail
  * @property string $mat_khau
  * @property string $phan_quyen
+ * @property string $trang_thai
  * @property string $ngay_tao
  */
 class TaiKhoan extends Model
@@ -28,6 +30,7 @@ class TaiKhoan extends Model
         'mail',
         'mat_khau',
         'phan_quyen',
+        'trang_thai',
         'ngay_tao',
     ];
 

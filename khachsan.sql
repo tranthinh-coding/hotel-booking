@@ -38,43 +38,20 @@ CREATE TABLE IF NOT EXISTS `danh_gia` (
 
 -- Dumping data for table khachsan.danh_gia: ~0 rows (approximately)
 
--- Dumping structure for table khachsan.danh_muc
-DROP TABLE IF EXISTS `danh_muc`;
-CREATE TABLE IF NOT EXISTS `danh_muc` (
-  `ma_danh_muc` int NOT NULL AUTO_INCREMENT,
-  `ten` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`ma_danh_muc`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Dumping data for table khachsan.danh_muc: ~0 rows (approximately)
-
--- Dumping structure for table khachsan.danh_muc_phong
-DROP TABLE IF EXISTS `danh_muc_phong`;
-CREATE TABLE IF NOT EXISTS `danh_muc_phong` (
-  `ma_danh_muc` int NOT NULL,
-  `ma_phong` int NOT NULL,
-  PRIMARY KEY (`ma_danh_muc`,`ma_phong`),
-  UNIQUE KEY `Index 4` (`ma_danh_muc`,`ma_phong`),
-  KEY `fk_danhmucphong_phong` (`ma_phong`),
-  KEY `Index 3` (`ma_danh_muc`),
-  CONSTRAINT `FK_danh_muc_phong_danh_muc` FOREIGN KEY (`ma_danh_muc`) REFERENCES `danh_muc` (`ma_danh_muc`),
-  CONSTRAINT `FK_danh_muc_phong_phong` FOREIGN KEY (`ma_phong`) REFERENCES `phong` (`ma_phong`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Dumping data for table khachsan.danh_muc_phong: ~0 rows (approximately)
-
 -- Dumping structure for table khachsan.dich_vu
 DROP TABLE IF EXISTS `dich_vu`;
 CREATE TABLE IF NOT EXISTS `dich_vu` (
   `ma_dich_vu` int NOT NULL AUTO_INCREMENT,
   `ten_dich_vu` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `gia` int NOT NULL,
+  `trang_thai` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `hinh_anh` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   PRIMARY KEY (`ma_dich_vu`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table khachsan.dich_vu: ~0 rows (approximately)
-REPLACE INTO `dich_vu` (`ma_dich_vu`, `ten_dich_vu`, `gia`) VALUES
-	(1, '12321', 0);
+INSERT INTO `dich_vu` (`ma_dich_vu`, `ten_dich_vu`, `gia`, `trang_thai`, `hinh_anh`) VALUES
+	(1, 'Giặt ủi', 20000, 'hoat_dong', '68753cc9dc755_1752513737.jpg');
 
 -- Dumping structure for table khachsan.hinh_anh
 DROP TABLE IF EXISTS `hinh_anh`;
@@ -85,42 +62,45 @@ CREATE TABLE IF NOT EXISTS `hinh_anh` (
   PRIMARY KEY (`ma_hinh_anh`),
   KEY `fk_hinhanh_phong` (`ma_phong`),
   CONSTRAINT `FK_hinh_anh_phong` FOREIGN KEY (`ma_phong`) REFERENCES `phong` (`ma_phong`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table khachsan.hinh_anh: ~0 rows (approximately)
-
--- Dumping structure for table khachsan.hoa_don
-DROP TABLE IF EXISTS `hoa_don`;
-CREATE TABLE IF NOT EXISTS `hoa_don` (
-  `ma_hoa_don` int NOT NULL AUTO_INCREMENT,
-  `ma_nhan_vien` int DEFAULT NULL,
-  `ma_khach_hang` int DEFAULT NULL,
-  `thoi_gian_dat` datetime NOT NULL,
-  PRIMARY KEY (`ma_hoa_don`),
-  KEY `fk_hoadon_nhanvien` (`ma_nhan_vien`),
-  KEY `fk_hoadon_khachhang` (`ma_khach_hang`),
-  CONSTRAINT `FK_hoa_don_tai_khoan` FOREIGN KEY (`ma_nhan_vien`) REFERENCES `tai_khoan` (`ma_tai_khoan`),
-  CONSTRAINT `FK_hoa_don_tai_khoan_2` FOREIGN KEY (`ma_khach_hang`) REFERENCES `tai_khoan` (`ma_tai_khoan`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Dumping data for table khachsan.hoa_don: ~0 rows (approximately)
+-- Dumping data for table khachsan.hinh_anh: ~2 rows (approximately)
+INSERT INTO `hinh_anh` (`ma_hinh_anh`, `anh`, `ma_phong`) VALUES
+	(4, '6875395aa71e1_1752512858.jpeg', 1),
+	(5, '68753962085b6_1752512866.jpeg', 1),
+	(6, '68753965ba7ff_1752512869.jpeg', 1),
+	(7, '6875396bd44ce_1752512875.jpeg', 1),
+	(8, '68753b38bab31_1752513336.jpeg', 1),
+	(9, '68753b38c142c_1752513336.jpeg', 1),
+	(10, '68753b38c612f_1752513336.jpeg', 1),
+	(11, '68753b38c8e0d_1752513336.jpeg', 1),
+	(12, '68753b38cad7e_1752513336.jpeg', 1),
+	(13, '68753b38d333f_1752513336.jpeg', 1),
+	(15, '68753b38e1802_1752513336.jpeg', 1),
+	(16, '68753b38e9640_1752513336.jpeg', 1);
 
 -- Dumping structure for table khachsan.hoa_don_dich_vu
 DROP TABLE IF EXISTS `hoa_don_dich_vu`;
 CREATE TABLE IF NOT EXISTS `hoa_don_dich_vu` (
   `ma_hd_dich_vu` int NOT NULL AUTO_INCREMENT,
   `ma_dich_vu` int NOT NULL,
+  `ma_hoa_don` int DEFAULT NULL,
   `gia` int NOT NULL,
-  `ma_hd_phong` int NOT NULL,
+  `ma_hd_phong` int DEFAULT NULL,
   `thoi_gian` datetime NOT NULL,
+  `so_luong` int DEFAULT '1',
   PRIMARY KEY (`ma_hd_dich_vu`) USING BTREE,
   KEY `fk_hdphuphi_phuphi` (`ma_dich_vu`) USING BTREE,
   KEY `fk_hdphuphi_phong` (`ma_hd_phong`) USING BTREE,
+  KEY `Index 5` (`ma_hoa_don`),
   CONSTRAINT `FK_hoa_don_dich_vu_dich_vu` FOREIGN KEY (`ma_dich_vu`) REFERENCES `dich_vu` (`ma_dich_vu`),
-  CONSTRAINT `FK_hoa_don_dich_vu_hoa_don_phong` FOREIGN KEY (`ma_hd_phong`) REFERENCES `hoa_don_phong` (`ma_hd_phong`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  CONSTRAINT `FK_hoa_don_dich_vu_hoa_don_phong` FOREIGN KEY (`ma_hd_phong`) REFERENCES `hoa_don_phong` (`ma_hd_phong`),
+  CONSTRAINT `FK_hoa_don_dich_vu_hoa_don_tong` FOREIGN KEY (`ma_hoa_don`) REFERENCES `hoa_don_tong` (`ma_hoa_don`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table khachsan.hoa_don_dich_vu: ~0 rows (approximately)
+INSERT INTO `hoa_don_dich_vu` (`ma_hd_dich_vu`, `ma_dich_vu`, `ma_hoa_don`, `gia`, `ma_hd_phong`, `thoi_gian`, `so_luong`) VALUES
+	(1, 1, NULL, 20000, 1, '2025-07-14 18:20:31', 4);
 
 -- Dumping structure for table khachsan.hoa_don_phong
 DROP TABLE IF EXISTS `hoa_don_phong`;
@@ -134,26 +114,51 @@ CREATE TABLE IF NOT EXISTS `hoa_don_phong` (
   PRIMARY KEY (`ma_hd_phong`) USING BTREE,
   KEY `fk_hdphong_phong` (`ma_phong`),
   KEY `fk_hdphong_hoadon` (`ma_hoa_don`),
-  CONSTRAINT `FK_hoa_don_phong_hoa_don` FOREIGN KEY (`ma_hoa_don`) REFERENCES `hoa_don` (`ma_hoa_don`),
+  CONSTRAINT `FK_hoa_don_phong_hoa_don` FOREIGN KEY (`ma_hoa_don`) REFERENCES `hoa_don_tong` (`ma_hoa_don`),
   CONSTRAINT `FK_hoa_don_phong_phong` FOREIGN KEY (`ma_phong`) REFERENCES `phong` (`ma_phong`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table khachsan.hoa_don_phong: ~0 rows (approximately)
+INSERT INTO `hoa_don_phong` (`ma_hd_phong`, `check_in`, `check_out`, `ma_phong`, `gia`, `ma_hoa_don`) VALUES
+	(1, '2025-07-15 10:00:00', '2025-07-15 15:00:00', 1, 599000, 3);
+
+-- Dumping structure for table khachsan.hoa_don_tong
+DROP TABLE IF EXISTS `hoa_don_tong`;
+CREATE TABLE IF NOT EXISTS `hoa_don_tong` (
+  `ma_hoa_don` int NOT NULL AUTO_INCREMENT,
+  `ma_nhan_vien` int DEFAULT NULL,
+  `ma_khach_hang` int DEFAULT NULL,
+  `thoi_gian_dat` datetime DEFAULT NULL,
+  `trang_thai` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `tong_tien` float DEFAULT '0',
+  `ghi_chu` text COLLATE utf8mb4_unicode_ci,
+  PRIMARY KEY (`ma_hoa_don`),
+  KEY `fk_hoadon_nhanvien` (`ma_nhan_vien`),
+  KEY `fk_hoadon_khachhang` (`ma_khach_hang`),
+  CONSTRAINT `FK_hoa_don_tai_khoan` FOREIGN KEY (`ma_nhan_vien`) REFERENCES `tai_khoan` (`ma_tai_khoan`),
+  CONSTRAINT `FK_hoa_don_tai_khoan_2` FOREIGN KEY (`ma_khach_hang`) REFERENCES `tai_khoan` (`ma_tai_khoan`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table khachsan.hoa_don_tong: ~0 rows (approximately)
+INSERT INTO `hoa_don_tong` (`ma_hoa_don`, `ma_nhan_vien`, `ma_khach_hang`, `thoi_gian_dat`, `trang_thai`, `tong_tien`, `ghi_chu`) VALUES
+	(3, 2, 6, '2025-07-14 18:20:31', 'cho_xu_ly', 599000, 'Diu dat phong');
 
 -- Dumping structure for table khachsan.loai_phong
 DROP TABLE IF EXISTS `loai_phong`;
 CREATE TABLE IF NOT EXISTS `loai_phong` (
   `ma_loai_phong` int NOT NULL AUTO_INCREMENT,
-  `hinh_anh` text COLLATE utf8mb4_unicode_ci,
-  `ten` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
-  `mo_ta` text COLLATE utf8mb4_unicode_ci,
+  `hinh_anh` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `ten` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
+  `mo_ta` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `trang_thai` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`ma_loai_phong`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table khachsan.loai_phong: ~0 rows (approximately)
-REPLACE INTO `loai_phong` (`ma_loai_phong`, `hinh_anh`, `ten`, `mo_ta`) VALUES
-	(1, NULL, 'Deluxe', NULL),
-	(2, NULL, 'Deluxe', NULL);
+-- Dumping data for table khachsan.loai_phong: ~3 rows (approximately)
+INSERT INTO `loai_phong` (`ma_loai_phong`, `hinh_anh`, `ten`, `mo_ta`, `trang_thai`) VALUES
+	(1, '687538cd0f143_1752512717.jpeg', 'VIP', '', 'hoat_dong'),
+	(2, '687538df370cd_1752512735.jpeg', 'Cao cấp', '', 'hoat_dong'),
+	(3, '687538f8506bd_1752512760.jpeg', 'Phổ thông', '', 'hoat_dong');
 
 -- Dumping structure for table khachsan.phong
 DROP TABLE IF EXISTS `phong`;
@@ -167,9 +172,11 @@ CREATE TABLE IF NOT EXISTS `phong` (
   PRIMARY KEY (`ma_phong`),
   KEY `ma_loai_phong` (`ma_loai_phong`),
   CONSTRAINT `FK_phong_loai_phong` FOREIGN KEY (`ma_loai_phong`) REFERENCES `loai_phong` (`ma_loai_phong`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table khachsan.phong: ~0 rows (approximately)
+INSERT INTO `phong` (`ma_phong`, `ten_phong`, `mo_ta`, `trang_thai`, `gia`, `ma_loai_phong`) VALUES
+	(1, 'Phòng A101', 'Phòng cao cấp view bãi biển cực đẹp, không khí mát mẻ êm dịu', 'Đang dọn dẹp', 599000, 2);
 
 -- Dumping structure for table khachsan.tai_khoan
 DROP TABLE IF EXISTS `tai_khoan`;
@@ -177,17 +184,19 @@ CREATE TABLE IF NOT EXISTS `tai_khoan` (
   `ma_tai_khoan` int NOT NULL AUTO_INCREMENT,
   `ho_ten` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `so_cccd` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `sdt` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sdt` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `mail` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `mat_khau` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `phan_quyen` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `trang_thai` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ngay_tao` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`ma_tai_khoan`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table khachsan.tai_khoan: ~0 rows (approximately)
-REPLACE INTO `tai_khoan` (`ma_tai_khoan`, `ho_ten`, `so_cccd`, `sdt`, `mail`, `mat_khau`, `phan_quyen`) VALUES
-	(1, 'Trần Văn Thinh', '123123123', '0123123123', 'tranthinh.own@gmail.com', '$2y$12$q9xO5o7ZGClAl/V4aNUww.9DqXAzmvjHtpf4tjY4qsaRShUgfiL.e', 'Quản lý'),
-	(2, 'Lê Duyên', '122122122', '0987654321', 'ltduyenn@gmail.com', '$2y$12$UzXHbgRAWGlgIazAwnEVouf.DyMUoIhARKzDRE8lshC26Yi/9pFbW', 'Quản lý');
+-- Dumping data for table khachsan.tai_khoan: ~1 rows (approximately)
+INSERT INTO `tai_khoan` (`ma_tai_khoan`, `ho_ten`, `so_cccd`, `sdt`, `mail`, `mat_khau`, `phan_quyen`, `trang_thai`, `ngay_tao`) VALUES
+	(2, 'Lê Duyên', '122122122', '0987654321', 'ltduyenn@gmail.com', '$2y$12$UzXHbgRAWGlgIazAwnEVouf.DyMUoIhARKzDRE8lshC26Yi/9pFbW', 'Quản lý', NULL, NULL),
+	(6, 'Cao Thị Dịu', '123123123', '0123123123', 'ctdiu@gmail.com', '$2y$12$6AAp4iW8v0IuA0zgFxG1e.YC2BdzOq1E0PWzmEa0WClIMH7fD3soG', 'Khách hàng', NULL, '2025-07-14 18:19:26');
 
 -- Dumping structure for table khachsan.tin_tuc
 DROP TABLE IF EXISTS `tin_tuc`;
@@ -197,12 +206,13 @@ CREATE TABLE IF NOT EXISTS `tin_tuc` (
   `noi_dung` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `ngay_dang` datetime NOT NULL,
   `trang_thai` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tieu_de` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `anh_dai_dien` text COLLATE utf8mb4_unicode_ci,
+  `tieu_de` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `anh_dai_dien` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `luot_xem` int DEFAULT NULL,
   PRIMARY KEY (`ma_tin_tuc`),
   KEY `fk_tintuc_taikhoan` (`ma_tai_khoan`),
   CONSTRAINT `FK_tin_tuc_tai_khoan` FOREIGN KEY (`ma_tai_khoan`) REFERENCES `tai_khoan` (`ma_tai_khoan`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table khachsan.tin_tuc: ~0 rows (approximately)
 

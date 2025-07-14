@@ -93,7 +93,7 @@ ob_start();
                             <!-- Giá phòng -->
                             <div>
                                 <label for="gia" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Giá phòng (VNĐ/đêm) <span class="text-red-500">*</span>
+                                    Giá phòng (VNĐ/giờ) <span class="text-red-500">*</span>
                                 </label>
                                 <input 
                                     type="number" 
@@ -106,7 +106,7 @@ ob_start();
                                     placeholder="500000"
                                     oninput="updatePreview()"
                                 >
-                                <p class="mt-1 text-sm text-gray-500">Giá phòng cho một đêm</p>
+                                <p class="mt-1 text-sm text-gray-500">Giá phòng cho một giờ</p>
                             </div>
 
                             <!-- Trạng thái phòng -->

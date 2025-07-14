@@ -101,6 +101,7 @@ Route::post('/admin/tai-khoan/store', 'HotelBooking\Controllers\Admin\AdminTaiKh
 Route::get('/admin/tai-khoan/show', 'HotelBooking\Controllers\Admin\AdminTaiKhoanController', 'show');
 Route::get('/admin/tai-khoan/edit', 'HotelBooking\Controllers\Admin\AdminTaiKhoanController', 'edit');
 Route::post('/admin/tai-khoan/update', 'HotelBooking\Controllers\Admin\AdminTaiKhoanController', 'update');
+Route::post('/admin/tai-khoan/update-status', 'HotelBooking\Controllers\Admin\AdminTaiKhoanController', 'updateStatus');
 
 // Admin - Quản lý dịch vụ
 Route::get('/admin/dich-vu', 'HotelBooking\Controllers\Admin\AdminDichVuController', 'index');
@@ -112,6 +113,8 @@ Route::post('/admin/dich-vu/update', 'HotelBooking\Controllers\Admin\AdminDichVu
 
 // Admin - Quản lý hóa đơn
 Route::get('/admin/hoa-don', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'index');
+Route::get('/admin/hoa-don/create', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'create');
+Route::post('/admin/hoa-don/store', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'store');
 Route::get('/admin/hoa-don/show', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'show');
 Route::post('/admin/hoa-don/update', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'update');
 Route::post('/admin/hoa-don/delete', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'destroy');

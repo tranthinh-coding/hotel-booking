@@ -146,8 +146,8 @@ class AdminPhongController
 
         try {
             // Tạo phòng trước
-            $phong = Phong::create($data);
-            $maPhong = $phong->ma_phong;
+            $phongId = Phong::createAndReturnId($data);
+            $maPhong = $phongId;
 
             // Xử lý upload nhiều ảnh
             if (isset($_FILES['hinh_anh']) && is_array($_FILES['hinh_anh']['name'])) {
@@ -168,7 +168,10 @@ class AdminPhongController
                         $validation = validateImageFile($fileArray);
                         if (!$validation['valid']) {
                             // Nếu có lỗi ảnh, xóa phòng đã tạo và các ảnh đã upload
-                            $phong->delete();
+                            $phong = Phong::find($phongId);
+                            if ($phong) {
+                                $phong->delete();
+                            }
                             foreach ($uploadedImages as $uploadedFile) {
                                 deleteFile($uploadedFile);
                             }
@@ -355,7 +358,7 @@ class AdminPhongController
     }
 
     /**
-     * Add image to room
+     * Add images to room (support multiple files)
      */
     public function addImage()
     {
@@ -374,26 +377,74 @@ class AdminPhongController
                 return;
             }
 
-            // Check if file was uploaded
-            if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+            // Handle multiple file upload
+            if (isset($_FILES['images']) && is_array($_FILES['images']['name'])) {
+                $uploadedCount = 0;
+                $errors = [];
+                
+                $fileCount = count($_FILES['images']['name']);
+                
+                for ($i = 0; $i < $fileCount; $i++) {
+                    if ($_FILES['images']['size'][$i] > 0) {
+                        // Create file array for each image
+                        $fileArray = [
+                            'name' => $_FILES['images']['name'][$i],
+                            'type' => $_FILES['images']['type'][$i],
+                            'tmp_name' => $_FILES['images']['tmp_name'][$i],
+                            'error' => $_FILES['images']['error'][$i],
+                            'size' => $_FILES['images']['size'][$i]
+                        ];
+                        
+                        $validation = validateImageFile($fileArray);
+                        if (!$validation['valid']) {
+                            $errors[] = $validation['error'] . " (File: " . $fileArray['name'] . ")";
+                            continue;
+                        }
+
+                        $fileName = saveFile($fileArray);
+                        if ($fileName) {
+                            // Create image record
+                            HinhAnh::create([
+                                'ma_phong' => $maPhong,
+                                'anh' => $fileName
+                            ]);
+                            $uploadedCount++;
+                        }
+                    }
+                }
+                
+                if ($uploadedCount > 0) {
+                    $message = "Đã thêm {$uploadedCount} hình ảnh thành công";
+                    if (!empty($errors)) {
+                        $message .= ". Một số file có lỗi: " . implode(', ', array_slice($errors, 0, 3));
+                    }
+                    redirect("/admin/phong/show?id={$maPhong}&success=images_added&message=" . urlencode($message));
+                } else {
+                    $errorMessage = !empty($errors) ? implode(', ', $errors) : 'Không thể upload ảnh nào';
+                    redirect("/admin/phong/show?id={$maPhong}&error=upload_failed&message=" . urlencode($errorMessage));
+                }
+            }
+            // Handle single file upload (backward compatibility)
+            else if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                // Validate and save file
+                $fileName = saveFile($_FILES['image']);
+                if (!$fileName) {
+                    redirect("/admin/phong/show?id={$maPhong}&error=invalid_file");
+                    return;
+                }
+
+                // Create image record
+                HinhAnh::create([
+                    'ma_phong' => $maPhong,
+                    'anh' => $fileName
+                ]);
+
+                redirect("/admin/phong/show?id={$maPhong}&success=image_added");
+            }
+            else {
                 redirect("/admin/phong/show?id={$maPhong}&error=upload_failed");
-                return;
             }
 
-            // Validate and save file
-            $fileName = saveFile($_FILES['image']);
-            if (!$fileName) {
-                redirect("/admin/phong/show?id={$maPhong}&error=invalid_file");
-                return;
-            }
-
-            // Create image record
-            HinhAnh::create([
-                'ma_phong' => $maPhong,
-                'anh' => $fileName
-            ]);
-
-            redirect("/admin/phong/show?id={$maPhong}&success=image_added");
         } catch (Exception $e) {
             $maPhong = post('ma_phong');
             redirect("/admin/phong/show?id={$maPhong}&error=add_image_failed");
@@ -415,6 +466,7 @@ class AdminPhongController
             }
 
             // Find the image
+            /** @var HinhAnh $image */
             $image = HinhAnh::find($imageId);
             if (!$image) {
                 redirect("/admin/phong/show?id={$maPhong}&error=image_not_found");

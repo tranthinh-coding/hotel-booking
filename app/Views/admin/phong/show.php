@@ -36,6 +36,10 @@ ob_start();
                 <span>
                     <?php
                     switch ($_GET['success']) {
+                        case 'images_added':
+                            $message = $_GET['message'] ?? 'Thêm nhiều hình ảnh thành công!';
+                            echo htmlspecialchars($message);
+                            break;
                         case 'image_added':
                             echo 'Thêm hình ảnh thành công!';
                             break;
@@ -62,7 +66,8 @@ ob_start();
                     <?php
                     switch ($_GET['error']) {
                         case 'upload_failed':
-                            echo 'Upload hình ảnh thất bại!';
+                            $message = $_GET['message'] ?? 'Upload hình ảnh thất bại!';
+                            echo htmlspecialchars($message);
                             break;
                         case 'invalid_file':
                             echo 'File không hợp lệ! Chỉ chấp nhận ảnh JPG, PNG, GIF, WebP.';
@@ -281,23 +286,54 @@ ob_start();
 <!-- Modal thêm ảnh -->
 <div id="addImageModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
     <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-white rounded-lg max-w-md w-full p-6">
+        <div class="bg-white rounded-lg max-w-lg w-full p-6">
             <h3 class="text-lg font-semibold mb-4">Thêm hình ảnh phòng</h3>
             <form id="addImageForm" method="POST" action="/admin/phong/add-image" enctype="multipart/form-data">
                 <input type="hidden" name="ma_phong" value="<?= $phong->ma_phong ?>">
+                
+                <!-- Upload Area -->
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Chọn hình ảnh</label>
-                    <input type="file" name="image" accept="image/*" required
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    <p class="text-sm text-gray-500 mt-1">Chấp nhận: JPG, PNG, GIF, WebP (tối đa 5MB)</p>
+                    <div class="flex items-center justify-center w-full">
+                        <label for="images" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+                            <div class="flex flex-col items-center justify-center pt-5 pb-6" id="upload-placeholder">
+                                <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                                <p class="mb-2 text-sm text-gray-500">
+                                    <span class="font-semibold">Click để chọn ảnh</span> hoặc kéo thả
+                                </p>
+                                <p class="text-xs text-gray-500">PNG, JPG, GIF, WebP (tối đa 5MB mỗi file)</p>
+                                <p class="text-xs text-blue-500 mt-1">✨ Có thể chọn nhiều ảnh cùng lúc</p>
+                            </div>
+                            <!-- Preview images will be shown here -->
+                            <div id="image-preview" class="hidden w-full h-full p-4">
+                                <div class="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto" id="preview-grid">
+                                    <!-- Preview images will be inserted here -->
+                                </div>
+                                <div class="mt-2 flex justify-between items-center">
+                                    <p class="text-sm text-gray-600">
+                                        <span id="image-count">0</span> ảnh đã chọn
+                                    </p>
+                                    <button type="button" onclick="clearAllImages()" class="text-sm text-red-600 hover:text-red-800">
+                                        <i class="fas fa-trash mr-1"></i>Xóa tất cả
+                                    </button>
+                                </div>
+                            </div>
+                            <input type="file" id="images" name="images[]" accept="image/*" multiple class="hidden" onchange="previewImages(this)">
+                        </label>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-2">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Chọn nhiều ảnh bằng cách giữ Ctrl (Windows) hoặc Cmd (Mac) khi click
+                    </p>
                 </div>
+                
                 <div class="flex justify-end space-x-3">
                     <button type="button" onclick="closeAddImageModal()"
                             class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
                         Hủy
                     </button>
                     <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                        Thêm ảnh
+                        <i class="fas fa-upload mr-2"></i>Thêm ảnh
                     </button>
                 </div>
             </form>
@@ -351,10 +387,87 @@ function closeImageModal() {
 
 function openAddImageModal() {
     document.getElementById('addImageModal').classList.remove('hidden');
+    // Reset form
+    document.getElementById('addImageForm').reset();
+    clearImagePreview();
 }
 
 function closeAddImageModal() {
     document.getElementById('addImageModal').classList.add('hidden');
+    // Reset form and preview
+    document.getElementById('addImageForm').reset();
+    clearImagePreview();
+}
+
+// Image preview functionality
+function previewImages(input) {
+    const files = input.files;
+    const previewDiv = document.getElementById('image-preview');
+    const placeholderDiv = document.getElementById('upload-placeholder');
+    const previewGrid = document.getElementById('preview-grid');
+    const imageCount = document.getElementById('image-count');
+    
+    if (files.length === 0) {
+        clearImagePreview();
+        return;
+    }
+    
+    // Show preview area, hide placeholder
+    previewDiv.classList.remove('hidden');
+    placeholderDiv.classList.add('hidden');
+    
+    // Clear previous previews
+    previewGrid.innerHTML = '';
+    
+    // Update count
+    imageCount.textContent = files.length;
+    
+    // Show each selected image
+    Array.from(files).forEach((file, index) => {
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageDiv = document.createElement('div');
+                imageDiv.className = 'relative group';
+                imageDiv.innerHTML = `
+                    <img src="${e.target.result}" alt="Preview ${index + 1}" 
+                         class="w-full h-20 object-cover rounded border">
+                    <button type="button" onclick="removeImagePreview(${index})" 
+                            class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                        ×
+                    </button>
+                    <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1 rounded-b">
+                        ${file.name.substring(0, 15)}${file.name.length > 15 ? '...' : ''}
+                    </div>
+                `;
+                previewGrid.appendChild(imageDiv);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
+
+function clearImagePreview() {
+    const previewDiv = document.getElementById('image-preview');
+    const placeholderDiv = document.getElementById('upload-placeholder');
+    const previewGrid = document.getElementById('preview-grid');
+    const imageCount = document.getElementById('image-count');
+    
+    previewDiv.classList.add('hidden');
+    placeholderDiv.classList.remove('hidden');
+    previewGrid.innerHTML = '';
+    imageCount.textContent = '0';
+}
+
+function clearAllImages() {
+    document.getElementById('images').value = '';
+    clearImagePreview();
+}
+
+function removeImagePreview(index) {
+    // Note: Individual removal is complex with file inputs
+    // For now, clear all and let user reselect
+    clearAllImages();
 }
 
 function confirmDeleteImage(imageId, filename) {
@@ -452,6 +565,50 @@ document.getElementById('addImageModal').addEventListener('click', function(e) {
 document.getElementById('statusModal').addEventListener('click', function(e) {
     if (e.target === this) {
         closeStatusModal();
+    }
+});
+
+// Drag and drop functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const uploadArea = document.querySelector('label[for="images"]');
+    const fileInput = document.getElementById('images');
+    
+    if (uploadArea && fileInput) {
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, unhighlight, false);
+        });
+        
+        uploadArea.addEventListener('drop', handleDrop, false);
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        function highlight(e) {
+            uploadArea.classList.add('bg-blue-50', 'border-blue-300');
+        }
+        
+        function unhighlight(e) {
+            uploadArea.classList.remove('bg-blue-50', 'border-blue-300');
+        }
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            fileInput.files = files;
+            previewImages(fileInput);
+        }
     }
 });
 </script>

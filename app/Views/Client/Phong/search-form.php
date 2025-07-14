@@ -65,10 +65,10 @@ ob_start();
                             name="room_type" 
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500 transition-colors">
                         <option value="">Tất cả loại phòng</option>
-                        <?php if (!empty($danhMucPhongs)): ?>
-                            <?php foreach ($danhMucPhongs as $danhMuc): ?>
-                                <option value="<?= htmlspecialchars($danhMuc->ma_danh_muc) ?>">
-                                    <?= htmlspecialchars($danhMuc->ten_danh_muc) ?>
+                        <?php if (!empty($loaiPhongs)): ?>
+                            <?php foreach ($loaiPhongs as $loaiPhong): ?>
+                                <option value="<?= htmlspecialchars($loaiPhong->ma_loai_phong) ?>">
+                                    <?= htmlspecialchars($loaiPhong->ten) ?>
                                 </option>
                             <?php endforeach; ?>
                         <?php endif; ?>
@@ -88,18 +88,18 @@ ob_start();
     </div>
 
     <!-- Popular Room Types -->
-    <?php if (!empty($danhMucPhongs)): ?>
+    <?php if (!empty($loaiPhongs)): ?>
         <div class="mb-8">
             <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Các loại phòng phổ biến</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <?php foreach (array_slice($danhMucPhongs, 0, 3) as $danhMuc): ?>
+                <?php foreach (array_slice($loaiPhongs, 0, 3) as $loaiPhong): ?>
                     <div class="bg-white rounded-xl soft-shadow p-6 text-center card-hover">
                         <div class="w-16 h-16 bg-gradient-to-br from-ocean-400 to-ocean-600 rounded-full flex items-center justify-center mx-auto mb-4">
                             <i class="fas fa-bed text-white text-xl"></i>
                         </div>
-                        <h3 class="text-xl font-semibold text-gray-900 mb-2"><?= htmlspecialchars($danhMuc->ten_danh_muc) ?></h3>
-                        <p class="text-gray-600 mb-4"><?= htmlspecialchars($danhMuc->mo_ta ?? 'Phòng thoải mái với đầy đủ tiện nghi') ?></p>
-                        <button onclick="selectRoomType('<?= htmlspecialchars($danhMuc->ma_danh_muc) ?>')" 
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2"><?= htmlspecialchars($loaiPhong->ten) ?></h3>
+                        <p class="text-gray-600 mb-4"><?= htmlspecialchars($loaiPhong->mo_ta ?? 'Phòng thoải mái với đầy đủ tiện nghi') ?></p>
+                        <button onclick="selectRoomType('<?= htmlspecialchars($loaiPhong->ma_loai_phong) ?>')" 
                                 class="text-ocean-600 hover:text-ocean-800 font-medium gentle-hover">
                             Chọn loại phòng này
                         </button>

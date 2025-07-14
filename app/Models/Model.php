@@ -133,7 +133,14 @@ abstract class Model
         $id = DB::table($instance->table)->insertGetId($data);
         $instance->data = $data;
         $instance->data[$instance->primaryKey] = $id;
-        return $instance;
+        return $instance; // Return instance như ban đầu
+    }
+
+    // Create a new record and return ID only
+    public static function createAndReturnId(array $data)
+    {
+        $instance = new static();
+        return DB::table($instance->table)->insertGetId($data);
     }
 
     // Save current model (insert or update)

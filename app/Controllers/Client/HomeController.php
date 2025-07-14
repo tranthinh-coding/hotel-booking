@@ -4,7 +4,7 @@ namespace HotelBooking\Controllers\Client;
 
 use HotelBooking\Models\DanhGia;
 use HotelBooking\Models\Phong;
-use HotelBooking\Models\DanhMucPhong;
+use HotelBooking\Models\LoaiPhong;
 
 class HomeController
 {
@@ -13,12 +13,12 @@ class HomeController
         // Get data for homepage
         $danhGias = DanhGia::all();
         $phongs = Phong::all();
-        $danhMucPhongs = DanhMucPhong::all();
+        $loaiPhongs = LoaiPhong::all();
 
         view('Client.Home.home_new', [
             'danhGias' => $danhGias,
             'phongs' => $phongs,
-            'danhMucPhongs' => $danhMucPhongs
+            'loaiPhongs' => $loaiPhongs
         ]);
     }
 
@@ -48,9 +48,9 @@ class HomeController
 
     public function showSearchForm()
     {
-        $danhMucPhongs = DanhMucPhong::all();
+        $loaiPhongs = LoaiPhong::all();
         view('Client.Phong.search-form', [
-            'danhMucPhongs' => $danhMucPhongs
+            'loaiPhongs' => $loaiPhongs
         ]);
     }
 

@@ -18,6 +18,8 @@ ob_start();
                             Tài khoản đã được tạo thành công!
                         <?php elseif ($_GET['success'] === 'updated'): ?>
                             Tài khoản đã được cập nhật thành công!
+                        <?php elseif ($_GET['success'] === 'status_updated'): ?>
+                            Trạng thái tài khoản đã được cập nhật thành công!
                         <?php endif; ?>
                     </p>
                 </div>
@@ -37,6 +39,10 @@ ob_start();
                             Không tìm thấy tài khoản!
                         <?php elseif ($_GET['error'] === 'missing_id'): ?>
                             Thiếu mã tài khoản!
+                        <?php elseif ($_GET['error'] === 'missing_data'): ?>
+                            Thiếu dữ liệu cần thiết!
+                        <?php elseif ($_GET['error'] === 'invalid_status'): ?>
+                            Trạng thái không hợp lệ!
                         <?php else: ?>
                             Có lỗi xảy ra!
                         <?php endif; ?>
@@ -65,7 +71,7 @@ ob_start();
     </div>
 
     <!-- Statistics Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
             <div class="flex items-center justify-between">
                 <div>
@@ -81,11 +87,11 @@ ob_start();
         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-600 text-sm">Khách hàng</p>
-                    <p class="text-2xl font-bold text-green-600"><?= $stats['customers'] ?? 0 ?></p>
+                    <p class="text-gray-600 text-sm">Hoạt động</p>
+                    <p class="text-2xl font-bold text-green-600"><?= $stats['active'] ?? 0 ?></p>
                 </div>
                 <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                    <i class="fas fa-user text-green-600 text-xl"></i>
+                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
                 </div>
             </div>
         </div>
@@ -93,11 +99,23 @@ ob_start();
         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-600 text-sm">Nhân viên</p>
-                    <p class="text-2xl font-bold text-blue-600"><?= $stats['staff'] ?? 0 ?></p>
+                    <p class="text-gray-600 text-sm">Tạm khóa</p>
+                    <p class="text-2xl font-bold text-yellow-600"><?= $stats['suspended'] ?? 0 ?></p>
                 </div>
-                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                    <i class="fas fa-user-tie text-blue-600 text-xl"></i>
+                <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-pause-circle text-yellow-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm">Bị khóa</p>
+                    <p class="text-2xl font-bold text-red-600"><?= $stats['blocked'] ?? 0 ?></p>
+                </div>
+                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-ban text-red-600 text-xl"></i>
                 </div>
             </div>
         </div>
@@ -106,10 +124,10 @@ ob_start();
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-gray-600 text-sm">Quản lý</p>
-                    <p class="text-2xl font-bold text-red-600"><?= $stats['managers'] ?? 0 ?></p>
+                    <p class="text-2xl font-bold text-blue-600"><?= $stats['managers'] ?? 0 ?></p>
                 </div>
-                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
-                    <i class="fas fa-user-shield text-red-600 text-xl"></i>
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-user-shield text-blue-600 text-xl"></i>
                 </div>
             </div>
         </div>
@@ -119,7 +137,7 @@ ob_start();
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <form method="GET" class="space-y-4">
             <!-- Hàng đầu tiên: Các ô input -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Tìm kiếm</label>
                     <input type="text" name="search" placeholder="Tên, email, SĐT..."
@@ -135,6 +153,22 @@ ob_start();
                             hàng</option>
                         <option value="Lễ tân" <?= ($_GET['role'] ?? '') === 'Lễ tân' ? 'selected' : '' ?>>Lễ tân</option>
                         <option value="Quản lý" <?= ($_GET['role'] ?? '') === 'Quản lý' ? 'selected' : '' ?>>Quản lý
+                        </option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Trạng thái</label>
+                    <select name="status"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Tất cả</option>
+                        <option value="<?= \HotelBooking\Enums\TrangThaiTaiKhoan::HOAT_DONG ?>" <?= ($_GET['status'] ?? '') === \HotelBooking\Enums\TrangThaiTaiKhoan::HOAT_DONG ? 'selected' : '' ?>>
+                            <?= \HotelBooking\Enums\TrangThaiTaiKhoan::getLabel(\HotelBooking\Enums\TrangThaiTaiKhoan::HOAT_DONG) ?>
+                        </option>
+                        <option value="<?= \HotelBooking\Enums\TrangThaiTaiKhoan::TAM_KHOA ?>" <?= ($_GET['status'] ?? '') === \HotelBooking\Enums\TrangThaiTaiKhoan::TAM_KHOA ? 'selected' : '' ?>>
+                            <?= \HotelBooking\Enums\TrangThaiTaiKhoan::getLabel(\HotelBooking\Enums\TrangThaiTaiKhoan::TAM_KHOA) ?>
+                        </option>
+                        <option value="<?= \HotelBooking\Enums\TrangThaiTaiKhoan::BI_KHOA ?>" <?= ($_GET['status'] ?? '') === \HotelBooking\Enums\TrangThaiTaiKhoan::BI_KHOA ? 'selected' : '' ?>>
+                            <?= \HotelBooking\Enums\TrangThaiTaiKhoan::getLabel(\HotelBooking\Enums\TrangThaiTaiKhoan::BI_KHOA) ?>
                         </option>
                     </select>
                 </div>
@@ -241,9 +275,22 @@ ob_start();
                                     <?= date('d/m/Y', strtotime($taiKhoan->ngay_tao ?? 'now')) ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span
-                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                        Hoạt động
+                                    <?php
+                                    // Import enum if needed
+                                    $trangThai = $taiKhoan->trang_thai ?? \HotelBooking\Enums\TrangThaiTaiKhoan::HOAT_DONG;
+                                    $statusColor = \HotelBooking\Enums\TrangThaiTaiKhoan::getColor($trangThai);
+                                    $statusLabel = \HotelBooking\Enums\TrangThaiTaiKhoan::getLabel($trangThai);
+                                    
+                                    $colorClasses = [
+                                        'green' => 'bg-green-100 text-green-800',
+                                        'yellow' => 'bg-yellow-100 text-yellow-800',
+                                        'red' => 'bg-red-100 text-red-800',
+                                        'gray' => 'bg-gray-100 text-gray-800'
+                                    ];
+                                    $colorClass = $colorClasses[$statusColor] ?? 'bg-gray-100 text-gray-800';
+                                    ?>
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?= $colorClass ?>">
+                                        <?= htmlspecialchars($statusLabel) ?>
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -256,6 +303,10 @@ ob_start();
                                             class="text-green-600 hover:text-green-900">
                                             <i class="fas fa-edit mr-1"></i>Sửa
                                         </a>
+                                        <button onclick="changeAccountStatus(<?= $taiKhoan->ma_tai_khoan ?>)"
+                                            class="text-orange-600 hover:text-orange-900">
+                                            <i class="fas fa-sync mr-1"></i>Đổi trạng thái
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -279,6 +330,58 @@ ob_start();
         <?php endif; ?>
     </div>
 </div>
+
+<!-- Modal đổi trạng thái -->
+<div id="statusModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-lg max-w-md w-full p-6">
+            <h3 class="text-lg font-semibold mb-4">Đổi trạng thái tài khoản</h3>
+            <form id="statusForm" method="POST" action="/admin/tai-khoan/update-status">
+                <input type="hidden" name="ma_tai_khoan" id="statusAccountId">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Trạng thái mới</label>
+                    <select name="trang_thai" id="newStatus" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="<?= \HotelBooking\Enums\TrangThaiTaiKhoan::HOAT_DONG ?>">
+                            <?= \HotelBooking\Enums\TrangThaiTaiKhoan::getLabel(\HotelBooking\Enums\TrangThaiTaiKhoan::HOAT_DONG) ?>
+                        </option>
+                        <option value="<?= \HotelBooking\Enums\TrangThaiTaiKhoan::TAM_KHOA ?>">
+                            <?= \HotelBooking\Enums\TrangThaiTaiKhoan::getLabel(\HotelBooking\Enums\TrangThaiTaiKhoan::TAM_KHOA) ?>
+                        </option>
+                        <option value="<?= \HotelBooking\Enums\TrangThaiTaiKhoan::BI_KHOA ?>">
+                            <?= \HotelBooking\Enums\TrangThaiTaiKhoan::getLabel(\HotelBooking\Enums\TrangThaiTaiKhoan::BI_KHOA) ?>
+                        </option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeStatusModal()" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
+                        Hủy
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                        Cập nhật
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function changeAccountStatus(accountId) {
+    document.getElementById('statusAccountId').value = accountId;
+    document.getElementById('statusModal').classList.remove('hidden');
+}
+
+function closeStatusModal() {
+    document.getElementById('statusModal').classList.add('hidden');
+}
+
+// Close modal when clicking outside
+document.getElementById('statusModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeStatusModal();
+    }
+});
+</script>
 
 <?php
 $content = ob_get_clean();
