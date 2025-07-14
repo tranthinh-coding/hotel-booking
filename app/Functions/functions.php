@@ -739,7 +739,7 @@ if (!function_exists('getFileUrl')) {
      * @param string $subFolder Sub folder in uploads directory (optional)
      * @return string|null Returns URL on success, null if file doesn't exist
      */
-    function getFileUrl(string $fileName): string|null
+    function getFileUrl(string|null $fileName): string|null
     {
         if (empty($fileName)) {
             return null;
