@@ -10,10 +10,10 @@ $dichVus = $hoaDon->getDichVus();
 
 // Lấy dữ liệu cho form
 $khachHangs = array_filter($taiKhoans, function($tk) {
-    return $tk->phan_quyen === 'khach_hang';
+    return $tk->phan_quyen === 'Khách hàng';
 });
 $nhanViens = array_filter($taiKhoans, function($tk) {
-    return in_array($tk->phan_quyen, ['admin', 'nhan_vien']);
+    return in_array($tk->phan_quyen, ['Quản lý', 'Nhân viên']);
 });
 $allPhongs = \HotelBooking\Models\Phong::all();
 $allDichVus = \HotelBooking\Models\DichVu::all();

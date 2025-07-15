@@ -49,20 +49,31 @@ class HoaDonPhong extends Model
     /**
      * Kiểm tra phòng cụ thể có booking trong khoảng thời gian không
      * 
-     * @param int $roomId ID phòng
-     * @param string $checkin Ngày checkin
-     * @param string $checkout Ngày checkout
+     * @param int $maPhong ID phòng cần kiểm tra
+     * @param string $checkin Ngày checkin muốn đặt
+     * @param string $checkout Ngày checkout muốn đặt
+     * @param int|null $excludeId ID booking cần loại trừ (dùng cho update)
      * @return bool
      */
-    public static function hasConflictForRoom($roomId, $checkin, $checkout)
+    public static function hasConflictForRoom($maPhong, $checkin, $checkout, $excludeId = null)
     {
-        $count = static::query()
-            ->where('ma_phong', '=', $roomId)
-            ->where('check_in', '<', $checkout)
-            ->where('check_out', '>', $checkin)
-            ->count();
+        $sql = "
+            SELECT COUNT(*) as conflicts
+            FROM hoa_don_phong 
+            WHERE ma_phong = ? 
+            AND check_in < ? 
+            AND check_out > ?
+        ";
         
-        return $count > 0;
+        $params = [$maPhong, $checkout, $checkin];
+        
+        if ($excludeId) {
+            $sql .= " AND ma_hd_phong != ?";
+            $params[] = $excludeId;
+        }
+        
+        $result = \HotelBooking\Facades\DB::queryOne($sql, $params);
+        return isset($result['conflicts']) && $result['conflicts'] > 0;
     }
 
     /**
@@ -92,5 +103,63 @@ class HoaDonPhong extends Model
         }
         
         return $result;
+    }
+
+    /**
+     * Lấy danh sách phòng của hóa đơn (tối ưu)
+     */
+    public static function getRoomsByInvoice($maHoaDon)
+    {
+        $sql = "
+            SELECT 
+                hdp.*,
+                p.ten_phong,
+                p.trang_thai as trang_thai_phong,
+                CEIL(TIMESTAMPDIFF(SECOND, hdp.check_in, hdp.check_out) / 3600) as so_gio
+            FROM hoa_don_phong hdp
+            LEFT JOIN phong p ON hdp.ma_phong = p.ma_phong
+            WHERE hdp.ma_hoa_don = ?
+            ORDER BY hdp.check_in
+        ";
+        
+        return \HotelBooking\Facades\DB::query($sql, [$maHoaDon]);
+    }
+
+    /**
+     * Tối ưu truy vấn conflict check cho nhiều phòng
+     */
+    public static function checkMultipleRoomConflicts($roomBookings, $excludeInvoiceId = null)
+    {
+        if (empty($roomBookings)) return [];
+        
+        $conflicts = [];
+        $placeholders = [];
+        $params = [];
+        
+        foreach ($roomBookings as $index => $booking) {
+            $placeholders[] = "(?, ?, ?)";
+            $params[] = $booking['ma_phong'];
+            $params[] = $booking['check_out'];
+            $params[] = $booking['check_in'];
+        }
+        
+        $sql = "
+            SELECT DISTINCT hdp.ma_phong, hdp.check_in, hdp.check_out
+            FROM hoa_don_phong hdp
+            WHERE EXISTS (
+                SELECT 1 FROM (VALUES " . implode(',', $placeholders) . ") AS v(ma_phong, checkout, checkin)
+                WHERE hdp.ma_phong = v.ma_phong 
+                AND hdp.check_in < v.checkout 
+                AND hdp.check_out > v.checkin
+        ";
+        
+        if ($excludeInvoiceId) {
+            $sql .= " AND hdp.ma_hoa_don != ?";
+            $params[] = $excludeInvoiceId;
+        }
+        
+        $sql .= ")";
+        
+        return \HotelBooking\Facades\DB::query($sql, $params);
     }
 }

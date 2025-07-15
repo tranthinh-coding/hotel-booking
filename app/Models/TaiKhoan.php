@@ -49,6 +49,41 @@ class TaiKhoan extends Model
         return $instance;
     }
 
+    /**
+     * Lấy danh sách khách hàng (tối ưu)
+     */
+    public static function getCustomersOnly()
+    {
+        $sql = "
+            SELECT ma_tai_khoan, ho_ten, sdt, mail
+            FROM tai_khoan 
+            WHERE phan_quyen = ? 
+            AND (trang_thai IS NULL OR trang_thai = 'active')
+            ORDER BY ho_ten ASC
+        ";
+        
+        return \HotelBooking\Facades\DB::query($sql, [\HotelBooking\Enums\PhanQuyen::KHACH_HANG]);
+    }
+
+    /**
+     * Lấy danh sách nhân viên và admin (tối ưu)
+     */
+    public static function getStaffOnly()
+    {
+        $sql = "
+            SELECT ma_tai_khoan, ho_ten, sdt, mail, phan_quyen
+            FROM tai_khoan 
+            WHERE phan_quyen IN (?, ?) 
+            AND (trang_thai IS NULL OR trang_thai = 'active')
+            ORDER BY phan_quyen ASC, ho_ten ASC
+        ";
+        
+        return \HotelBooking\Facades\DB::query($sql, [
+            \HotelBooking\Enums\PhanQuyen::LE_TAN,
+            \HotelBooking\Enums\PhanQuyen::QUAN_LY
+        ]);
+    }
+
     public function isAdmin()
     {
         return PhanQuyen::isAdmin($this->phan_quyen);

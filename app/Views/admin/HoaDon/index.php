@@ -30,9 +30,6 @@ ob_start();
                 <span>
                     <?php
                     switch ($_GET['success']) {
-                        case 'deleted':
-                            echo 'Xóa hóa đơn thành công!';
-                            break;
                         case 'created':
                             echo 'Tạo hóa đơn thành công!';
                             break;
@@ -168,7 +165,7 @@ ob_start();
         </div>
         
         <div class="overflow-x-auto">
-            <?php if (!empty($hoaDons)): ?>
+            <?php if (isNotEmpty($hoaDons)): ?>
                 <table class="w-full">
                     <thead class="bg-gray-50">
                         <tr>
@@ -183,22 +180,26 @@ ob_start();
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         <?php foreach ($hoaDons as $hoaDon): ?>
+                            <?php
+                            // Convert array to object-like access
+                            $hoaDon = (object) $hoaDon;
+                            ?>
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    #<?= htmlspecialchars(is_object($hoaDon) ? $hoaDon->ma_hoa_don : $hoaDon['ma_hoa_don']) ?>
+                                    #<?= htmlspecialchars($hoaDon->ma_hoa_don) ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    <?= htmlspecialchars(is_object($hoaDon) ? ($hoaDon->ten_khach_hang ?? 'N/A') : ($hoaDon['ten_khach_hang'] ?? 'N/A')) ?>
+                                    <?= htmlspecialchars($hoaDon->ten_khach_hang ?: 'Chưa có thông tin') ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <?= date('d/m/Y', strtotime(is_object($hoaDon) ? ($hoaDon->ngay_tao ?? $hoaDon->thoi_gian_dat ?? 'now') : ($hoaDon['ngay_tao'] ?? $hoaDon['thoi_gian_dat'] ?? 'now'))) ?>
+                                    <?= date('d/m/Y H:i', strtotime($hoaDon->thoi_gian_dat ?: 'now')) ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    <?= number_format(is_object($hoaDon) ? ($hoaDon->tong_tien ?? 0) : ($hoaDon['tong_tien'] ?? 0), 0, ',', '.') ?>₫
+                                    <?= number_format($hoaDon->tong_tien ?: 0, 0, ',', '.') ?>₫
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <?php 
-                                    $status = is_object($hoaDon) ? ($hoaDon->trang_thai ?? \HotelBooking\Enums\TrangThaiHoaDon::CHO_XU_LY) : ($hoaDon['trang_thai'] ?? \HotelBooking\Enums\TrangThaiHoaDon::CHO_XU_LY);
+                                    $status = $hoaDon->trang_thai ?: \HotelBooking\Enums\TrangThaiHoaDon::CHO_XU_LY;
                                     $statusColor = \HotelBooking\Enums\TrangThaiHoaDon::getColor($status);
                                     $statusLabel = \HotelBooking\Enums\TrangThaiHoaDon::getLabel($status);
                                     
@@ -215,16 +216,14 @@ ob_start();
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <?= htmlspecialchars(is_object($hoaDon) ? ($hoaDon->so_phong ?? 'N/A') : ($hoaDon['so_phong'] ?? 'N/A')) ?>
+                                    <?= htmlspecialchars($hoaDon->so_phong ?: 'Chưa có phòng') ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex space-x-2">
-                                        <a href="/admin/hoa-don/show?id=<?= is_object($hoaDon) ? $hoaDon->ma_hoa_don : $hoaDon['ma_hoa_don'] ?>" 
+                                        <a href="/admin/hoa-don/show?id=<?= $hoaDon->ma_hoa_don ?>" 
                                            class="text-blue-600 hover:text-blue-900">Xem</a>
-                                        <a href="/admin/hoa-don/edit?id=<?= is_object($hoaDon) ? $hoaDon->ma_hoa_don : $hoaDon['ma_hoa_don'] ?>" 
+                                        <a href="/admin/hoa-don/edit?id=<?= $hoaDon->ma_hoa_don ?>" 
                                            class="text-green-600 hover:text-green-900">Sửa</a>
-                                        <button onclick="deleteInvoice('<?= is_object($hoaDon) ? $hoaDon->ma_hoa_don : $hoaDon['ma_hoa_don'] ?>')" 
-                                                class="text-red-600 hover:text-red-900">Xóa</button>
                                     </div>
                                 </td>
                             </tr>
@@ -248,27 +247,6 @@ ob_start();
 </div>
 
 <script>
-function deleteInvoice(id) {
-    if (confirm('Bạn có chắc chắn muốn xóa hóa đơn này?')) {
-        fetch(`/admin/hoa-don/destroy?id=${id}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
-        .then(response => {
-            if (response.ok) {
-                location.reload();
-            } else {
-                alert('Có lỗi xảy ra khi xóa hóa đơn');
-            }
-        })
-        .catch(error => {
-            alert('Có lỗi xảy ra khi xóa hóa đơn');
-        });
-    }
-}
-
 // Search and filter functionality
 document.getElementById('searchInput')?.addEventListener('input', function() {
     // Implementation for search

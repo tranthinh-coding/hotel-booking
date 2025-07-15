@@ -116,8 +116,8 @@ Route::get('/admin/hoa-don', 'HotelBooking\Controllers\Admin\AdminHoaDonControll
 Route::get('/admin/hoa-don/create', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'create');
 Route::post('/admin/hoa-don/store', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'store');
 Route::get('/admin/hoa-don/show', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'show');
+Route::get('/admin/hoa-don/edit', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'edit');
 Route::post('/admin/hoa-don/update', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'update');
-Route::post('/admin/hoa-don/delete', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'destroy');
 
 // Admin - Quản lý đánh giá
 Route::get('/admin/danh-gia', 'HotelBooking\Controllers\Admin\AdminDanhGiaController', 'index');

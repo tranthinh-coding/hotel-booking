@@ -36,54 +36,38 @@ class AdminPhongController
         $trangThai = get('trang_thai', '');
         $sort = get('sort', 'ten_phong');
         
-        // Build base query
-        $phongs = Phong::all();
+        // Use optimized search with JOIN query
+        $phongs = Phong::searchWithRoomType($search, $loaiPhong, $trangThai, $sort);
         
-        // Apply filters manually since we don't have advanced query builder
-        if (!empty($search) || !empty($loaiPhong) || !empty($trangThai)) {
-            $filteredPhongs = [];
-            foreach ($phongs as $phong) {
-                $include = true;
-                
-                if (!empty($search) && stripos($phong->ten_phong, $search) === false) {
-                    $include = false;
-                }
-                
-                if (!empty($loaiPhong) && $phong->ma_loai_phong != $loaiPhong) {
-                    $include = false;
-                }
-                
-                if (!empty($trangThai) && $phong->trang_thai !== $trangThai) {
-                    $include = false;
-                }
-                
-                if ($include) {
-                    $filteredPhongs[] = $phong;
-                }
-            }
-            $phongs = $filteredPhongs;
-        }
+        // Get room statistics using optimized query
+        $statsData = Phong::getRoomStatistics();
         
-        // Apply sorting
-        usort($phongs, function($a, $b) use ($sort) {
-            switch ($sort) {
-                case 'gia':
-                    return $a->gia <=> $b->gia;
-                case 'ma_phong':
-                    return $a->ma_phong <=> $b->ma_phong;
-                default:
-                    return strcmp($a->ten_phong, $b->ten_phong);
-            }
-        });
-        
-        // Get statistics using SQL queries instead of PHP filtering
+        // Format statistics data
         $stats = [
-            'total' => Phong::newQuery()->count(),
-            'available' => Phong::where('trang_thai', \HotelBooking\Enums\TrangThaiPhong::CON_TRONG)->count(),
-            'cleaning' => Phong::where('trang_thai', \HotelBooking\Enums\TrangThaiPhong::DANG_DON_DEP)->count(),
-            'maintenance' => Phong::where('trang_thai', \HotelBooking\Enums\TrangThaiPhong::BAO_TRI)->count(),
-            'deactivated' => Phong::where('trang_thai', \HotelBooking\Enums\TrangThaiPhong::NGUNG_HOAT_DONG)->count()
+            'total' => 0,
+            'available' => 0,
+            'cleaning' => 0,
+            'maintenance' => 0,
+            'deactivated' => 0
         ];
+        
+        foreach ($statsData as $stat) {
+            $stats['total'] += $stat['so_luong'];
+            switch ($stat['trang_thai']) {
+                case \HotelBooking\Enums\TrangThaiPhong::CON_TRONG:
+                    $stats['available'] = $stat['so_luong'];
+                    break;
+                case \HotelBooking\Enums\TrangThaiPhong::DANG_DON_DEP:
+                    $stats['cleaning'] = $stat['so_luong'];
+                    break;
+                case \HotelBooking\Enums\TrangThaiPhong::BAO_TRI:
+                    $stats['maintenance'] = $stat['so_luong'];
+                    break;
+                case \HotelBooking\Enums\TrangThaiPhong::NGUNG_HOAT_DONG:
+                    $stats['deactivated'] = $stat['so_luong'];
+                    break;
+            }
+        }
         
         // Get room types for filter
         $loaiPhongs = LoaiPhong::all();

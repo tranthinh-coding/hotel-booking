@@ -65,7 +65,7 @@ ob_start();
                     <select id="ma_khach_hang" name="ma_khach_hang" required
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <option value="">-- Chọn khách hàng --</option>
-                        <?php if (!empty($khachHangs)): ?>
+                        <?php if (isNotEmpty($khachHangs)): ?>
                             <?php foreach($khachHangs as $khachHang): ?>
                                 <option value="<?= $khachHang->ma_tai_khoan ?>">
                                     <?= htmlspecialchars($khachHang->ho_ten) ?> - <?= htmlspecialchars($khachHang->mail) ?>
@@ -106,7 +106,7 @@ ob_start();
                             <select name="phongs[0][ma_phong]" required
                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                 <option value="">-- Chọn phòng --</option>
-                                <?php if (!empty($phongs)): ?>
+                                <?php if (isNotEmpty($phongs)): ?>
                                     <?php foreach($phongs as $phong): ?>
                                         <option value="<?= $phong->ma_phong ?>" data-price="<?= $phong->gia ?>">
                                             <?= htmlspecialchars($phong->ten_phong) ?> - <?= number_format($phong->gia, 0, ',', '.') ?>₫/giờ
@@ -209,7 +209,7 @@ function addRoom() {
                     <select name="phongs[${roomIndex}][ma_phong]" required
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <option value="">-- Chọn phòng --</option>
-                        <?php if (!empty($phongs)): ?>
+                        <?php if (isNotEmpty($phongs)): ?>
                             <?php foreach($phongs as $phong): ?>
                                 <option value="<?= $phong->ma_phong ?>" data-price="<?= $phong->gia ?>">
                                     <?= htmlspecialchars($phong->ten_phong) ?> - <?= number_format($phong->gia, 0, ',', '.') ?>₫/giờ
@@ -279,7 +279,7 @@ function addRoomService(button) {
                             class="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                             onchange="updateTotal()">
                         <option value="">-- Chọn dịch vụ --</option>
-                        <?php if (!empty($dichVus)): ?>
+                        <?php if (isNotEmpty($dichVus)): ?>
                             <?php foreach($dichVus as $dichVu): ?>
                                 <option value="<?= $dichVu->ma_dich_vu ?>" data-price="<?= $dichVu->gia ?>">
                                     <?= htmlspecialchars($dichVu->ten_dich_vu) ?> - <?= number_format($dichVu->gia, 0, ',', '.') ?>₫
@@ -322,7 +322,7 @@ function addGeneralService() {
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             onchange="updateTotal()">
                         <option value="">-- Chọn dịch vụ --</option>
-                        <?php if (!empty($dichVus)): ?>
+                        <?php if (isNotEmpty($dichVus)): ?>
                             <?php foreach($dichVus as $dichVu): ?>
                                 <option value="<?= $dichVu->ma_dich_vu ?>" data-price="<?= $dichVu->gia ?>">
                                     <?= htmlspecialchars($dichVu->ten_dich_vu) ?> - <?= number_format($dichVu->gia, 0, ',', '.') ?>₫

@@ -341,4 +341,54 @@ class DB
         self::close();
         return $row;
     }
+
+    /**
+     * Execute raw SQL and return results
+     */
+    public static function query($sql, $params = [])
+    {
+        $conn = self::connect();
+        
+        // Prepare statement if params provided
+        if (!empty($params)) {
+            $stmt = $conn->prepare($sql);
+            if ($stmt) {
+                $types = str_repeat('s', count($params)); // Assume all strings for simplicity
+                $stmt->bind_param($types, ...$params);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $data = [];
+                while ($row = $result->fetch_assoc()) {
+                    $data[] = $row;
+                }
+                $stmt->close();
+                self::close();
+                return $data;
+            }
+        } else {
+            // Direct query
+            $result = $conn->query($sql);
+            $data = [];
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    $data[] = $row;
+                }
+                $result->free();
+            }
+            self::close();
+            return $data;
+        }
+        
+        self::close();
+        return [];
+    }
+
+    /**
+     * Execute raw SQL and return single row
+     */
+    public static function queryOne($sql, $params = [])
+    {
+        $results = self::query($sql, $params);
+        return !empty($results) ? $results[0] : null;
+    }
 }

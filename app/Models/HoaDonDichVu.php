@@ -50,14 +50,103 @@ class HoaDonDichVu extends Model
      */
     public function getHoaDon()
     {
-        return HoaDon::query()->where('ma_hoa_don', '=', $this->ma_hoa_don)->first();
+        return HoaDon::find($this->ma_hoa_don);
     }
 
     /**
-     * Tính tổng tiền dịch vụ
+     * Lấy danh sách dịch vụ của hóa đơn với thông tin chi tiết (tối ưu)
      */
-    public function getTotalAmount()
+    public static function getServicesByInvoice($maHoaDon)
     {
-        return $this->gia * ($this->so_luong ?? 1);
+        $sql = "
+            SELECT 
+                hdv.*,
+                dv.ten_dich_vu,
+                dv.mo_ta as mo_ta_dich_vu,
+                (hdv.gia * hdv.so_luong) as thanh_tien
+            FROM hoa_don_dich_vu hdv
+            LEFT JOIN dich_vu dv ON hdv.ma_dich_vu = dv.ma_dich_vu
+            WHERE hdv.ma_hoa_don = ?
+            ORDER BY hdv.thoi_gian DESC
+        ";
+        
+        return \HotelBooking\Facades\DB::query($sql, [$maHoaDon]);
+    }
+
+    /**
+     * Tính tổng tiền dịch vụ của hóa đơn (tối ưu)
+     */
+    public static function getTotalServiceCost($maHoaDon)
+    {
+        $sql = "
+            SELECT SUM(gia * so_luong) as total_cost
+            FROM hoa_don_dich_vu
+            WHERE ma_hoa_don = ?
+        ";
+        
+        $result = \HotelBooking\Facades\DB::queryOne($sql, [$maHoaDon]);
+        return (float) ($result['total_cost'] ?? 0);
+    }
+
+    /**
+     * Lấy danh sách dịch vụ theo phòng
+     */
+    public static function getServicesByRoom($maHdPhong)
+    {
+        $sql = "
+            SELECT 
+                hdv.*,
+                dv.ten_dich_vu,
+                dv.mo_ta as mo_ta_dich_vu,
+                (hdv.gia * hdv.so_luong) as thanh_tien
+            FROM hoa_don_dich_vu hdv
+            LEFT JOIN dich_vu dv ON hdv.ma_dich_vu = dv.ma_dich_vu
+            WHERE hdv.ma_hd_phong = ?
+            ORDER BY hdv.thoi_gian DESC
+        ";
+        
+        return \HotelBooking\Facades\DB::query($sql, [$maHdPhong]);
+    }
+
+    /**
+     * Bulk insert cho nhiều dịch vụ (tối ưu)
+     */
+    public static function bulkInsertServices($services)
+    {
+        if (empty($services)) return false;
+        
+        $values = [];
+        $params = [];
+        
+        foreach ($services as $service) {
+            $values[] = "(?, ?, ?, ?, ?, ?)";
+
+            $params[] = $service['ma_dich_vu'] ?? null;
+            $params[] = $service['gia'] ?? 0;
+            $params[] = $service['ma_hd_phong'] ?? null;
+            $params[] = $service['ma_hoa_don'] ?? null;
+            $params[] = $service['so_luong'] ?? 1;
+            $params[] = $service['thoi_gian'] ?? date('Y-m-d H:i:s');
+        }
+        
+        $sql = "
+            INSERT INTO hoa_don_dich_vu 
+            (ma_dich_vu, gia, ma_hd_phong, ma_hoa_don, so_luong, thoi_gian) 
+            VALUES " . implode(',', $values);
+        
+        $conn = \HotelBooking\Facades\DB::connect();
+        $stmt = $conn->prepare($sql);
+        
+        if ($stmt) {
+            $types = str_repeat('s', count($params));
+            $stmt->bind_param($types, ...$params);
+            $result = $stmt->execute();
+            $stmt->close();
+            \HotelBooking\Facades\DB::close();
+            return $result;
+        }
+        
+        \HotelBooking\Facades\DB::close();
+        return false;
     }
 }

@@ -212,6 +212,9 @@ ob_start();
         <?php if (!empty($phongs)): ?>
             <?php foreach ($phongs as $phong): ?>
                 <?php
+                // Convert array to object-like access
+                $phong = (object) $phong;
+                
                 // Add opacity for deactivated rooms
                 $cardOpacity = $phong->trang_thai === \HotelBooking\Enums\TrangThaiPhong::NGUNG_HOAT_DONG ? 'opacity-60' : '';
                 ?>
@@ -220,7 +223,13 @@ ob_start();
                     <!-- Hình ảnh phòng -->
                     <div class="relative h-48 bg-gray-200">
                         <?php 
-                        $mainImage = $phong->getMainImageUrl(); 
+                        // Since we're using optimized query, we need to get image differently
+                        $mainImage = null;
+                        if (isset($phong->so_hinh_anh) && $phong->so_hinh_anh > 0) {
+                            // Get main image from HinhAnh model
+                            $hinhAnh = \HotelBooking\Models\HinhAnh::getMainImage($phong->ma_phong);
+                            $mainImage = $hinhAnh ? $hinhAnh->getImageUrl() : null;
+                        }
                         ?>
                         <?php if ($mainImage): ?>
                             <img src="<?= htmlspecialchars($mainImage) ?>" alt="<?= htmlspecialchars($phong->ten_phong) ?>"
@@ -294,8 +303,8 @@ ob_start();
                             <span class="text-sm text-gray-500">#<?= $phong->ma_phong ?></span>
                         </div>
 
-                        <?php if (isset($phong->loai_phong_ten)): ?>
-                            <p class="text-sm text-gray-600 mb-2"><?= htmlspecialchars($phong->loai_phong_ten) ?></p>
+                        <?php if (isset($phong->ten_loai_phong)): ?>
+                            <p class="text-sm text-gray-600 mb-2"><?= htmlspecialchars($phong->ten_loai_phong) ?></p>
                         <?php endif; ?>
 
                         <p class="text-gray-600 text-sm mb-3 line-clamp-2"><?= htmlspecialchars($phong->mo_ta) ?></p>

@@ -1,13 +1,9 @@
 <?php
-$title = 'Chi tiết Hóa đơn #' . $hoaDon->ma_hoa_don . ' - Ocean Pearl Hotel Admin';
-$pageTitle = 'Chi tiết Hóa đơn #' . $hoaDon->ma_hoa_don;
+$title = 'Chi tiết Hóa đơn #' . $hoaDon['ma_hoa_don'] . ' - Ocean Pearl Hotel Admin';
+$pageTitle = 'Chi tiết Hóa đơn #' . $hoaDon['ma_hoa_don'];
 
-// Lấy thông tin liên quan
-$khachHang = $hoaDon->getKhachHang();
-$nhanVien = $hoaDon->getNhanVien();
-$phongs = $hoaDon->getPhongs();
-$dichVus = $hoaDon->getDichVus();
-
+// Data is already optimized and included in $hoaDon array from getInvoiceDetails()
+// No need to call separate methods since everything is in the array
 ob_start();
 ?>
 
@@ -18,14 +14,14 @@ ob_start();
         <span class="mx-2">/</span>
         <a href="/admin/hoa-don" class="hover:text-gray-700">Hóa đơn</a>
         <span class="mx-2">/</span>
-        <span class="text-gray-900">Chi tiết #<?= $hoaDon->ma_hoa_don ?></span>
+        <span class="text-gray-900">Chi tiết #<?= $hoaDon['ma_hoa_don'] ?></span>
     </nav>
 
     <!-- Action Buttons -->
     <div class="flex justify-between items-center">
-        <h1 class="text-2xl font-bold text-gray-900">Chi tiết Hóa đơn #<?= $hoaDon->ma_hoa_don ?></h1>
+        <h1 class="text-2xl font-bold text-gray-900">Chi tiết Hóa đơn #<?= $hoaDon['ma_hoa_don'] ?></h1>
         <div class="flex space-x-3">
-            <a href="/admin/hoa-don/edit?id=<?= $hoaDon->ma_hoa_don ?>" 
+            <a href="/admin/hoa-don/edit?id=<?= $hoaDon['ma_hoa_don'] ?>" 
                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
                 <i class="fas fa-edit mr-2"></i>Chỉnh sửa
             </a>
@@ -46,17 +42,16 @@ ob_start();
                 <div class="space-y-3">
                     <div class="flex justify-between">
                         <span class="text-gray-600">Mã hóa đơn:</span>
-                        <span class="font-semibold">#<?= $hoaDon->ma_hoa_don ?></span>
+                        <span class="font-semibold">#<?= $hoaDon['ma_hoa_don'] ?></span>
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-600">Thời gian tạo:</span>
-                        <span><?= date('d/m/Y H:i', strtotime($hoaDon->thoi_gian_dat)) ?></span>
+                        <span><?= date('d/m/Y H:i', strtotime($hoaDon['thoi_gian_dat'])) ?></span>
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-600">Trạng thái:</span>
-                        <span class="px-3 py-1 rounded-full text-sm font-medium
-                            <?php
-                            switch($hoaDon->trang_thai) {
+                        <span class="px-3 py-1 rounded-full text-sm font-medium                        <?php
+                            switch($hoaDon['trang_thai']) {
                                 case 'cho_xu_ly':
                                     echo 'bg-yellow-100 text-yellow-800';
                                     break;
@@ -72,9 +67,9 @@ ob_start();
                                 default:
                                     echo 'bg-gray-100 text-gray-800';
                             }
-                            ?>">
-                            <?php
-                            switch($hoaDon->trang_thai) {
+                        ?>">
+                        <?php
+                            switch($hoaDon['trang_thai']) {
                                 case 'cho_xu_ly':
                                     echo 'Chờ xử lý';
                                     break;
@@ -88,7 +83,7 @@ ob_start();
                                     echo 'Đã hủy';
                                     break;
                                 default:
-                                    echo ucfirst(str_replace('_', ' ', $hoaDon->trang_thai));
+                                    echo ucfirst(str_replace('_', ' ', $hoaDon['trang_thai']));
                             }
                             ?>
                         </span>
@@ -96,13 +91,13 @@ ob_start();
                     <div class="flex justify-between">
                         <span class="text-gray-600">Tổng tiền:</span>
                         <span class="text-xl font-bold text-blue-600">
-                            <?= number_format($hoaDon->tong_tien, 0, ',', '.') ?>₫
+                            <?= number_format($hoaDon['tong_tien'], 0, ',', '.') ?>₫
                         </span>
                     </div>
-                    <?php if (!empty($hoaDon->ghi_chu)): ?>
+                    <?php if (isNotEmpty($hoaDon['ghi_chu'])): ?>
                     <div class="pt-3 border-t">
                         <span class="text-gray-600 block mb-2">Ghi chú:</span>
-                        <p class="text-gray-800"><?= htmlspecialchars($hoaDon->ghi_chu) ?></p>
+                        <p class="text-gray-800"><?= htmlspecialchars($hoaDon['ghi_chu']) ?></p>
                     </div>
                     <?php endif; ?>
                 </div>
@@ -111,19 +106,19 @@ ob_start();
             <!-- Customer Info -->
             <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">Thông tin khách hàng</h3>
-                <?php if ($khachHang): ?>
+                <?php if (isNotEmpty($hoaDon['ten_khach_hang'])): ?>
                 <div class="space-y-3">
                     <div class="flex justify-between">
                         <span class="text-gray-600">Họ tên:</span>
-                        <span class="font-medium"><?= htmlspecialchars($khachHang->ho_ten) ?></span>
+                        <span class="font-medium"><?= htmlspecialchars($hoaDon['ten_khach_hang']) ?></span>
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-600">Email:</span>
-                        <span><?= htmlspecialchars($khachHang->mail) ?></span>
+                        <span><?= htmlspecialchars($hoaDon['email_khach_hang'] ?? 'Chưa cập nhật') ?></span>
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-600">Số điện thoại:</span>
-                        <span><?= htmlspecialchars($khachHang->sdt ?? 'Chưa cập nhật') ?></span>
+                        <span><?= htmlspecialchars($hoaDon['sdt_khach_hang'] ?? 'Chưa cập nhật') ?></span>
                     </div>
                 </div>
                 <?php else: ?>
@@ -137,15 +132,15 @@ ob_start();
             <!-- Staff Info -->
             <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">Nhân viên xử lý</h3>
-                <?php if ($nhanVien): ?>
+                <?php if (isNotEmpty($hoaDon['ten_nhan_vien'])): ?>
                 <div class="space-y-3">
                     <div class="flex justify-between">
                         <span class="text-gray-600">Họ tên:</span>
-                        <span class="font-medium"><?= htmlspecialchars($nhanVien->ho_ten) ?></span>
+                        <span class="font-medium"><?= htmlspecialchars($hoaDon['ten_nhan_vien']) ?></span>
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-600">Email:</span>
-                        <span><?= htmlspecialchars($nhanVien->mail) ?></span>
+                        <span><?= htmlspecialchars($hoaDon['email_nhan_vien'] ?? 'Chưa cập nhật') ?></span>
                     </div>
                 </div>
                 <?php else: ?>
@@ -156,32 +151,31 @@ ob_start();
             <!-- Room Details -->
             <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">Chi tiết phòng đặt</h3>
-                <?php if (!empty($phongs)): ?>
+                <?php if (isNotEmpty($hoaDon['rooms_data'])): ?>
                 <div class="space-y-4">
-                    <?php foreach ($phongs as $hdPhong): ?>
-                        <?php $phong = \HotelBooking\Models\Phong::find($hdPhong->ma_phong); ?>
+                    <?php foreach ($hoaDon['rooms_data'] as $room): ?>
                         <div class="border border-gray-200 rounded-lg p-4">
                             <div class="flex justify-between items-start mb-3">
                                 <h4 class="font-medium text-gray-900">
-                                    <?= $phong ? htmlspecialchars($phong->ten_phong) : 'Phòng #' . $hdPhong->ma_phong ?>
+                                    <?= htmlspecialchars($room['ten_phong']) ?>
                                 </h4>
                                 <span class="text-blue-600 font-semibold">
-                                    <?= number_format($hdPhong->gia ?? ($phong->gia ?? 0), 0, ',', '.') ?>₫/giờ
+                                    <?= number_format($room['gia_hien_tai'], 0, ',', '.') ?>₫/giờ
                                 </span>
                             </div>
                             <div class="grid grid-cols-2 gap-4 text-sm">
                                 <div>
                                     <span class="text-gray-600">Check-in:</span>
-                                    <div class="font-medium"><?= date('d/m/Y H:i', strtotime($hdPhong->check_in)) ?></div>
+                                    <div class="font-medium"><?= date('d/m/Y H:i', strtotime($room['check_in'])) ?></div>
                                 </div>
                                 <div>
                                     <span class="text-gray-600">Check-out:</span>
-                                    <div class="font-medium"><?= date('d/m/Y H:i', strtotime($hdPhong->check_out)) ?></div>
+                                    <div class="font-medium"><?= date('d/m/Y H:i', strtotime($room['check_out'])) ?></div>
                                 </div>
                             </div>
                             <?php 
-                            $soGio = ceil((strtotime($hdPhong->check_out) - strtotime($hdPhong->check_in)) / 3600);
-                            $tongTienPhong = ($hdPhong->gia ?? ($phong->gia ?? 0)) * $soGio;
+                            $soGio = ceil((strtotime($room['check_out']) - strtotime($room['check_in'])) / 3600);
+                            $tongTienPhong = $room['gia_hien_tai'] * $soGio;
                             ?>
                             <div class="mt-3 pt-3 border-t flex justify-between">
                                 <span class="text-gray-600"><?= number_format($soGio, 0) ?> giờ</span>
@@ -198,7 +192,7 @@ ob_start();
     </div>
 
     <!-- Services -->
-    <?php if (!empty($dichVus)): ?>
+    <?php if (isNotEmpty($hoaDon['services_data'])): ?>
     <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
         <h3 class="text-lg font-semibold text-gray-900 mb-4">Dịch vụ bổ sung</h3>
         <div class="overflow-x-auto">
@@ -213,23 +207,22 @@ ob_start();
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
-                    <?php foreach ($dichVus as $hdDichVu): ?>
-                        <?php $dichVu = \HotelBooking\Models\DichVu::find($hdDichVu->ma_dich_vu); ?>
+                    <?php foreach ($hoaDon['services_data'] as $hdDichVu): ?>
                         <tr>
                             <td class="px-4 py-3">
-                                <?= $dichVu ? htmlspecialchars($dichVu->ten_dich_vu) : 'Dịch vụ #' . $hdDichVu->ma_dich_vu ?>
+                                <?= htmlspecialchars($hdDichVu['ten_dich_vu']) ?>
                             </td>
                             <td class="px-4 py-3">
-                                <?= number_format($hdDichVu->gia ?? ($dichVu->gia ?? 0), 0, ',', '.') ?>₫
+                                <?= number_format($hdDichVu['gia_hien_tai'], 0, ',', '.') ?>₫
                             </td>
                             <td class="px-4 py-3">
-                                <?= $hdDichVu->so_luong ?? 1 ?>
+                                <?= $hdDichVu['so_luong'] ?? 1 ?>
                             </td>
                             <td class="px-4 py-3 font-semibold">
-                                <?= number_format(($hdDichVu->gia ?? ($dichVu->gia ?? 0)) * ($hdDichVu->so_luong ?? 1), 0, ',', '.') ?>₫
+                                <?= number_format($hdDichVu['gia_hien_tai'] * ($hdDichVu['so_luong'] ?? 1), 0, ',', '.') ?>₫
                             </td>
                             <td class="px-4 py-3 text-sm text-gray-600">
-                                <?= $hdDichVu->thoi_gian ? date('d/m/Y H:i', strtotime($hdDichVu->thoi_gian)) : 'N/A' ?>
+                                <?= $hdDichVu['thoi_gian'] ? date('d/m/Y H:i', strtotime($hdDichVu['thoi_gian'])) : 'N/A' ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -245,16 +238,18 @@ ob_start();
         <div class="space-y-2">
             <?php
             $tongTienPhong = 0;
-            foreach ($phongs as $hdPhong) {
-                $phong = \HotelBooking\Models\Phong::find($hdPhong->ma_phong);
-                $soNgay = (strtotime($hdPhong->check_out) - strtotime($hdPhong->check_in)) / (60 * 60 * 24);
-                $tongTienPhong += ($hdPhong->gia ?? ($phong->gia ?? 0)) * $soNgay;
+            if (isNotEmpty($hoaDon['rooms_data'])) {
+                foreach ($hoaDon['rooms_data'] as $hdPhong) {
+                    $soGio = ceil((strtotime($hdPhong['check_out']) - strtotime($hdPhong['check_in'])) / 3600);
+                    $tongTienPhong += $hdPhong['gia_hien_tai'] * $soGio;
+                }
             }
             
             $tongTienDichVu = 0;
-            foreach ($dichVus as $hdDichVu) {
-                $dichVu = \HotelBooking\Models\DichVu::find($hdDichVu->ma_dich_vu);
-                $tongTienDichVu += ($hdDichVu->gia ?? ($dichVu->gia ?? 0)) * ($hdDichVu->so_luong ?? 1);
+            if (isNotEmpty($hoaDon['services_data'])) {
+                foreach ($hoaDon['services_data'] as $hdDichVu) {
+                    $tongTienDichVu += $hdDichVu['gia_hien_tai'] * ($hdDichVu['so_luong'] ?? 1);
+                }
             }
             ?>
             <div class="flex justify-between">
@@ -268,7 +263,7 @@ ob_start();
             <hr class="my-2">
             <div class="flex justify-between text-lg font-semibold">
                 <span>Tổng cộng:</span>
-                <span class="text-blue-600"><?= number_format($hoaDon->tong_tien, 0, ',', '.') ?>₫</span>
+                <span class="text-blue-600"><?= number_format($hoaDon['tong_tien'], 0, ',', '.') ?>₫</span>
             </div>
         </div>
     </div>
