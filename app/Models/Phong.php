@@ -331,4 +331,12 @@ class Phong extends Model
         
         return \HotelBooking\Facades\DB::query($sql);
     }
+    
+    /**
+     * Get the room type (LoaiPhong) for this room
+     */
+    public function loaiPhong()
+    {
+        return LoaiPhong::find($this->ma_loai_phong);
+    }
 }

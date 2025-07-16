@@ -18,7 +18,7 @@ class HomeController
         $phongs = Phong::all();
         $loaiPhongs = LoaiPhong::all();
 
-        view('Client.Home.home_new', [
+        view('Client.Home.home', [
             'danhGias' => $danhGias,
             'phongs' => $phongs,
             'loaiPhongs' => $loaiPhongs

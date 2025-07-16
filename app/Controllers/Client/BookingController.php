@@ -18,8 +18,20 @@ class BookingController
     public function showBookingForm($maPhong = null)
     {
         $phong = null;
+        
+        // Kiểm tra parameter từ URL path
         if ($maPhong) {
             $phong = Phong::find($maPhong);
+            if (!$phong) {
+                flash_error('Phòng không tồn tại');
+                redirect('/phong');
+                return;
+            }
+        }
+        
+        // Kiểm tra parameter từ GET query
+        if (!$phong && isset($_GET['room_id'])) {
+            $phong = Phong::find($_GET['room_id']);
             if (!$phong) {
                 flash_error('Phòng không tồn tại');
                 redirect('/phong');
@@ -29,9 +41,13 @@ class BookingController
 
         $loaiPhongs = LoaiPhong::all();
         
+        // Lấy tất cả phòng để hiển thị trong form
+        $phongs = Phong::all();
+        
         view('Client.Booking.form', [
             'phong' => $phong,
-            'loaiPhongs' => $loaiPhongs
+            'loaiPhongs' => $loaiPhongs,
+            'phongs' => $phongs
         ]);
     }
 
