@@ -136,7 +136,7 @@ ob_start();
                                 <select name="ma_phong" id="ma_phong" required 
                                         class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-gray-400">
                                     <option value="">Chọn phòng</option>
-                                    <?php if (!empty($loaiPhongs)): ?>
+                                    <?php if (isNotEmpty($loaiPhongs)): ?>
                                         <?php foreach ($loaiPhongs as $loaiPhong): ?>
                                             <optgroup label="<?= safe_htmlspecialchars($loaiPhong->ten) ?>">
                                                 <?php 
@@ -328,7 +328,7 @@ ob_start();
                                         <span class="text-lg font-bold text-blue-600"><?= number_format($phong->gia) ?>₫/giờ</span>
                                     </div>
                                     
-                                    <?php if (!empty($phong->mo_ta)): ?>
+                                    <?php if (isNotEmpty($phong->mo_ta)): ?>
                                         <div>
                                             <h5 class="font-medium text-gray-800 mb-2">Mô tả:</h5>
                                             <p class="text-gray-600 text-sm"><?= safe_htmlspecialchars($phong->mo_ta) ?></p>
@@ -344,7 +344,7 @@ ob_start();
     </div>
 </div>
                         <div class="text-center">
-                            <?php if (!empty($phong->hinh_anh)): ?>
+                            <?php if (isNotEmpty($phong->hinh_anh)): ?>
                                 <img src="<?= safe_htmlspecialchars($phong->hinh_anh) ?>" 
                                         alt="<?= safe_htmlspecialchars($phong->ten_phong) ?>"
 

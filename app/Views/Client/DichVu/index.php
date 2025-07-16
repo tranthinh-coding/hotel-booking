@@ -46,12 +46,12 @@ ob_start();
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Services Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <?php if (!empty($services)): ?>
+            <?php if (isNotEmpty($services)): ?>
                 <?php foreach ($services as $service): ?>
                     <div class="bg-white rounded-2xl shadow-xl overflow-hidden group hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
                         <!-- Service Image -->
                         <div class="h-64 bg-gradient-to-br from-blue-100 to-cyan-100 relative overflow-hidden">
-                            <?php if (!empty($service['hinh_anh'])): ?>
+                            <?php if (isNotEmpty($service['hinh_anh'])): ?>
                                 <?php 
                                 // Construct proper image URL
                                 $imageUrl = '/uploads/' . $service['hinh_anh'];
@@ -87,7 +87,7 @@ ob_start();
                             
                             <!-- Service Description -->
                             <p class="text-gray-600 mb-4 line-clamp-3">
-                                <?php if (!empty($service['mo_ta'])): ?>
+                                <?php if (isNotEmpty($service['mo_ta'])): ?>
                                     <?= htmlspecialchars($service['mo_ta']) ?>
                                 <?php else: ?>
                                     Dịch vụ chất lượng cao được cung cấp bởi Ocean Pearl Hotel với đội ngũ nhân viên chuyên nghiệp.

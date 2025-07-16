@@ -1,6 +1,6 @@
 <?php 
 $title = 'Kết quả tìm kiếm phòng - Ocean Pearl Hotel';
-include __DIR__ . '/../../layouts/app.php';
+ob_start();
 ?>
 
 <div class="bg-gradient-to-br from-ocean-50 via-white to-ocean-50 min-h-screen py-8">
@@ -203,4 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<?php include __DIR__ . '/../layouts/footer.php'; ?>
+<?php
+$content = ob_get_clean();
+include __DIR__ . '/../../layouts/app.php';
+?>
