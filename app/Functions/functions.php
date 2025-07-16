@@ -547,7 +547,7 @@ if (!function_exists('has_errors')) {
     function has_errors(): bool
     {
         session_start_if_not_started();
-        return !empty($_SESSION['_errors']);
+        return isNotEmpty($_SESSION['_errors']);
     }
 }
 
@@ -593,7 +593,7 @@ if (!function_exists('validate_email')) {
      */
     function validate_email(string $field, string $value, ?string $message = null): bool
     {
-        if (!empty($value) && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+        if (isNotEmpty($value) && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
             $message = $message ?: 'Email không đúng định dạng.';
             set_error($field, $message);
             return false;
@@ -614,7 +614,7 @@ if (!function_exists('validate_min_length')) {
      */
     function validate_min_length(string $field, string $value, int $min, ?string $message = null): bool
     {
-        if (!empty($value) && strlen($value) < $min) {
+        if (isNotEmpty($value) && strlen($value) < $min) {
             $message = $message ?: ucfirst($field) . " phải có ít nhất {$min} ký tự.";
             set_error($field, $message);
             return false;

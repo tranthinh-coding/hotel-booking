@@ -16,12 +16,12 @@ class PhongController
         $roomType = $_GET['room_type'] ?? '';
 
         // Get available rooms based on search criteria
-        if (!empty($checkin) && !empty($checkout)) {
+        if (isNotEmpty($checkin) && isNotEmpty($checkout)) {
             $phongs = Phong::searchAvailable($checkin, $checkout, $guests, $roomType);
         } else {
             // If no search criteria, show all active rooms (exclude deactivated)
             $query = Phong::newQuery();
-            if (!empty($roomType)) {
+            if (isNotEmpty($roomType)) {
                 $query = $query->where('ma_loai_phong', '=', $roomType);
             }
             // Exclude deactivated rooms from client view

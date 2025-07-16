@@ -549,7 +549,7 @@ ob_start();
     </div>
 
     <!-- Results Section -->
-    <?php if (!empty($dichVus)): ?>
+    <?php if (isNotEmpty($dichVus)): ?>
         <div class="results-header">
             <div class="results-count">
                 Tìm thấy <span class="number"><?= count($dichVus) ?></span> dịch vụ

@@ -59,7 +59,7 @@ ob_start();
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 required>
                             <option value="">Chọn loại phòng</option>
-                            <?php if (!empty($loaiPhongs) && is_array($loaiPhongs)): ?>
+                            <?php if (isNotEmpty($loaiPhongs) && is_array($loaiPhongs)): ?>
                                 <?php foreach ($loaiPhongs as $loai): ?>
                                     <option value="<?= $loai->ma_loai_phong ?>" 
                                             <?= $loai->ma_loai_phong == $phong->ma_loai_phong ? 'selected' : '' ?>>

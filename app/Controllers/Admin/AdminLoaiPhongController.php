@@ -164,7 +164,7 @@ class AdminLoaiPhongController
         // Kiểm tra nếu người dùng muốn xóa ảnh hiện tại
         if (post('remove_current_image') === '1') {
             $data['hinh_anh'] = null;
-            if (!empty($oldImage)) {
+            if (isNotEmpty($oldImage)) {
                 deleteFile($oldImage);
             }
             $oldImage = null; // Đặt về null để không xóa lại
@@ -192,7 +192,7 @@ class AdminLoaiPhongController
             $loaiPhong->update($data);
 
             // Nếu có ảnh mới và ảnh cũ tồn tại, xóa ảnh cũ
-            if (isset($data['hinh_anh']) && !empty($oldImage) && $data['hinh_anh'] !== null) {
+            if (isset($data['hinh_anh']) && isNotEmpty($oldImage) && $data['hinh_anh'] !== null) {
                 deleteFile($oldImage);
             }
 
@@ -223,7 +223,7 @@ class AdminLoaiPhongController
 
         // Kiểm tra xem có phòng nào đang sử dụng loại phòng này không
         $phongs = Phong::where('ma_loai_phong', $id)->get();
-        if (!empty($phongs)) {
+        if (isNotEmpty($phongs)) {
             redirect('/admin/loai-phong?error=hasrooms');
             return;
         }
@@ -236,7 +236,7 @@ class AdminLoaiPhongController
             $loaiPhong->delete();
 
             // Xóa ảnh nếu có
-            if (!empty($imageName)) {
+            if (isNotEmpty($imageName)) {
                 deleteFile($imageName);
             }
 

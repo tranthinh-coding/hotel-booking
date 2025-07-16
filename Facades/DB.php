@@ -352,7 +352,7 @@ class DB
         $conn = self::connect();
         
         // Prepare statement if params provided
-        if (!empty($params)) {
+        if (isNotEmpty($params)) {
             $stmt = $conn->prepare($sql);
             if ($stmt) {
                 $types = str_repeat('s', count($params)); // Assume all strings for simplicity
@@ -391,6 +391,6 @@ class DB
     public static function queryOne($sql, $params = [])
     {
         $results = self::query($sql, $params);
-        return !empty($results) ? $results[0] : null;
+        return isNotEmpty($results) ? $results[0] : null;
     }
 }

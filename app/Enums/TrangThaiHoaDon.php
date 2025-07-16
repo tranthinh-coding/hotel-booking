@@ -4,6 +4,7 @@ namespace HotelBooking\Enums;
 
 class TrangThaiHoaDon 
 {
+    const CHO_XAC_NHAN = 'cho_xac_nhan';
     const CHO_XU_LY = 'cho_xu_ly';
     const DA_XAC_NHAN = 'da_xac_nhan';
     const DA_THANH_TOAN = 'da_thanh_toan';
@@ -12,6 +13,7 @@ class TrangThaiHoaDon
     public static function all()
     {
         return [
+            self::CHO_XAC_NHAN,
             self::CHO_XU_LY,
             self::DA_XAC_NHAN,
             self::DA_THANH_TOAN,
@@ -22,6 +24,7 @@ class TrangThaiHoaDon
     public static function getLabel($status)
     {
         $labels = [
+            self::CHO_XAC_NHAN => 'Chờ xác nhận',
             self::CHO_XU_LY => 'Chờ xử lý',
             self::DA_XAC_NHAN => 'Đã xác nhận',
             self::DA_THANH_TOAN => 'Đã thanh toán',

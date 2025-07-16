@@ -95,7 +95,7 @@ ob_start();
                 </div>
 
                 <!-- Hình ảnh hiện tại -->
-                <?php if (!empty($loaiPhong->hinh_anh)): ?>
+                <?php if (isNotEmpty($loaiPhong->hinh_anh)): ?>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             Hình ảnh hiện tại
@@ -129,7 +129,7 @@ ob_start();
                 <!-- Upload ảnh mới -->
                 <div>
                     <label for="hinh_anh" class="block text-sm font-medium text-gray-700 mb-2">
-                        <?= !empty($loaiPhong->hinh_anh) ? 'Thay đổi hình ảnh' : 'Hình ảnh' ?>
+                        <?= isNotEmpty($loaiPhong->hinh_anh) ? 'Thay đổi hình ảnh' : 'Hình ảnh' ?>
                     </label>
                     <div class="flex items-center justify-center w-full">
                         <label for="hinh_anh" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
@@ -149,7 +149,7 @@ ob_start();
                     </div>
                     <p class="mt-2 text-sm text-gray-500">
                         <i class="fas fa-info-circle mr-1"></i>
-                        <?= !empty($loaiPhong->hinh_anh) ? 'Chọn ảnh mới để thay thế ảnh hiện tại' : 'Chọn ảnh đại diện cho loại phòng này' ?>
+                        <?= isNotEmpty($loaiPhong->hinh_anh) ? 'Chọn ảnh mới để thay thế ảnh hiện tại' : 'Chọn ảnh đại diện cho loại phòng này' ?>
                     </p>
                 </div>
 

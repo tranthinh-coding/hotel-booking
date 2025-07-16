@@ -196,7 +196,7 @@ ob_start();
 
     <!-- Room Types Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="roomTypesGrid">
-        <?php if (!empty($loaiPhongs)): ?>
+        <?php if (isNotEmpty($loaiPhongs)): ?>
             <?php foreach ($loaiPhongs as $loaiPhong): ?>
                 <?php if ($loaiPhong && is_object($loaiPhong)): ?>
                     <div
@@ -206,7 +206,7 @@ ob_start();
                             $imageUrl = $loaiPhong->hinh_anh; // Controller đã xử lý URL rồi
                             ?>
                             
-                            <?php if (!empty($imageUrl)): ?>
+                            <?php if (isNotEmpty($imageUrl)): ?>
                                 <img src="<?= htmlspecialchars($imageUrl) ?>"
                                     alt="<?= htmlspecialchars($loaiPhong->ten ?? 'Loại phòng') ?>"
                                     class="w-full h-full object-cover hover:scale-105 transition-transform duration-300 room-image"
@@ -236,7 +236,7 @@ ob_start();
                                     Mã loại: <span
                                         class="font-medium"><?= htmlspecialchars($loaiPhong->ma_loai_phong ?? 'N/A') ?></span>
                                 </p>
-                                <?php if (!empty($loaiPhong->mo_ta)): ?>
+                                <?php if (isNotEmpty($loaiPhong->mo_ta)): ?>
                                     <p class="text-gray-500 text-sm line-clamp-2 mb-2">
                                         <?= htmlspecialchars(mb_substr($loaiPhong->mo_ta, 0, 100, 'UTF-8')) ?>
                                         <?= mb_strlen($loaiPhong->mo_ta, 'UTF-8') > 100 ? '...' : '' ?>
@@ -289,14 +289,14 @@ ob_start();
                 <div class="text-center py-12 bg-white rounded-xl border border-gray-200">
                     <i class="fas fa-bed text-4xl text-gray-400 mb-4"></i>
                     <h3 class="text-lg font-medium text-gray-900 mb-2">
-                        <?php if (!empty($_GET['search'])): ?>
+                        <?php if (isNotEmpty($_GET['search'])): ?>
                             Không tìm thấy loại phòng nào
                         <?php else: ?>
                             Chưa có loại phòng nào
                         <?php endif; ?>
                     </h3>
                     <p class="text-gray-500 mb-6">
-                        <?php if (!empty($_GET['search'])): ?>
+                        <?php if (isNotEmpty($_GET['search'])): ?>
                             Thử tìm kiếm với từ khóa khác hoặc <a href="/admin/loai-phong"
                                 class="text-blue-600 hover:underline">xem tất cả</a>
                         <?php else: ?>

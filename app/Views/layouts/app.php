@@ -194,6 +194,7 @@
                     <a href="/" class="nav-link text-gray-700 hover:text-ocean-600 font-medium">Trang chủ</a>
                     <a href="/phong" class="nav-link text-gray-700 hover:text-ocean-600 font-medium">Phòng nghỉ</a>
                     <a href="/dich-vu" class="nav-link text-gray-700 hover:text-ocean-600 font-medium">Dịch vụ</a>
+                    <a href="/tin-tuc" class="nav-link text-gray-700 hover:text-ocean-600 font-medium">Tin tức</a>
                     <a href="/about" class="nav-link text-gray-700 hover:text-ocean-600 font-medium">Về chúng tôi</a>
                     <a href="/contact" class="nav-link text-gray-700 hover:text-ocean-600 font-medium">Liên hệ</a>
                     
@@ -261,6 +262,9 @@
                 </a>
                 <a href="/dich-vu" class="block px-3 py-3 text-gray-700 hover:bg-ocean-50 rounded-lg transition-colors">
                     <i class="fas fa-concierge-bell w-5 mr-3 text-ocean-500"></i>Dịch vụ
+                </a>
+                <a href="/tin-tuc" class="block px-3 py-3 text-gray-700 hover:bg-ocean-50 rounded-lg transition-colors">
+                    <i class="fas fa-newspaper w-5 mr-3 text-ocean-500"></i>Tin tức
                 </a>
                 <a href="/about" class="block px-3 py-3 text-gray-700 hover:bg-ocean-50 rounded-lg transition-colors">
                     <i class="fas fa-info-circle w-5 mr-3 text-ocean-500"></i>Về chúng tôi
@@ -371,6 +375,7 @@
                     <ul class="space-y-3 text-gray-300">
                         <li><a href="/phong" class="hover:text-ocean-300 transition-colors gentle-hover">Phòng nghỉ</a></li>
                         <li><a href="/dich-vu" class="hover:text-ocean-300 transition-colors gentle-hover">Dịch vụ</a></li>
+                        <li><a href="/tin-tuc" class="hover:text-ocean-300 transition-colors gentle-hover">Tin tức</a></li>
                         <li><a href="/about" class="hover:text-ocean-300 transition-colors gentle-hover">Về chúng tôi</a></li>
                         <li><a href="/contact" class="hover:text-ocean-300 transition-colors gentle-hover">Liên hệ</a></li>
                     </ul>

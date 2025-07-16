@@ -18,7 +18,7 @@ ob_start();
 
     <!-- Service Header -->
     <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-        <?php if (!empty($dichVu->hinh_anh)): ?>
+        <?php if (isNotEmpty($dichVu->hinh_anh)): ?>
             <div class="h-64 bg-cover bg-center" style="background-image: url('<?= htmlspecialchars($dichVu->hinh_anh) ?>');">
                 <div class="h-full bg-black bg-opacity-40 flex items-end">
                     <div class="p-6 text-white">
@@ -44,7 +44,7 @@ ob_start();
             <!-- Description -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">Mô tả dịch vụ</h2>
-                <?php if (!empty($dichVu->mo_ta)): ?>
+                <?php if (isNotEmpty($dichVu->mo_ta)): ?>
                     <div class="prose prose-gray max-w-none">
                         <?= nl2br(htmlspecialchars($dichVu->mo_ta)) ?>
                     </div>

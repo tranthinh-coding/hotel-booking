@@ -413,7 +413,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </section>
 
 <!-- Recent Reviews -->
-<?php if (isset($danhGias) && !empty($danhGias)): ?>
+<?php if (isset($danhGias) && isNotEmpty($danhGias)): ?>
 <section class="mb-12">
     <div class="text-center mb-8">
         <h2 class="text-3xl font-bold text-gray-800 mb-4">Đánh giá từ khách hàng</h2>

@@ -121,7 +121,7 @@ ob_start();
                 Hoạt động gần đây
             </h3>
             <div class="space-y-3">
-                <?php if (!empty($recentActivities)): ?>
+                <?php if (isNotEmpty($recentActivities)): ?>
                     <?php foreach ($recentActivities as $activity): ?>
                         <div class="flex items-center p-3 bg-gray-50 rounded-lg">
                             <div class="w-8 h-8 bg-<?= $activity['color'] ?? 'blue' ?>-500 rounded-full flex items-center justify-center text-white text-sm">

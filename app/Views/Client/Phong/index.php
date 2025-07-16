@@ -975,7 +975,7 @@ ob_start();
                 </p>
             </div>
 
-            <?php if (!empty($phongs)): ?>
+            <?php if (isNotEmpty($phongs)): ?>
                 <div class="rooms-grid">
                     <?php foreach ($phongs as $index => $phong): ?>
                         <div class="room-card" style="animation-delay: <?= $index * 0.1 ?>s;">

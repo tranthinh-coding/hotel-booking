@@ -3,17 +3,355 @@
 namespace HotelBooking\Controllers\Client;
 
 use HotelBooking\Models\TaiKhoan;
+use HotelBooking\Models\HoaDon;
+use HotelBooking\Models\HoaDonPhong;
+use HotelBooking\Models\DanhGia;
+use HotelBooking\Models\Phong;
+use HotelBooking\Enums\TrangThaiHoaDon;
+use Exception;
 
 class TaiKhoanController
 {
-    public function show($id)
+    /**
+     * Kiểm tra đăng nhập
+     */
+    private function checkAuth()
     {
-        $taiKhoan = TaiKhoan::find($id);
+        if (!isset($_SESSION['user_id'])) {
+            flash_error('Vui lòng đăng nhập để tiếp tục');
+            redirect('/login');
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Trang chính tài khoản
+     */
+    public function show()
+    {
+        if (!$this->checkAuth()) return;
+
+        $taiKhoan = TaiKhoan::find($_SESSION['user_id']);
         if (!$taiKhoan) {
-            http_response_code(404);
-            echo "Tài khoản không tồn tại";
+            flash_error('Tài khoản không tồn tại');
+            redirect('/login');
             return;
         }
-        view('Client.TaiKhoan.show', ['taiKhoan' => $taiKhoan]);
+
+        // Thống kê đơn giản
+        $stats = $this->getUserStats($_SESSION['user_id']);
+
+        view('Client.TaiKhoan.show', [
+            'taiKhoan' => $taiKhoan,
+            'stats' => $stats
+        ]);
+    }
+
+    /**
+     * Lịch sử đặt phòng
+     */
+    public function bookingHistory()
+    {
+        if (!$this->checkAuth()) return;
+
+        $sql = "
+            SELECT 
+                hd.*,
+                hdp.check_in,
+                hdp.check_out,
+                hdp.gia as gia_phong,
+                p.ten_phong,
+                p.ma_phong,
+                lp.ten_loai as loai_phong
+            FROM hoa_don hd
+            LEFT JOIN hoa_don_phong hdp ON hd.ma_hoa_don = hdp.ma_hoa_don
+            LEFT JOIN phong p ON hdp.ma_phong = p.ma_phong
+            LEFT JOIN loai_phong lp ON p.ma_loai_phong = lp.ma_loai_phong
+            WHERE hd.ma_tai_khoan = ?
+            ORDER BY hd.ngay_tao DESC
+        ";
+
+        $bookings = \HotelBooking\Facades\DB::query($sql, [$_SESSION['user_id']]);
+
+        view('Client.TaiKhoan.booking-history', [
+            'bookings' => $bookings
+        ]);
+    }
+
+    /**
+     * Lịch sử đánh giá
+     */
+    public function reviewHistory()
+    {
+        if (!$this->checkAuth()) return;
+
+        $sql = "
+            SELECT 
+                dg.*,
+                p.ten_phong,
+                lp.ten_loai as loai_phong
+            FROM danh_gia dg
+            LEFT JOIN phong p ON dg.ma_phong = p.ma_phong
+            LEFT JOIN loai_phong lp ON p.ma_loai_phong = lp.ma_loai_phong
+            WHERE dg.ma_tai_khoan = ?
+            ORDER BY dg.ngay_tao DESC
+        ";
+
+        $reviews = \HotelBooking\Facades\DB::query($sql, [$_SESSION['user_id']]);
+
+        view('Client.TaiKhoan.review-history', [
+            'reviews' => $reviews
+        ]);
+    }
+
+    /**
+     * Gửi đánh giá
+     */
+    public function submitReview()
+    {
+        if (!$this->checkAuth()) return;
+
+        $data = [
+            'ma_phong' => post('ma_phong'),
+            'ma_hoa_don' => post('ma_hoa_don'),
+            'diem_so' => (int)post('diem_so'),
+            'noi_dung' => post('noi_dung', ''),
+        ];
+
+        // Validation
+        $errors = $this->validateReviewData($data);
+        if (isNotEmpty($errors)) {
+            flash_error(implode('<br>', $errors));
+            back();
+            return;
+        }
+
+        try {
+            // Kiểm tra đã đánh giá chưa
+            $existingReview = DanhGia::findByCondition([
+                'ma_tai_khoan' => $_SESSION['user_id'],
+                'ma_phong' => $data['ma_phong'],
+                'ma_hoa_don' => $data['ma_hoa_don']
+            ]);
+
+            if ($existingReview) {
+                flash_error('Bạn đã đánh giá cho đặt phòng này rồi');
+                back();
+                return;
+            }
+
+            // Kiểm tra quyền đánh giá (phải là khách đã ở)
+            if (!$this->canReview($_SESSION['user_id'], $data['ma_hoa_don'], $data['ma_phong'])) {
+                flash_error('Bạn chỉ có thể đánh giá sau khi hoàn thành lưu trú');
+                back();
+                return;
+            }
+
+            // Tạo đánh giá
+            $result = DanhGia::create([
+                'ma_tai_khoan' => $_SESSION['user_id'],
+                'ma_phong' => $data['ma_phong'],
+                'ma_hoa_don' => $data['ma_hoa_don'],
+                'diem_so' => $data['diem_so'],
+                'noi_dung' => $data['noi_dung'],
+                'ngay_tao' => date('Y-m-d H:i:s')
+            ]);
+
+            if ($result) {
+                flash_success('Cảm ơn bạn đã đánh giá!');
+                redirect('/tai-khoan/lich-su-danh-gia');
+            } else {
+                flash_error('Có lỗi xảy ra khi gửi đánh giá');
+                back();
+            }
+
+        } catch (Exception $e) {
+            flash_error('Có lỗi xảy ra: ' . $e->getMessage());
+            back();
+        }
+    }
+
+    /**
+     * Cập nhật đánh giá
+     */
+    public function updateReview()
+    {
+        if (!$this->checkAuth()) return;
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            redirect('/tai-khoan/lich-su-danh-gia');
+            return;
+        }
+
+        $maDanhGia = post('ma_danh_gia');
+        $diemSo = post('diem_so');
+        $noiDung = post('noi_dung', '');
+
+        // Validation
+        if (empty($maDanhGia) || empty($diemSo) || empty($noiDung)) {
+            flash_error('Vui lòng điền đầy đủ thông tin');
+            back();
+            return;
+        }
+
+        if (!in_array($diemSo, [1, 2, 3, 4, 5])) {
+            flash_error('Điểm số phải từ 1 đến 5');
+            back();
+            return;
+        }
+
+        try {
+            $review = DanhGia::find($maDanhGia);
+            if (!$review) {
+                flash_error('Đánh giá không tồn tại');
+                back();
+                return;
+            }
+
+            // Kiểm tra quyền sở hữu
+            if ($review->ma_tai_khoan != $_SESSION['user_id']) {
+                flash_error('Bạn không có quyền sửa đánh giá này');
+                back();
+                return;
+            }
+
+            // Cập nhật đánh giá
+            $review->diem_so = $diemSo;
+            $review->noi_dung = $noiDung;
+            $review->ngay_cap_nhat = date('Y-m-d H:i:s');
+            $review->save();
+
+            flash_success('Cập nhật đánh giá thành công');
+            redirect('/tai-khoan/lich-su-danh-gia');
+        } catch (Exception $e) {
+            flash_error('Có lỗi xảy ra: ' . $e->getMessage());
+            back();
+        }
+    }
+
+    /**
+     * Xóa đánh giá
+     */
+    public function deleteReview()
+    {
+        if (!$this->checkAuth()) return;
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            redirect('/tai-khoan/lich-su-danh-gia');
+            return;
+        }
+
+        $maDanhGia = post('ma_danh_gia');
+
+        try {
+            $review = DanhGia::find($maDanhGia);
+            if (!$review) {
+                flash_error('Đánh giá không tồn tại');
+                back();
+                return;
+            }
+
+            // Kiểm tra quyền sở hữu
+            if ($review->ma_tai_khoan != $_SESSION['user_id']) {
+                flash_error('Bạn không có quyền xóa đánh giá này');
+                back();
+                return;
+            }
+
+            // Xóa đánh giá
+            $review->delete();
+
+            flash_success('Xóa đánh giá thành công');
+            redirect('/tai-khoan/lich-su-danh-gia');
+        } catch (Exception $e) {
+            flash_error('Có lỗi xảy ra: ' . $e->getMessage());
+            back();
+        }
+    }
+
+    /**
+     * Lấy thống kê người dùng
+     */
+    private function getUserStats($userId)
+    {
+        $sql = "
+            SELECT 
+                COUNT(CASE WHEN hd.trang_thai = ? THEN 1 END) as cho_xac_nhan,
+                COUNT(CASE WHEN hd.trang_thai = ? THEN 1 END) as da_xac_nhan,
+                COUNT(CASE WHEN hd.trang_thai = ? THEN 1 END) as da_thanh_toan,
+                COUNT(CASE WHEN hd.trang_thai = ? THEN 1 END) as da_huy,
+                COUNT(*) as tong_dat_phong,
+                COALESCE(SUM(CASE WHEN hd.trang_thai = ? THEN hd.tong_tien ELSE 0 END), 0) as tong_chi_tieu
+            FROM hoa_don hd
+            WHERE hd.ma_tai_khoan = ?
+        ";
+
+        $result = \HotelBooking\Facades\DB::query($sql, [
+            TrangThaiHoaDon::CHO_XAC_NHAN,
+            TrangThaiHoaDon::DA_XAC_NHAN,
+            TrangThaiHoaDon::DA_THANH_TOAN,
+            TrangThaiHoaDon::DA_HUY,
+            TrangThaiHoaDon::DA_THANH_TOAN,
+            $userId
+        ]);
+
+        return $result ? $result[0] : null;
+    }
+
+    /**
+     * Kiểm tra có thể đánh giá không
+     */
+    private function canReview($userId, $maHoaDon, $maPhong)
+    {
+        $sql = "
+            SELECT COUNT(*) as count
+            FROM hoa_don hd
+            JOIN hoa_don_phong hdp ON hd.ma_hoa_don = hdp.ma_hoa_don
+            WHERE hd.ma_tai_khoan = ?
+            AND hd.ma_hoa_don = ?
+            AND hdp.ma_phong = ?
+            AND hd.trang_thai = ?
+            AND hdp.check_out < NOW()
+        ";
+
+        $result = \HotelBooking\Facades\DB::query($sql, [
+            $userId, 
+            $maHoaDon, 
+            $maPhong, 
+            TrangThaiHoaDon::DA_THANH_TOAN
+        ]);
+
+        return $result && $result[0]->count > 0;
+    }
+
+    /**
+     * Validate dữ liệu đánh giá
+     */
+    private function validateReviewData($data)
+    {
+        $errors = [];
+
+        if (empty($data['ma_phong'])) {
+            $errors[] = 'Thiếu thông tin phòng';
+        }
+
+        if (empty($data['ma_hoa_don'])) {
+            $errors[] = 'Thiếu thông tin hóa đơn';
+        }
+
+        if (!in_array($data['diem_so'], [1, 2, 3, 4, 5])) {
+            $errors[] = 'Điểm số phải từ 1 đến 5';
+        }
+
+        if (empty($data['noi_dung'])) {
+            $errors[] = 'Vui lòng nhập nội dung đánh giá';
+        }
+
+        if (mb_strlen($data['noi_dung'], 'UTF-8') < 10) {
+            $errors[] = 'Nội dung đánh giá phải ít nhất 10 ký tự';
+        }
+
+        return $errors;
     }
 }

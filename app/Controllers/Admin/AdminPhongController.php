@@ -114,7 +114,7 @@ class AdminPhongController
             $errors[] = 'Tên phòng đã tồn tại';
         }
         
-        if (!empty($errors)) {
+        if (isNotEmpty($errors)) {
             $errorMessage = implode(', ', $errors);
             redirect('/admin/phong/create?error=validation&message=' . urlencode($errorMessage));
             return;
@@ -399,12 +399,12 @@ class AdminPhongController
                 
                 if ($uploadedCount > 0) {
                     $message = "Đã thêm {$uploadedCount} hình ảnh thành công";
-                    if (!empty($errors)) {
+                    if (isNotEmpty($errors)) {
                         $message .= ". Một số file có lỗi: " . implode(', ', array_slice($errors, 0, 3));
                     }
                     redirect("/admin/phong/show?id={$maPhong}&success=images_added&message=" . urlencode($message));
                 } else {
-                    $errorMessage = !empty($errors) ? implode(', ', $errors) : 'Không thể upload ảnh nào';
+                    $errorMessage = isNotEmpty($errors) ? implode(', ', $errors) : 'Không thể upload ảnh nào';
                     redirect("/admin/phong/show?id={$maPhong}&error=upload_failed&message=" . urlencode($errorMessage));
                 }
             }

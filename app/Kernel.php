@@ -35,7 +35,7 @@ class Kernel
             $controllerInstance = new $controller();
 
             // If there are parameters, pass them to the method
-            if (!empty($params)) {
+            if (isNotEmpty($params)) {
                 // Pass parameters as individual arguments
                 $reflection = new \ReflectionMethod($controllerInstance, $method);
                 $methodParams = $reflection->getParameters();

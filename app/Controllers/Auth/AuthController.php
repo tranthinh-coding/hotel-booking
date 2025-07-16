@@ -109,7 +109,7 @@ class AuthController
             $errors[] = 'Email này đã được sử dụng';
         }
 
-        if (!empty($errors)) {
+        if (isNotEmpty($errors)) {
             flash_error(implode('<br>', $errors));
             set_old_input();
             back();
@@ -189,7 +189,7 @@ class AuthController
             $errors[] = 'Xác nhận mật khẩu mới không khớp';
         }
 
-        if (!empty($errors)) {
+        if (isNotEmpty($errors)) {
             flash_error(implode('<br>', $errors));
             back();
             return;
@@ -310,7 +310,7 @@ class AuthController
             $errors[] = 'Xác nhận mật khẩu không khớp';
         }
 
-        if (!empty($errors)) {
+        if (isNotEmpty($errors)) {
             flash_error(implode('<br>', $errors));
             back();
             return;
@@ -374,7 +374,7 @@ class AuthController
             $errors[] = 'Số điện thoại không được để trống';
         }
 
-        if (!empty($errors)) {
+        if (isNotEmpty($errors)) {
             flash_error(implode('<br>', $errors));
             set_old_input();
             back();

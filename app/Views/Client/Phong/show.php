@@ -208,7 +208,7 @@ ob_start();
         <h2 class="text-2xl font-bold text-gray-800 mb-6">Phòng tương tự</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- This would be populated with related rooms from the controller -->
-            <?php if (!empty($relatedRooms)): ?>
+            <?php if (isNotEmpty($relatedRooms)): ?>
                 <?php foreach ($relatedRooms as $room): ?>
                     <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
                         <img src="<?= htmlspecialchars($room->hinh_anh ?? '/assets/images/default-room.jpg') ?>" 

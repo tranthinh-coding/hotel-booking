@@ -65,7 +65,7 @@ ob_start();
                             name="room_type" 
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500 transition-colors">
                         <option value="">Tất cả loại phòng</option>
-                        <?php if (!empty($loaiPhongs)): ?>
+                        <?php if (isNotEmpty($loaiPhongs)): ?>
                             <?php foreach ($loaiPhongs as $loaiPhong): ?>
                                 <option value="<?= htmlspecialchars($loaiPhong->ma_loai_phong) ?>">
                                     <?= htmlspecialchars($loaiPhong->ten) ?>
@@ -88,7 +88,7 @@ ob_start();
     </div>
 
     <!-- Popular Room Types -->
-    <?php if (!empty($loaiPhongs)): ?>
+    <?php if (isNotEmpty($loaiPhongs)): ?>
         <div class="mb-8">
             <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Các loại phòng phổ biến</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">

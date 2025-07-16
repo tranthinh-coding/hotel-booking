@@ -118,7 +118,7 @@ class AdminTaiKhoanController
             'ngay_tao' => date('Y-m-d H:i:s')
         ];
 
-        if (!empty($_POST['mat_khau'])) {
+        if (isNotEmpty($_POST['mat_khau'])) {
             $data['mat_khau'] = password_hash($_POST['mat_khau'], PASSWORD_DEFAULT);
         }
 
@@ -162,7 +162,7 @@ class AdminTaiKhoanController
             'phan_quyen' => post('phan_quyen', $taiKhoan->phan_quyen)
         ];
 
-        if (!empty($_POST['mat_khau'])) {
+        if (isNotEmpty($_POST['mat_khau'])) {
             $data['mat_khau'] = password_hash($_POST['mat_khau'], PASSWORD_DEFAULT);
         }
 

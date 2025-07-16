@@ -158,7 +158,7 @@ ob_start();
                     <select name="loai_phong"
                         class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <option value="">Tất cả</option>
-                        <?php if (!empty($loaiPhongs)): ?>
+                        <?php if (isNotEmpty($loaiPhongs)): ?>
                             <?php foreach ($loaiPhongs as $loai): ?>
                                 <option value="<?= $loai->ma_loai_phong ?>" <?= ($_GET['loai_phong'] ?? '') == $loai->ma_loai_phong ? 'selected' : '' ?>>
                                     <?= htmlspecialchars($loai->ten) ?>
@@ -209,7 +209,7 @@ ob_start();
 
     <!-- Danh sách phòng -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        <?php if (!empty($phongs)): ?>
+        <?php if (isNotEmpty($phongs)): ?>
             <?php foreach ($phongs as $phong): ?>
                 <?php
                 // Convert array to object-like access

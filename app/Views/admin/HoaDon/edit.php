@@ -131,7 +131,7 @@ ob_start();
             </div>
             
             <div id="roomsContainer">
-                <?php if (!empty($phongs)): ?>
+                <?php if (isNotEmpty($phongs)): ?>
                     <?php foreach ($phongs as $index => $hdPhong): ?>
                         <?php $phong = \HotelBooking\Models\Phong::find($hdPhong->ma_phong); ?>
                         <div class="room-item border border-gray-200 rounded-lg p-4 mb-4">
@@ -185,7 +185,7 @@ ob_start();
             </div>
             
             <div id="servicesContainer">
-                <?php if (!empty($dichVus)): ?>
+                <?php if (isNotEmpty($dichVus)): ?>
                     <?php foreach ($dichVus as $index => $hdDichVu): ?>
                         <?php $dichVu = \HotelBooking\Models\DichVu::find($hdDichVu->ma_dich_vu); ?>
                         <div class="service-item border border-gray-200 rounded-lg p-4 mb-4">

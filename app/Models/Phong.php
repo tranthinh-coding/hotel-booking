@@ -277,7 +277,7 @@ class Phong extends Model
         $params = [];
         
         // Add search condition
-        if (!empty($search)) {
+        if (isNotEmpty($search)) {
             $sql .= " AND (p.ten_phong LIKE ? OR p.mo_ta LIKE ? OR lp.ten LIKE ?)";
             $searchTerm = "%$search%";
             $params[] = $searchTerm;
@@ -286,13 +286,13 @@ class Phong extends Model
         }
         
         // Add room type filter
-        if (!empty($loaiPhong)) {
+        if (isNotEmpty($loaiPhong)) {
             $sql .= " AND p.ma_loai_phong = ?";
             $params[] = $loaiPhong;
         }
         
         // Add status filter
-        if (!empty($trangThai)) {
+        if (isNotEmpty($trangThai)) {
             $sql .= " AND p.trang_thai = ?";
             $params[] = $trangThai;
         }

@@ -17,7 +17,7 @@ class TinTucController
         $tinTuc = TinTuc::find($id);
         if (!$tinTuc) {
             http_response_code(404);
-            echo "Tin tức không tồn tại";
+            view('Client.TinTuc.show', ['tinTuc' => null, 'relatedNews' => []]);
             return;
         }
         
@@ -25,6 +25,22 @@ class TinTucController
         $tinTuc->luot_xem = ($tinTuc->luot_xem ?? 0) + 1;
         $tinTuc->save();
         
-        view('Client.TinTuc.show', ['tinTuc' => $tinTuc]);
+        // Get related news (exclude current article)
+        $allNews = TinTuc::all();
+        $relatedNews = [];
+        
+        foreach ($allNews as $news) {
+            if ($news->ma_tin_tuc != $id) {
+                $relatedNews[] = $news;
+                if (count($relatedNews) >= 5) {
+                    break;
+                }
+            }
+        }
+        
+        view('Client.TinTuc.show', [
+            'tinTuc' => $tinTuc,
+            'relatedNews' => $relatedNews
+        ]);
     }
 }

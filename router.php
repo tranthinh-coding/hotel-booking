@@ -55,12 +55,21 @@ Route::get('/danh-gia/show', 'HotelBooking\Controllers\Admin\AdminDanhGiaControl
 
 // Tin tức (chỉ xem)
 Route::get('/tin-tuc', 'HotelBooking\Controllers\Client\TinTucController', 'index');
-Route::get('/tin-tuc/show', 'HotelBooking\Controllers\Client\TinTucController', 'show');
+Route::get('/tin-tuc/{id}', 'HotelBooking\Controllers\Client\TinTucController', 'show');
 
 // Đặt phòng (khách hàng)
-Route::get('/dat-phong', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'create');
-Route::post('/dat-phong/store', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'store');
-Route::get('/dat-phong/show', 'HotelBooking\Controllers\Admin\AdminHoaDonController', 'show');
+Route::get('/dat-phong', 'HotelBooking\Controllers\Client\BookingController', 'showBookingForm');
+Route::get('/dat-phong/{maPhong}', 'HotelBooking\Controllers\Client\BookingController', 'showBookingForm');
+Route::post('/dat-phong', 'HotelBooking\Controllers\Client\BookingController', 'processBooking');
+Route::post('/huy-dat-phong/{maHoaDon}', 'HotelBooking\Controllers\Client\BookingController', 'cancelBooking');
+
+// Tài khoản khách hàng
+Route::get('/tai-khoan', 'HotelBooking\Controllers\Client\TaiKhoanController', 'show');
+Route::get('/tai-khoan/lich-su-dat-phong', 'HotelBooking\Controllers\Client\TaiKhoanController', 'bookingHistory');
+Route::get('/tai-khoan/lich-su-danh-gia', 'HotelBooking\Controllers\Client\TaiKhoanController', 'reviewHistory');
+Route::post('/tai-khoan/gui-danh-gia', 'HotelBooking\Controllers\Client\TaiKhoanController', 'submitReview');
+Route::post('/tai-khoan/cap-nhat-danh-gia', 'HotelBooking\Controllers\Client\TaiKhoanController', 'updateReview');
+Route::post('/tai-khoan/xoa-danh-gia', 'HotelBooking\Controllers\Client\TaiKhoanController', 'deleteReview');
 
 // ===== ADMIN ROUTES =====
 
