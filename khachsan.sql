@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
--- Máy chủ:                      127.0.0.1
--- Server version:               8.0.30 - MySQL Community Server - GPL
+-- Host:                         127.0.0.1
+-- Server version:               8.0.42 - MySQL Community Server - GPL
 -- Server OS:                    Win64
--- HeidiSQL Phiên bản:           12.1.0.6537
+-- HeidiSQL Version:             12.1.0.6537
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `hinh_anh` (
   CONSTRAINT `FK_hinh_anh_phong` FOREIGN KEY (`ma_phong`) REFERENCES `phong` (`ma_phong`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table khachsan.hinh_anh: ~2 rows (approximately)
+-- Dumping data for table khachsan.hinh_anh: ~9 rows (approximately)
 INSERT INTO `hinh_anh` (`ma_hinh_anh`, `anh`, `ma_phong`) VALUES
 	(4, '6875395aa71e1_1752512858.jpeg', 1),
 	(5, '68753962085b6_1752512866.jpeg', 1),
@@ -129,9 +129,9 @@ CREATE TABLE IF NOT EXISTS `hoa_don_tong` (
   `ma_nhan_vien` int DEFAULT NULL,
   `ma_khach_hang` int DEFAULT NULL,
   `thoi_gian_dat` datetime DEFAULT NULL,
-  `trang_thai` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `trang_thai` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `tong_tien` float DEFAULT '0',
-  `ghi_chu` text COLLATE utf8mb4_unicode_ci,
+  `ghi_chu` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   PRIMARY KEY (`ma_hoa_don`),
   KEY `fk_hoadon_nhanvien` (`ma_nhan_vien`),
   KEY `fk_hoadon_khachhang` (`ma_khach_hang`),
@@ -142,6 +142,34 @@ CREATE TABLE IF NOT EXISTS `hoa_don_tong` (
 -- Dumping data for table khachsan.hoa_don_tong: ~0 rows (approximately)
 INSERT INTO `hoa_don_tong` (`ma_hoa_don`, `ma_nhan_vien`, `ma_khach_hang`, `thoi_gian_dat`, `trang_thai`, `tong_tien`, `ghi_chu`) VALUES
 	(3, 2, 6, '2025-07-14 18:20:31', 'cho_xu_ly', 599000, 'Diu dat phong');
+
+-- Dumping structure for table khachsan.lien_he
+DROP TABLE IF EXISTS `lien_he`;
+CREATE TABLE IF NOT EXISTS `lien_he` (
+  `ma_lien_he` int NOT NULL AUTO_INCREMENT,
+  `ho_ten` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `so_dien_thoai` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `chu_de` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `noi_dung` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `trang_thai` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'moi',
+  `ngay_gui` datetime DEFAULT CURRENT_TIMESTAMP,
+  `ngay_phan_hoi` datetime DEFAULT NULL,
+  `noi_dung_phan_hoi` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `ma_nhan_vien_phan_hoi` int DEFAULT NULL,
+  PRIMARY KEY (`ma_lien_he`),
+  KEY `fk_lien_he_nhan_vien` (`ma_nhan_vien_phan_hoi`),
+  CONSTRAINT `fk_lien_he_nhan_vien` FOREIGN KEY (`ma_nhan_vien_phan_hoi`) REFERENCES `tai_khoan` (`ma_tai_khoan`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table khachsan.lien_he: ~6 rows (approximately)
+INSERT INTO `lien_he` (`ma_lien_he`, `ho_ten`, `email`, `so_dien_thoai`, `chu_de`, `noi_dung`, `trang_thai`, `ngay_gui`, `ngay_phan_hoi`, `noi_dung_phan_hoi`, `ma_nhan_vien_phan_hoi`) VALUES
+	(1, 'Nguyễn Văn An', 'an.nguyen@email.com', '0901234567', 'dich_vu', 'Chào anh/chị,\n\nTôi muốn hỏi về dịch vụ spa tại khách sạn. Khách sạn có những dịch vụ spa nào và giá cả như thế nào?\n\nCảm ơn!', 'moi', '2024-12-15 09:30:00', NULL, NULL, NULL),
+	(2, 'Trần Thị Bình', 'binh.tran@email.com', '0912345678', 'dat_phong', 'Xin chào,\n\nTôi muốn đặt 2 phòng cho gia đình vào cuối tuần này (25-26/12). Khách sạn còn phòng loại VIP không ạ? Và có ưu đãi gì cho gia đình có trẻ em không?\n\nXin cảm ơn!', 'da_dong', '2024-12-14 14:20:00', '2025-07-16 08:45:36', '5', 2),
+	(3, 'Lê Minh Cường', 'cuong.le@email.com', '0923456789', 'gop_y', 'Chào khách sạn,\n\nTôi vừa ở khách sạn tuần trước và rất hài lòng với dịch vụ. Tuy nhiên tôi có một vài góp ý:\n1. Âm thanh từ phòng bên cạnh hơi to\n2. Wifi hơi chậm vào buổi tối\n\nHi vọng khách sạn sẽ cải thiện. Cảm ơn!', 'da_dong', '2024-12-13 16:45:00', '2025-07-16 08:50:43', 'rewrwe', 2),
+	(4, 'Phạm Thu Hà', 'ha.pham@email.com', '0934567890', 'khieu_nai', 'Xin chào,\n\nTôi muốn khiếu nại về việc đặt phòng. Tôi đã đặt phòng nhưng khi đến thì không có phòng trống. Đây là lần thứ 2 xảy ra tình trạng này. Mong khách sạn giải quyết và bồi thường.\n\nCảm ơn!', 'dang_xu_ly', '2024-12-15 11:15:00', NULL, NULL, NULL),
+	(5, 'Hoàng Minh Tuấn', 'tuan.hoang@email.com', '0945678901', 'su_kien', 'Chào admin,\n\nCông ty chúng tôi dự định tổ chức tiệc cuối năm cho 50 người vào ngày 30/12. Khách sạn có không gian và dịch vụ tổ chức sự kiện không? Giá cả như thế nào?\n\nVui lòng báo giá chi tiết. Cảm ơn!', 'dang_xu_ly', '2024-12-14 20:30:00', NULL, NULL, NULL),
+	(6, 'Võ Thị Mai', 'mai.vo@email.com', NULL, 'khac', 'Xin chào,\n\nTôi là nhà báo, muốn viết bài về khách sạn của các anh chị. Có thể sắp xếp một cuộc phỏng vấn với ban lãnh đạo không?\n\nCảm ơn và chờ phản hồi!', 'moi', '2024-12-15 08:00:00', NULL, NULL, NULL);
 
 -- Dumping structure for table khachsan.loai_phong
 DROP TABLE IF EXISTS `loai_phong`;
@@ -176,7 +204,7 @@ CREATE TABLE IF NOT EXISTS `phong` (
 
 -- Dumping data for table khachsan.phong: ~0 rows (approximately)
 INSERT INTO `phong` (`ma_phong`, `ten_phong`, `mo_ta`, `trang_thai`, `gia`, `ma_loai_phong`) VALUES
-	(1, 'Phòng A101', 'Phòng cao cấp view bãi biển cực đẹp, không khí mát mẻ êm dịu', 'Đang dọn dẹp', 599000, 2);
+	(1, 'Phòng A101', 'Phòng cao cấp view bãi biển cực đẹp, không khí mát mẻ êm dịu', 'Còn trống', 599000, 2);
 
 -- Dumping structure for table khachsan.tai_khoan
 DROP TABLE IF EXISTS `tai_khoan`;
@@ -188,12 +216,12 @@ CREATE TABLE IF NOT EXISTS `tai_khoan` (
   `mail` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `mat_khau` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `phan_quyen` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `trang_thai` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `trang_thai` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `ngay_tao` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`ma_tai_khoan`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table khachsan.tai_khoan: ~1 rows (approximately)
+-- Dumping data for table khachsan.tai_khoan: ~0 rows (approximately)
 INSERT INTO `tai_khoan` (`ma_tai_khoan`, `ho_ten`, `so_cccd`, `sdt`, `mail`, `mat_khau`, `phan_quyen`, `trang_thai`, `ngay_tao`) VALUES
 	(2, 'Lê Duyên', '122122122', '0987654321', 'ltduyenn@gmail.com', '$2y$12$UzXHbgRAWGlgIazAwnEVouf.DyMUoIhARKzDRE8lshC26Yi/9pFbW', 'Quản lý', NULL, NULL),
 	(6, 'Cao Thị Dịu', '123123123', '0123123123', 'ctdiu@gmail.com', '$2y$12$6AAp4iW8v0IuA0zgFxG1e.YC2BdzOq1E0PWzmEa0WClIMH7fD3soG', 'Khách hàng', NULL, '2025-07-14 18:19:26');
@@ -212,9 +240,11 @@ CREATE TABLE IF NOT EXISTS `tin_tuc` (
   PRIMARY KEY (`ma_tin_tuc`),
   KEY `fk_tintuc_taikhoan` (`ma_tai_khoan`),
   CONSTRAINT `FK_tin_tuc_tai_khoan` FOREIGN KEY (`ma_tai_khoan`) REFERENCES `tai_khoan` (`ma_tai_khoan`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table khachsan.tin_tuc: ~0 rows (approximately)
+INSERT INTO `tin_tuc` (`ma_tin_tuc`, `ma_tai_khoan`, `noi_dung`, `ngay_dang`, `trang_thai`, `tieu_de`, `anh_dai_dien`, `luot_xem`) VALUES
+	(2, 2, 'Khám phá các điểm đến hàng đầu theo cách bạn thích ở Việt Nam', '2025-07-16 01:35:56', 'published', 'Điểm đến phổ biến với du khách từ Việt Nam', '687701fc42022_1752629756.jpg', 0);
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

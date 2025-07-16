@@ -240,6 +240,10 @@
                             <i class="fas fa-star mr-3 text-lg"></i>
                             <span>Đánh giá</span>
                         </a>
+                        <a href="/admin/lien-he" class="sidebar-link flex items-center px-4 py-3 text-gray-700 rounded-lg">
+                            <i class="fas fa-envelope mr-3 text-lg"></i>
+                            <span>Liên hệ</span>
+                        </a>
                     </div>
 
                     <!-- Người dùng -->

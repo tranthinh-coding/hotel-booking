@@ -125,6 +125,13 @@ Route::get('/admin/danh-gia/show', 'HotelBooking\Controllers\Admin\AdminDanhGiaC
 Route::get('/admin/danh-gia/edit', 'HotelBooking\Controllers\Admin\AdminDanhGiaController', 'edit');
 Route::post('/admin/danh-gia/update', 'HotelBooking\Controllers\Admin\AdminDanhGiaController', 'update');
 
+// Admin - Quản lý liên hệ
+Route::get('/admin/lien-he', 'HotelBooking\Controllers\Admin\AdminLienHeController', 'index');
+Route::get('/admin/lien-he/show', 'HotelBooking\Controllers\Admin\AdminLienHeController', 'show');
+Route::post('/admin/lien-he/reply', 'HotelBooking\Controllers\Admin\AdminLienHeController', 'reply');
+Route::post('/admin/lien-he/update-status', 'HotelBooking\Controllers\Admin\AdminLienHeController', 'updateStatus');
+Route::post('/admin/lien-he/close', 'HotelBooking\Controllers\Admin\AdminLienHeController', 'close');
+
 // Admin - Quản lý tin tức
 // Tin tức routes
 Route::get('/admin/tin-tuc', 'HotelBooking\Controllers\Admin\AdminTinTucController', 'index');

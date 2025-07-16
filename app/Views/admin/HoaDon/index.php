@@ -246,21 +246,6 @@ ob_start();
     </div>
 </div>
 
-<script>
-// Search and filter functionality
-document.getElementById('searchInput')?.addEventListener('input', function() {
-    // Implementation for search
-});
-
-document.getElementById('statusFilter')?.addEventListener('change', function() {
-    // Implementation for status filter
-});
-
-document.getElementById('dateFilter')?.addEventListener('change', function() {
-    // Implementation for date filter
-});
-</script>
-
 <?php
 $content = ob_get_clean();
 include __DIR__ . '/../../layouts/admin.php';
