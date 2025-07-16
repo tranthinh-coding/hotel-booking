@@ -289,20 +289,7 @@ ob_start();
                     </p>
                 </div>
                 <div class="h-96 bg-gradient-to-br from-cyan-100 to-blue-100 flex items-center justify-center relative overflow-hidden">
-                    <!-- Map placeholder with animation -->
-                    <div class="text-center text-gray-600 relative z-10">
-                        <div class="w-20 h-20 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
-                            <i class="fas fa-map text-white text-2xl"></i>
-                        </div>
-                        <p class="text-lg font-semibold mb-2">Bản đồ tương tác</p>
-                        <p class="text-sm">Google Maps sẽ được tích hợp tại đây</p>
-                    </div>
-                    <!-- Background decoration -->
-                    <div class="absolute inset-0 opacity-30">
-                        <div class="absolute top-10 left-10 w-4 h-4 bg-cyan-400 rounded-full animate-ping"></div>
-                        <div class="absolute bottom-20 right-20 w-6 h-6 bg-blue-400 rounded-full animate-ping animation-delay-1000"></div>
-                        <div class="absolute top-1/2 left-1/4 w-3 h-3 bg-purple-400 rounded-full animate-ping animation-delay-2000"></div>
-                    </div>
+                   <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2757.3035413869093!2d109.20266030684559!3d12.220083192456686!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31706700768e164d%3A0x87faf37222cf7d07!2zMDMgSG_DoG5nIERp4buHdQ!5e0!3m2!1svi!2s!4v1752672587228!5m2!1svi!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
             </div>
         </div>

@@ -453,14 +453,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Room rates (this should come from server)
     const roomRates = {
-        <?php if (isset($phongs) && $phongs): ?>
-            <?php foreach ($phongs as $room): ?>
-                '<?= $room->ma_phong ?>': <?= $room->gia ?>,
-            <?php endforeach; ?>
-        <?php endif; ?>
-        <?php if ($phong): ?>
-            '<?= $phong->ma_phong ?>': <?= $phong->gia ?>
-        <?php endif; ?>
+        <?php 
+        $roomRateEntries = [];
+        if (isset($phongs) && $phongs): 
+            foreach ($phongs as $room):
+                $roomRateEntries[] = "'{$room->ma_phong}': {$room->gia}";
+            endforeach; 
+        endif;
+        if ($phong):
+            $roomRateEntries[] = "'{$phong->ma_phong}': {$phong->gia}";
+        endif;
+        echo implode(',', $roomRateEntries);
+        ?>
     };
     
     function formatCurrency(amount) {
@@ -518,6 +522,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Form validation
     const form = document.getElementById('bookingForm');
     form.addEventListener('submit', function(e) {
+        console.log('Form submission started');
+        console.log('calculatePrice result:', calculatePrice());
+        
         if (!calculatePrice()) {
             e.preventDefault();
             alert('Vui lòng chọn thời gian nhận và trả phòng hợp lệ!');
@@ -527,6 +534,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const checkin = new Date(checkinInput.value);
         const checkout = new Date(checkoutInput.value);
         const now = new Date();
+        
+        console.log('Validation - Checkin:', checkin, 'Checkout:', checkout, 'Now:', now);
         
         if (checkin < now) {
             e.preventDefault();
@@ -539,6 +548,8 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Thời gian trả phòng phải sau thời gian nhận phòng!');
             return false;
         }
+        
+        console.log('Form validation passed, submitting...');
         
         // Show loading
         const submitBtn = form.querySelector('button[type="submit"]');

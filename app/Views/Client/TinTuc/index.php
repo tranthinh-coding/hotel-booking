@@ -43,9 +43,9 @@ ob_start();
     </div>
 </div>
 
-<div class="bg-gray-50 min-h-screen -mt-1">
+<div class="bg-gray-50 -mt-1">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <?php if (empty($tinTucs)): ?>
+        <?php if (isEmpty($tinTucs)): ?>
             <!-- Empty State -->
             <div class="text-center py-16">
                 <div

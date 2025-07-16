@@ -7,7 +7,14 @@ ob_start();
 <div class="relative h-96 bg-gradient-to-r from-blue-400 via-blue-500 to-cyan-500 overflow-hidden">
     <!-- Background Pattern -->
     <div class="absolute inset-0 opacity-20">
-        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><defs><pattern id=\"waves\" width=\"100\" height=\"100\" patternUnits=\"userSpaceOnUse\"><path d=\"M0,50 Q25,30 50,50 T100,50 V100 H0 Z\" fill=\"rgba(255,255,255,0.1)\"/></pattern></defs><rect width=\"100\" height=\"100\" fill=\"url(%23waves)\"/></svg>');">
+        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns=\"
+            http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\">
+            <defs>
+                <pattern id=\"waves\" width=\"100\" height=\"100\" patternUnits=\"userSpaceOnUse\">
+                    <path d=\"M0,50 Q25,30 50,50 T100,50 V100 H0 Z\" fill=\"rgba(255,255,255,0.1)\" />
+                </pattern>
+            </defs>
+            <rect width=\"100\" height=\"100\" fill=\"url(%23waves)\" /></svg>');">
         </div>
     </div>
 
@@ -48,18 +55,18 @@ ob_start();
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <?php if (isNotEmpty($services)): ?>
                 <?php foreach ($services as $service): ?>
-                    <div class="bg-white rounded-2xl shadow-xl overflow-hidden group hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+                    <div
+                        class="bg-white rounded-2xl shadow-xl overflow-hidden group hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
                         <!-- Service Image -->
                         <div class="h-64 bg-gradient-to-br from-blue-100 to-cyan-100 relative overflow-hidden">
                             <?php if (isNotEmpty($service['hinh_anh'])): ?>
-                                <?php 
+                                <?php
                                 // Construct proper image URL
                                 $imageUrl = '/uploads/' . $service['hinh_anh'];
                                 ?>
-                                <img src="<?= htmlspecialchars($imageUrl) ?>" 
-                                     alt="<?= htmlspecialchars($service['ten_dich_vu']) ?>"
-                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                                     onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+                                <img src="<?= htmlspecialchars($imageUrl) ?>" alt="<?= htmlspecialchars($service['ten_dich_vu']) ?>"
+                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                                    onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
                                 <div class="w-full h-full flex items-center justify-center hidden">
                                     <i class="fas fa-concierge-bell text-6xl text-blue-300"></i>
                                 </div>
@@ -68,7 +75,7 @@ ob_start();
                                     <i class="fas fa-concierge-bell text-6xl text-blue-300"></i>
                                 </div>
                             <?php endif; ?>
-                            
+
                             <!-- Service Price Badge -->
                             <div class="absolute top-4 right-4">
                                 <div class="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full">
@@ -84,7 +91,7 @@ ob_start();
                             <h3 class="text-xl font-bold text-gray-800 mb-3 group-hover:text-blue-600 transition-colors">
                                 <?= htmlspecialchars($service['ten_dich_vu']) ?>
                             </h3>
-                            
+
                             <!-- Service Description -->
                             <p class="text-gray-600 mb-4 line-clamp-3">
                                 <?php if (isNotEmpty($service['mo_ta'])): ?>
@@ -115,7 +122,8 @@ ob_start();
                     </div>
                     <h3 class="text-2xl font-bold text-gray-600 mb-4">Chưa có dịch vụ nào</h3>
                     <p class="text-gray-500 mb-8">Hiện tại chúng tôi đang cập nhật thêm các dịch vụ mới.</p>
-                    <a href="/" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-200">
+                    <a href="/"
+                        class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-200">
                         <i class="fas fa-home mr-2"></i>
                         Về trang chủ
                     </a>

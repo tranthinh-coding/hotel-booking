@@ -119,7 +119,27 @@ class BookingController
             'ghi_chu' => post('ghi_chu', ''),
         ];
 
+        // Xử lý dữ liệu phòng - hỗ trợ cả form đơn và form array
         $phongs = post('phongs', []);
+        
+        // Nếu không có phongs array, tạo từ dữ liệu đơn
+        if (empty($phongs)) {
+            $maPhong = post('ma_phong');
+            $ngayNhanPhong = post('ngay_nhan_phong');
+            $ngayTraPhong = post('ngay_tra_phong');
+            
+            if ($maPhong && $ngayNhanPhong && $ngayTraPhong) {
+                $phongs = [
+                    [
+                        'ma_phong' => $maPhong,
+                        'check_in' => $ngayNhanPhong,
+                        'check_out' => $ngayTraPhong,
+                        'dich_vu' => [] // Sẽ xử lý sau
+                    ]
+                ];
+            }
+        }
+        
         $dichVuChung = post('dich_vu_chung', []);
 
         // Validation
@@ -178,10 +198,9 @@ class BookingController
                 $hoaDonPhong = new HoaDonPhong();
                 $hoaDonPhong->ma_hoa_don = $hoaDon->ma_hoa_don;
                 $hoaDonPhong->ma_phong = $phongData['ma_phong'];
-                $hoaDonPhong->ngay_nhan_phong = $phongData['check_in'];
-                $hoaDonPhong->ngay_tra_phong = $phongData['check_out'];
-                $hoaDonPhong->gia_phong = $phong->gia;
-                $hoaDonPhong->thanh_tien = $tienPhong;
+                $hoaDonPhong->check_in = $phongData['check_in'];
+                $hoaDonPhong->check_out = $phongData['check_out'];
+                $hoaDonPhong->gia = $phong->gia;
 
                 if (!$hoaDonPhong->save()) {
                     throw new Exception('Không thể lưu thông tin phòng');
@@ -203,10 +222,10 @@ class BookingController
                         $hoaDonDichVu = new HoaDonDichVu();
                         $hoaDonDichVu->ma_hoa_don = $hoaDon->ma_hoa_don;
                         $hoaDonDichVu->ma_dich_vu = $dichVuData['ma_dich_vu'];
-                        $hoaDonDichVu->ma_phong = $phongData['ma_phong'];
+                        $hoaDonDichVu->ma_hd_phong = $hoaDonPhong->ma_hd_phong; // Sử dụng ID từ record vừa tạo
                         $hoaDonDichVu->so_luong = $soLuong;
-                        $hoaDonDichVu->gia_dich_vu = $dichVu->gia;
-                        $hoaDonDichVu->thanh_tien = $thanhTien;
+                        $hoaDonDichVu->gia = $dichVu->gia;
+                        $hoaDonDichVu->thoi_gian = date('Y-m-d H:i:s');
 
                         if ($hoaDonDichVu->save()) {
                             $tongTien += $thanhTien;
@@ -229,10 +248,10 @@ class BookingController
                     $hoaDonDichVu = new HoaDonDichVu();
                     $hoaDonDichVu->ma_hoa_don = $hoaDon->ma_hoa_don;
                     $hoaDonDichVu->ma_dich_vu = $dichVuData['ma_dich_vu'];
-                    $hoaDonDichVu->ma_phong = null; // Dịch vụ chung không gắn với phòng cụ thể
+                    $hoaDonDichVu->ma_hd_phong = null; // Dịch vụ chung không gắn với phòng cụ thể
                     $hoaDonDichVu->so_luong = $soLuong;
-                    $hoaDonDichVu->gia_dich_vu = $dichVu->gia;
-                    $hoaDonDichVu->thanh_tien = $thanhTien;
+                    $hoaDonDichVu->gia = $dichVu->gia;
+                    $hoaDonDichVu->thoi_gian = date('Y-m-d H:i:s');
 
                     if ($hoaDonDichVu->save()) {
                         $tongTien += $thanhTien;
@@ -312,6 +331,59 @@ class BookingController
         }
 
         return $errors;
+    }
+
+    /**
+     * Debug method để kiểm tra dữ liệu form
+     */
+    public function debugCheckout()
+    {
+        echo "<h2>Debug Checkout Form</h2>";
+        echo "<h3>POST Data:</h3>";
+        echo "<pre>";
+        print_r($_POST);
+        echo "</pre>";
+        
+        echo "<h3>SESSION Data:</h3>";
+        echo "<pre>";
+        print_r($_SESSION);
+        echo "</pre>";
+        
+        echo "<h3>Processed Data:</h3>";
+        $customerData = [
+            'ho_ten' => post('ho_ten'),
+            'so_dien_thoai' => post('so_dien_thoai'),
+            'email' => post('email'),
+            'ghi_chu' => post('ghi_chu', ''),
+        ];
+        echo "Customer Data: ";
+        print_r($customerData);
+        
+        $phongs = post('phongs', []);
+        if (empty($phongs)) {
+            $maPhong = post('ma_phong');
+            $ngayNhanPhong = post('ngay_nhan_phong');
+            $ngayTraPhong = post('ngay_tra_phong');
+            
+            if ($maPhong && $ngayNhanPhong && $ngayTraPhong) {
+                $phongs = [
+                    [
+                        'ma_phong' => $maPhong,
+                        'check_in' => $ngayNhanPhong,
+                        'check_out' => $ngayTraPhong,
+                        'dich_vu' => []
+                    ]
+                ];
+            }
+        }
+        echo "Phongs Data: ";
+        print_r($phongs);
+        
+        $errors = $this->validateNewCheckoutData($customerData, $phongs);
+        echo "Validation Errors: ";
+        print_r($errors);
+        
+        die();
     }
 
     /**

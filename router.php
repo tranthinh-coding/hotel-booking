@@ -58,7 +58,6 @@ Route::get('/tin-tuc', 'HotelBooking\Controllers\Client\TinTucController', 'inde
 Route::get('/tin-tuc/{id}', 'HotelBooking\Controllers\Client\TinTucController', 'show');
 
 // Đặt phòng (khách hàng)
-Route::get('/dat-phong', 'HotelBooking\Controllers\Client\BookingController', 'showBookingForm');
 Route::get('/dat-phong/{maPhong}', 'HotelBooking\Controllers\Client\BookingController', 'showBookingForm');
 Route::post('/dat-phong', 'HotelBooking\Controllers\Client\BookingController', 'processBooking');
 Route::post('/huy-dat-phong/{maHoaDon}', 'HotelBooking\Controllers\Client\BookingController', 'cancelBooking');
