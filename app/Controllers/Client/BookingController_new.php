@@ -44,43 +44,6 @@ class BookingController
         // Get all services for selection
         $dichVus = DichVu::where('trang_thai', '!=', \HotelBooking\Enums\TrangThaiDichVu::NGUNG_HOAT_DONG)->get();
         
-        // Convert to arrays for JSON encoding
-        $phongsArray = [];
-        if ($phongs && count($phongs) > 0) {
-            foreach ($phongs as $p) {
-                $phongsArray[] = [
-                    'ma_phong' => $p->ma_phong,
-                    'ten_phong' => $p->ten_phong,
-                    'gia' => floatval($p->gia ?? 0)
-                ];
-            }
-        } else {
-            // Sample data for testing if no rooms in database
-            $phongsArray = [
-                ['ma_phong' => 'P001', 'ten_phong' => 'Phòng Standard 001', 'gia' => 500000],
-                ['ma_phong' => 'P002', 'ten_phong' => 'Phòng Deluxe 002', 'gia' => 800000],
-                ['ma_phong' => 'P003', 'ten_phong' => 'Phòng Suite 003', 'gia' => 1200000]
-            ];
-        }
-        
-        $dichVusArray = [];
-        if ($dichVus && count($dichVus) > 0) {
-            foreach ($dichVus as $dv) {
-                $dichVusArray[] = [
-                    'ma_dich_vu' => $dv->ma_dich_vu,
-                    'ten_dich_vu' => $dv->ten_dich_vu,
-                    'gia' => floatval($dv->gia ?? 0)
-                ];
-            }
-        } else {
-            // Sample data for testing if no services in database
-            $dichVusArray = [
-                ['ma_dich_vu' => 'DV001', 'ten_dich_vu' => 'Massage thư giãn', 'gia' => 300000],
-                ['ma_dich_vu' => 'DV002', 'ten_dich_vu' => 'Dịch vụ giặt ủi', 'gia' => 50000],
-                ['ma_dich_vu' => 'DV003', 'ten_dich_vu' => 'Ăn sáng buffet', 'gia' => 200000]
-            ];
-        }
-        
         // Get booking details from GET params if provided
         $bookingData = [
             'phong_id' => $phongId,
@@ -94,8 +57,6 @@ class BookingController
             'loaiPhong' => $loaiPhong,
             'phongs' => $phongs,
             'dichVus' => $dichVus,
-            'phongsArray' => $phongsArray,
-            'dichVusArray' => $dichVusArray,
             'bookingData' => $bookingData
         ]);
     }

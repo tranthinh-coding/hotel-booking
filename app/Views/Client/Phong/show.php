@@ -116,7 +116,7 @@ ob_start();
             <div class="flex items-center justify-center space-x-4 text-slate-600">
                 <span class="px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full text-sm font-medium border border-slate-200">
                     <i class="fas fa-tag mr-2 text-blue-500"></i>
-                    <?= htmlspecialchars($phong->loai_phong_ten ?? 'Loại phòng') ?>
+                    <?= htmlspecialchars($loaiPhong->ten_loai_phong ?? 'Loại phòng') ?>
                 </span>
                 <span class="px-4 py-2 bg-blue-50 rounded-full text-sm font-semibold text-blue-700">
                     <?= number_format($phong->gia ?? 0) ?>₫/giờ
@@ -132,24 +132,64 @@ ob_start();
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Left Column - Room Details -->
             <div class="lg:col-span-2 space-y-8">
-                <!-- Room Image -->
+                <!-- Room Images Gallery -->
                 <div class="room-card rounded-3xl overflow-hidden">
-                    <div class="relative">
-                        <img src="<?= htmlspecialchars($phong->hinh_anh ?? '/assets/images/default-room.jpg') ?>" 
-                             alt="<?= htmlspecialchars($phong->ten_phong ?? '') ?>"
-                             class="w-full h-96 object-cover">
-                        <div class="absolute top-6 left-6">
-                            <span class="px-4 py-2 bg-green-500 text-white text-sm font-semibold rounded-full shadow-lg">
-                                <?= htmlspecialchars($phong->trang_thai ?? 'available') === 'available' ? 'Còn trống' : 'Đã đặt' ?>
-                            </span>
+                    <?php if (!empty($hinhAnhPhong) && count($hinhAnhPhong) > 0): ?>
+                        <!-- Main Image -->
+                        <div class="relative">
+                            <img id="main-image" 
+                                 src="<?= $hinhAnhPhong[0]->getImageUrl() ?>" 
+                                 alt="<?= htmlspecialchars($phong->ten_phong ?? '') ?>"
+                                 class="w-full h-96 object-cover transition-all duration-300">
+                            <div class="absolute top-6 left-6">
+                                <span class="px-4 py-2 bg-green-500 text-white text-sm font-semibold rounded-full shadow-lg">
+                                    <?= htmlspecialchars($phong->trang_thai ?? 'available') === 'available' ? 'Còn trống' : 'Đã đặt' ?>
+                                </span>
+                            </div>
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-6">
+                                <h2 class="text-2xl font-bold text-white mb-2">
+                                    <?= htmlspecialchars($phong->ten_phong ?? '') ?>
+                                </h2>
+                                <p class="text-white/90">Phòng cao cấp với đầy đủ tiện nghi hiện đại</p>
+                            </div>
                         </div>
-                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-6">
-                            <h2 class="text-2xl font-bold text-white mb-2">
-                                <?= htmlspecialchars($phong->ten_phong ?? '') ?>
-                            </h2>
-                            <p class="text-white/90">Phòng cao cấp với đầy đủ tiện nghi hiện đại</p>
+                        
+                        <!-- Thumbnail Gallery -->
+                        <?php if (count($hinhAnhPhong) > 1): ?>
+                            <div class="p-6 bg-slate-50">
+                                <h4 class="font-semibold text-slate-800 mb-4">Hình ảnh phòng (<?= count($hinhAnhPhong) ?> ảnh)</h4>
+                                <div class="grid grid-cols-4 md:grid-cols-6 gap-3">
+                                    <?php foreach ($hinhAnhPhong as $index => $hinhAnh): ?>
+                                        <div class="relative cursor-pointer group">
+                                            <img src="<?= $hinhAnh->getImageUrl() ?>" 
+                                                 alt="Hình ảnh phòng <?= $index + 1 ?>"
+                                                 class="thumbnail w-full h-20 object-cover rounded-lg border-2 border-transparent group-hover:border-blue-500 transition-all duration-200 <?= $index === 0 ? 'border-blue-500' : '' ?>"
+                                                 onclick="changeMainImage('<?= $hinhAnh->getImageUrl() ?>', this)">
+                                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-200 rounded-lg"></div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    <?php else: ?>
+                        <!-- Default Image -->
+                        <div class="relative">
+                            <img src="/assets/images/default-room.jpg" 
+                                 alt="<?= htmlspecialchars($phong->ten_phong ?? '') ?>"
+                                 class="w-full h-96 object-cover">
+                            <div class="absolute top-6 left-6">
+                                <span class="px-4 py-2 bg-green-500 text-white text-sm font-semibold rounded-full shadow-lg">
+                                    <?= htmlspecialchars($phong->trang_thai ?? 'available') === 'available' ? 'Còn trống' : 'Đã đặt' ?>
+                                </span>
+                            </div>
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-6">
+                                <h2 class="text-2xl font-bold text-white mb-2">
+                                    <?= htmlspecialchars($phong->ten_phong ?? '') ?>
+                                </h2>
+                                <p class="text-white/90">Phòng cao cấp với đầy đủ tiện nghi hiện đại</p>
+                            </div>
                         </div>
-                    </div>
+                    <?php endif; ?>
                 </div>
 
                 <!-- Room Info Cards -->
@@ -159,7 +199,7 @@ ob_start();
                             <i class="fas fa-bed"></i>
                         </div>
                         <div class="text-sm text-slate-600 mb-1">Loại phòng</div>
-                        <div class="font-semibold text-slate-800"><?= htmlspecialchars($phong->loai_phong_ten ?? 'Standard') ?></div>
+                        <div class="font-semibold text-slate-800"><?= htmlspecialchars($loaiPhong->ten_loai_phong ?? 'Standard') ?></div>
                     </div>
 
                     <div class="stat-card">
@@ -167,7 +207,7 @@ ob_start();
                             <i class="fas fa-users"></i>
                         </div>
                         <div class="text-sm text-slate-600 mb-1">Sức chứa</div>
-                        <div class="font-semibold text-slate-800"><?= $phong->suc_chua ?? 2 ?> người</div>
+                        <div class="font-semibold text-slate-800"><?= $loaiPhong->suc_chua ?? $phong->suc_chua ?? 2 ?> người</div>
                     </div>
 
                     <div class="stat-card">
@@ -175,7 +215,7 @@ ob_start();
                             <i class="fas fa-ruler-combined"></i>
                         </div>
                         <div class="text-sm text-slate-600 mb-1">Diện tích</div>
-                        <div class="font-semibold text-slate-800"><?= $phong->dien_tich ?? 25 ?>m²</div>
+                        <div class="font-semibold text-slate-800"><?= $loaiPhong->dien_tich ?? $phong->dien_tich ?? 25 ?>m²</div>
                     </div>
 
                     <div class="stat-card">
@@ -268,7 +308,7 @@ ob_start();
                         <p class="text-slate-600">Hoàn tất đặt phòng chỉ trong vài phút</p>
                     </div>
                     
-                    <form action="/booking" method="POST" class="space-y-6">
+                    <form action="/booking/checkout" method="GET" class="space-y-6">
                         <input type="hidden" name="phong_id" value="<?= $phong->id ?? '' ?>">
                         
                         <!-- Check-in -->
@@ -303,15 +343,17 @@ ob_start();
                             <label for="so_nguoi" class="block text-sm font-semibold text-slate-700 mb-3">
                                 <i class="fas fa-users mr-2 text-blue-500"></i>
                                 Số khách
-                            </label>
-                            <select id="so_nguoi" 
-                                    name="so_nguoi" 
-                                    class="form-input w-full px-4 py-3"
-                                    required>
-                                <?php for ($i = 1; $i <= ($phong->suc_chua ?? 4); $i++): ?>
-                                    <option value="<?= $i ?>"><?= $i ?> <?= $i == 1 ? 'khách' : 'khách' ?></option>
-                                <?php endfor; ?>
-                            </select>
+                            </label>                                <select id="so_nguoi" 
+                                        name="so_nguoi" 
+                                        class="form-input w-full px-4 py-3"
+                                        required>
+                                    <?php 
+                                    $maxGuests = $loaiPhong->suc_chua ?? $phong->suc_chua ?? 4;
+                                    for ($i = 1; $i <= $maxGuests; $i++): 
+                                    ?>
+                                        <option value="<?= $i ?>"><?= $i ?> <?= $i == 1 ? 'khách' : 'khách' ?></option>
+                                    <?php endfor; ?>
+                                </select>
                         </div>
 
                         <!-- Price Breakdown -->
@@ -340,7 +382,7 @@ ob_start();
                             <button type="submit" 
                                     class="btn-primary w-full text-white py-4 rounded-xl font-semibold text-lg transition-all transform hover:scale-105">
                                 <i class="fas fa-credit-card mr-2"></i>
-                                Đặt phòng ngay
+                                Tiến hành đặt phòng
                             </button>
                         <?php else: ?>
                             <a href="/login" 
@@ -364,33 +406,6 @@ ob_start();
                         </div>
                     </form>
                 </div>
-
-                <!-- Contact Card -->
-                <div class="room-card rounded-3xl p-6 mt-6">
-                    <h4 class="text-lg font-bold text-slate-800 mb-4">
-                        <i class="fas fa-headset text-blue-500 mr-2"></i>
-                        Cần hỗ trợ?
-                    </h4>
-                    <div class="space-y-3">
-                        <div class="flex items-center text-slate-600">
-                            <i class="fas fa-phone text-blue-500 mr-3 w-5"></i>
-                            <span class="text-sm">Hotline: +84 123 456 789</span>
-                        </div>
-                        <div class="flex items-center text-slate-600">
-                            <i class="fas fa-envelope text-blue-500 mr-3 w-5"></i>
-                            <span class="text-sm">booking@oceanpearl.com</span>
-                        </div>
-                        <div class="flex items-center text-slate-600">
-                            <i class="fas fa-clock text-blue-500 mr-3 w-5"></i>
-                            <span class="text-sm">Hỗ trợ 24/7</span>
-                        </div>
-                    </div>
-                    
-                    <button class="w-full mt-4 border-2 border-blue-500 text-blue-600 py-3 rounded-xl font-semibold transition-all hover:bg-blue-500 hover:text-white">
-                        <i class="fas fa-comments mr-2"></i>
-                        Chat với chúng tôi
-                    </button>
-                </div>
             </div>
         </div>
     </div>
@@ -398,6 +413,24 @@ ob_start();
 
 <!-- Enhanced JavaScript -->
 <script>
+// Function to change main image
+function changeMainImage(imageUrl, thumbnailElement) {
+    const mainImage = document.getElementById('main-image');
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    
+    // Update main image
+    mainImage.src = imageUrl;
+    
+    // Update thumbnail active state
+    thumbnails.forEach(thumb => {
+        thumb.classList.remove('border-blue-500');
+        thumb.classList.add('border-transparent');
+    });
+    
+    thumbnailElement.classList.remove('border-transparent');
+    thumbnailElement.classList.add('border-blue-500');
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const checkinInput = document.getElementById('ngay_nhan_phong');
     const checkoutInput = document.getElementById('ngay_tra_phong');

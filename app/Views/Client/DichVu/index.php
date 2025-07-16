@@ -95,23 +95,15 @@ ob_start();
                             </p>
 
                             <!-- Service Features -->
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-4 text-sm text-gray-500">
-                                    <span class="flex items-center">
-                                        <i class="fas fa-clock mr-1"></i>
-                                        24/7
-                                    </span>
-                                    <span class="flex items-center">
-                                        <i class="fas fa-star mr-1 text-yellow-400"></i>
-                                        Premium
-                                    </span>
-                                </div>
-                                
-                                <a href="/dich-vu/<?= $service['id'] ?>" 
-                                   class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 text-sm font-medium">
-                                    <i class="fas fa-info-circle mr-2"></i>
-                                    Chi tiết
-                                </a>
+                            <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                <span class="flex items-center">
+                                    <i class="fas fa-clock mr-1"></i>
+                                    24/7
+                                </span>
+                                <span class="flex items-center">
+                                    <i class="fas fa-star mr-1 text-yellow-400"></i>
+                                    Premium
+                                </span>
                             </div>
                         </div>
                     </div>

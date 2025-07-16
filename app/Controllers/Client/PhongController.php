@@ -4,6 +4,7 @@ namespace HotelBooking\Controllers\Client;
 
 use HotelBooking\Models\Phong;
 use HotelBooking\Models\LoaiPhong;
+use HotelBooking\Models\HinhAnh;
 
 class PhongController
 {
@@ -57,6 +58,20 @@ class PhongController
             echo "Phòng không tồn tại";
             return;
         }
-        view('Client.Phong.show', ['phong' => $phong]);
+
+        // Get room images
+        $hinhAnhPhong = HinhAnh::getByPhong($id);
+        
+        // Get room type info
+        $loaiPhong = null;
+        if (!empty($phong->ma_loai_phong)) {
+            $loaiPhong = LoaiPhong::find($phong->ma_loai_phong);
+        }
+
+        view('Client.Phong.show', [
+            'phong' => $phong,
+            'hinhAnhPhong' => $hinhAnhPhong,
+            'loaiPhong' => $loaiPhong
+        ]);
     }
 }

@@ -63,6 +63,11 @@ Route::get('/dat-phong/{maPhong}', 'HotelBooking\Controllers\Client\BookingContr
 Route::post('/dat-phong', 'HotelBooking\Controllers\Client\BookingController', 'processBooking');
 Route::post('/huy-dat-phong/{maHoaDon}', 'HotelBooking\Controllers\Client\BookingController', 'cancelBooking');
 
+// Booking system mới
+Route::get('/booking/checkout', 'HotelBooking\Controllers\Client\BookingController', 'checkout');
+Route::post('/booking/process', 'HotelBooking\Controllers\Client\BookingController', 'processCheckout');
+Route::get('/booking/success', 'HotelBooking\Controllers\Client\BookingController', 'success');
+
 // Tài khoản khách hàng
 Route::get('/tai-khoan', 'HotelBooking\Controllers\Client\TaiKhoanController', 'show');
 Route::get('/tai-khoan/lich-su-dat-phong', 'HotelBooking\Controllers\Client\TaiKhoanController', 'bookingHistory');
