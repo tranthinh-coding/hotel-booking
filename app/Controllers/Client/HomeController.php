@@ -5,6 +5,9 @@ namespace HotelBooking\Controllers\Client;
 use HotelBooking\Models\DanhGia;
 use HotelBooking\Models\Phong;
 use HotelBooking\Models\LoaiPhong;
+use HotelBooking\Models\LienHe;
+use HotelBooking\Facades\DB;
+use Exception;
 
 class HomeController
 {
@@ -61,13 +64,15 @@ class HomeController
 
     public function sendContact()
     {
-        $name = post('name', '');
-        $email = post('email', '');
-        $message = post('message', '');
+        $ho_ten = post('ho_ten', '');
+        $email = post('email', ''); 
+        $so_dien_thoai = post('so_dien_thoai', '');
+        $chu_de = post('chu_de', '');
+        $noi_dung = post('noi_dung', '');
 
         // Basic validation
-        if (empty($name) || empty($email) || empty($message)) {
-            flash_error('Vui lòng nhập đầy đủ thông tin');
+        if (empty($ho_ten) || empty($email) || empty($noi_dung)) {
+            flash_error('Vui lòng nhập đầy đủ thông tin bắt buộc');
             set_old_input();
             back();
             return;
@@ -80,10 +85,39 @@ class HomeController
             return;
         }
 
-        // Here you would normally send email or save to database
-        // For now, just show success message
-        flash_success('Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm nhất có thể.');
-        clear_old_input();
+        try {
+            // Save to database using direct query with UTF-8 support
+            $conn = DB::connect();
+            
+            $sql = "INSERT INTO lien_he (ho_ten, email, so_dien_thoai, chu_de, noi_dung, trang_thai, ngay_gui) 
+                    VALUES (?, ?, ?, ?, ?, ?, NOW())";
+            
+            $stmt = $conn->prepare($sql);
+            if ($stmt) {
+                $trang_thai = LienHe::TRANG_THAI_MOI;
+                $stmt->bind_param('ssssss', $ho_ten, $email, $so_dien_thoai, $chu_de, $noi_dung, $trang_thai);
+                
+                if ($stmt->execute()) {
+                    flash_success('Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm nhất có thể.');
+                    clear_old_input();
+                } else {
+                    flash_error('Có lỗi xảy ra. Vui lòng thử lại.');
+                    set_old_input();
+                }
+                
+                $stmt->close();
+            } else {
+                flash_error('Có lỗi xảy ra. Vui lòng thử lại.');
+                set_old_input();
+            }
+            
+            DB::close();
+            
+        } catch (Exception $e) {
+            flash_error('Có lỗi xảy ra: ' . $e->getMessage());
+            set_old_input();
+        }
+
         redirect('/contact');
     }
 }

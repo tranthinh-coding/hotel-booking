@@ -126,7 +126,7 @@ ob_start();
                         </div>
                         <div class="text-gray-600 italic">
                             <?php if (isNotEmpty($danhGia->noi_dung)): ?>
-                                "<?= htmlspecialchars(substr($danhGia->noi_dung, 0, 100)) ?><?= strlen($danhGia->noi_dung) > 100 ? '...' : '' ?>"
+                                "<?= htmlspecialchars(mb_substr($danhGia->noi_dung, 0, 100, 'UTF-8')) ?><?= mb_strlen($danhGia->noi_dung, 'UTF-8') > 100 ? '...' : '' ?>"
                             <?php else: ?>
                                 Chưa có nội dung đánh giá
                             <?php endif; ?>

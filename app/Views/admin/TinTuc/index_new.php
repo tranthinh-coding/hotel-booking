@@ -204,7 +204,7 @@ ob_start();
                                                 <?= htmlspecialchars($tinTuc->tieu_de ?? '') ?>
                                             </h4>
                                             <p class="text-sm text-gray-500 line-clamp-2 mt-1">
-                                                <?= htmlspecialchars(substr($tinTuc->noi_dung ?? '', 0, 100)) ?>...
+                                                <?= htmlspecialchars(mb_substr($tinTuc->noi_dung ?? '', 0, 100, 'UTF-8')) ?>...
                                             </p>
                                             <div class="flex items-center space-x-2 mt-2 text-xs text-gray-400">
                                                 <span>ID: <?= $tinTuc->ma_tin_tuc ?></span>

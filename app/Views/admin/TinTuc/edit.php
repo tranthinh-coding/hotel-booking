@@ -207,7 +207,7 @@ ob_start();
                         </div>
                         
                         <div>
-                            <p id="preview-content" class="text-gray-600 text-sm line-clamp-4"><?= htmlspecialchars(substr($tinTuc->noi_dung ?? '', 0, 200)) . (strlen($tinTuc->noi_dung ?? '') > 200 ? '...' : '') ?></p>
+                            <p id="preview-content" class="text-gray-600 text-sm line-clamp-4"><?= htmlspecialchars(mb_substr($tinTuc->noi_dung ?? '', 0, 200, 'UTF-8')) . (mb_strlen($tinTuc->noi_dung ?? '', 'UTF-8') > 200 ? '...' : '') ?></p>
                         </div>
                         
                         <div class="text-xs text-gray-500 pt-2 border-t">

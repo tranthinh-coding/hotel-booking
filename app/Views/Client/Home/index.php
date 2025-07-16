@@ -437,7 +437,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </div>
             </div>
-            <p class="text-gray-600 italic">"<?= htmlspecialchars(substr($danhGia->noi_dung, 0, 100)) ?>..."</p>
+            <p class="text-gray-600 italic">"<?= htmlspecialchars(mb_substr($danhGia->noi_dung, 0, 100, 'UTF-8')) ?>..."</p>
         </div>
         <?php endforeach; ?>
     </div>

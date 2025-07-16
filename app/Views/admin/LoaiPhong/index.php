@@ -238,8 +238,8 @@ ob_start();
                                 </p>
                                 <?php if (!empty($loaiPhong->mo_ta)): ?>
                                     <p class="text-gray-500 text-sm line-clamp-2 mb-2">
-                                        <?= htmlspecialchars(substr($loaiPhong->mo_ta, 0, 100)) ?>
-                                        <?= strlen($loaiPhong->mo_ta) > 100 ? '...' : '' ?>
+                                        <?= htmlspecialchars(mb_substr($loaiPhong->mo_ta, 0, 100, 'UTF-8')) ?>
+                                        <?= mb_strlen($loaiPhong->mo_ta, 'UTF-8') > 100 ? '...' : '' ?>
                                     </p>
                                 <?php endif; ?>
                                 <div class="flex items-center text-sm text-gray-500">

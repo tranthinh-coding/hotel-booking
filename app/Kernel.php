@@ -9,6 +9,7 @@ class Kernel
     public function start()
     {
         $this->loadEnvironment();
+        $this->configureEncoding();
         $this->startSession();
         $this->loadHelpers();
         $this->loadRoutes();
@@ -110,6 +111,28 @@ class Kernel
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
+        }
+    }
+
+    public function configureEncoding()
+    {
+        // Set HTTP content type header
+        header('Content-Type: text/html; charset=UTF-8');
+        
+        // Set default encoding for multibyte string functions
+        mb_internal_encoding('UTF-8');
+        
+        // Set default encoding for all regex functions
+        if (function_exists('mb_regex_encoding')) {
+            mb_regex_encoding('UTF-8');
+        }
+        
+        // Set default charset for output
+        ini_set('default_charset', 'UTF-8');
+        
+        // Set output encoding
+        if (function_exists('mb_http_output')) {
+            mb_http_output('UTF-8');
         }
     }
 }

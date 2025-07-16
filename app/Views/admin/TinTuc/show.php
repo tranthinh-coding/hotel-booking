@@ -169,7 +169,7 @@ ob_start();
                             <i class="fas fa-file-alt text-gray-600"></i>
                             <span class="text-sm font-medium text-gray-700">Độ dài</span>
                         </div>
-                        <span class="text-sm font-medium text-gray-900"><?= number_format(strlen($tinTuc->noi_dung ?? '')) ?> ký tự</span>
+                        <span class="text-sm font-medium text-gray-900"><?= number_format(mb_strlen($tinTuc->noi_dung ?? '', 'UTF-8')) ?> ký tự</span>
                     </div>
                 </div>
             </div>
@@ -228,7 +228,7 @@ ob_start();
                             <?= $_SERVER['HTTP_HOST'] ?>/tin-tuc/<?= $tinTuc->ma_tin_tuc ?>
                         </div>
                         <div class="text-gray-600 text-sm line-clamp-3">
-                            <?= htmlspecialchars(substr($tinTuc->noi_dung ?? '', 0, 160)) ?>...
+                            <?= htmlspecialchars(mb_substr($tinTuc->noi_dung ?? '', 0, 160, 'UTF-8')) ?>...
                         </div>
                     </div>
                 </div>

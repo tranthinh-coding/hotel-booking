@@ -256,7 +256,7 @@ ob_start();
                                             ?>
                                         </div>
                                         <div class="text-gray-500 truncate">
-                                            <?= htmlspecialchars(substr($lienHe->noi_dung, 0, 60)) ?><?= strlen($lienHe->noi_dung) > 60 ? '...' : '' ?>
+                                            <?= htmlspecialchars(mb_substr($lienHe->noi_dung, 0, 60, 'UTF-8')) ?><?= mb_strlen($lienHe->noi_dung, 'UTF-8') > 60 ? '...' : '' ?>
                                         </div>
                                     </div>
                                 </td>

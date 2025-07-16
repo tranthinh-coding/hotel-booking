@@ -869,3 +869,66 @@ if (!function_exists('validateImageFile')) {
         return ['valid' => true, 'error' => ''];
     }
 }
+
+if (!function_exists('safe_substr')) {
+    /**
+     * UTF-8 safe substring function
+     *
+     * @param string $text
+     * @param int $start
+     * @param int $length
+     * @return string
+     */
+    function safe_substr(string $text, int $start, ?int $length = null): string
+    {
+        if ($length === null) {
+            return mb_substr($text, $start, null, 'UTF-8');
+        }
+        return mb_substr($text, $start, $length, 'UTF-8');
+    }
+}
+
+if (!function_exists('safe_strlen')) {
+    /**
+     * UTF-8 safe string length function
+     *
+     * @param string $text
+     * @return int
+     */
+    function safe_strlen(string $text): int
+    {
+        return mb_strlen($text, 'UTF-8');
+    }
+}
+
+if (!function_exists('truncate_text')) {
+    /**
+     * Truncate text with UTF-8 support
+     *
+     * @param string $text
+     * @param int $length
+     * @param string $suffix
+     * @return string
+     */
+    function truncate_text(string $text, int $length = 100, string $suffix = '...'): string
+    {
+        if (safe_strlen($text) <= $length) {
+            return $text;
+        }
+        
+        return safe_substr($text, 0, $length) . $suffix;
+    }
+}
+
+if (!function_exists('safe_htmlspecialchars')) {
+    /**
+     * UTF-8 safe htmlspecialchars
+     *
+     * @param string $text
+     * @return string
+     */
+    function safe_htmlspecialchars(string $text): string
+    {
+        return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+    }
+}

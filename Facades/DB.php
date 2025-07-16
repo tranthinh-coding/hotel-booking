@@ -35,6 +35,8 @@ class DB
                 if (self::$connection->connect_error) {
                     die("Connection failed connect_error: " . self::$connection->connect_error);
                 }
+                // Set charset to UTF-8
+                self::$connection->set_charset("utf8mb4");
             } catch (\Exception $e) {
                 die("Connection failed exception: " . $e->getMessage());
             }
