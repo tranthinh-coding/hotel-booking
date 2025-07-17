@@ -248,7 +248,7 @@ ob_start();
                                 <input type="text" id="name" name="name" class="form-input w-full px-4 py-3" required
                                     name="ho_ten"
                                     value="<?= htmlspecialchars(old('ho_ten') ?: ($user->ho_ten ?? '')) ?>"
-                                    <?= isset($user) && $user ? 'readonly disabled' : '' ?> >
+                                    <?= isset($user) && $user ? 'readonly disabled' : '' ?>>
                             </div>
 
                             <div>
@@ -258,7 +258,7 @@ ob_start();
                                 <input type="tel" id="phone" name="phone" class="form-input w-full px-4 py-3" required
                                     name="so_dien_thoai"
                                     value="<?= htmlspecialchars(old('so_dien_thoai') ?: ($user->sdt ?? '')) ?>"
-                                    <?= isset($user) && $user ? 'readonly disabled' : '' ?> >
+                                    <?= isset($user) && $user ? 'readonly disabled' : '' ?>>
                             </div>
 
                             <div>
@@ -266,10 +266,9 @@ ob_start();
                                     Số CCCD <span class="text-red-500">*</span>
                                 </label>
                                 <input type="text" id="so_cccd" name="so_cccd" required
-                                    class="form-input w-full px-4 py-3"
-                                    name="so_cccd"
+                                    class="form-input w-full px-4 py-3" name="so_cccd"
                                     value="<?= htmlspecialchars(old('so_cccd') ?: ($user->so_cccd ?? '')) ?>"
-                                    <?= isset($user) && $user ? 'readonly disabled' : '' ?> >
+                                    <?= isset($user) && $user ? 'readonly disabled' : '' ?>>
                             </div>
 
                             <div>
@@ -277,9 +276,8 @@ ob_start();
                                     Email <span class="text-red-500">*</span>
                                 </label>
                                 <input type="email" id="email" name="email" required class="form-input w-full px-4 py-3"
-                                    name="email"
-                                    value="<?= htmlspecialchars(old('email') ?: ($user->email ?? '')) ?>"
-                                    <?= isset($user) && $user ? 'readonly disabled' : '' ?> >
+                                    name="email" value="<?= htmlspecialchars(old('email') ?: ($user->email ?? '')) ?>"
+                                    <?= isset($user) && $user ? 'readonly disabled' : '' ?>>
                             </div>
                         </div>
                     </div>
@@ -298,62 +296,133 @@ ob_start();
                         </div>
 
                         <div id="roomsContainer">
-                            <div class="room-item p-6 mb-6" data-room-index="0">
+                            <?php
+                            // Nếu có oldPhongs thì render lại toàn bộ danh sách phòng đã chọn
+                            if (!empty($oldPhongs) && is_array($oldPhongs)) {
+                                foreach ($oldPhongs as $i => $oldPhong) {
+                            ?>
+                            <div class="room-item p-6 mb-6" data-room-index="<?= $i ?>">
                                 <div class="flex justify-between items-center mb-6">
-                                    <h4 class="text-lg font-semibold text-slate-800">Phòng 1</h4>
+                                    <h4 class="text-lg font-semibold text-slate-800">Phòng <?= $i + 1 ?></h4>
                                     <button type="button" onclick="removeRoom(this)"
                                         class="text-red-500 hover:text-red-700 text-lg">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
-
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                                     <div>
-                                        <label class="block text-sm font-semibold text-slate-700 mb-3">
-                                            Chọn phòng <span class="text-red-500">*</span>
-                                        </label>
-                                        <select name="phongs[0][ma_phong]" required onchange="updateRoomPrice(this)"
-                                            class="form-input w-full px-4 py-3">
-                                            <option value="" selected disabled>-- Chọn phòng --</option>
+                                        <label class="block text-sm font-semibold text-slate-700 mb-3">Chọn phòng <span class="text-red-500">*</span></label>
+                                        <select name="phongs[<?= $i ?>][ma_phong]" required onchange="updateRoomPrice(this)" class="form-input w-full px-4 py-3">
+                                            <option value="" disabled>-- Chọn phòng --</option>
                                             <?php if (isset($phongs) && $phongs): ?>
                                                 <?php foreach ($phongs as $room): ?>
-                                                    <option value="<?= $room->ma_phong ?>" data-price="<?= $room->gia ?>"
-                                                        <?= (isset($phong) && $phong->ma_phong == $room->ma_phong) ? 'selected' : '' ?>>
-                                                        <?= htmlspecialchars($room->ten_phong) ?> -
-                                                        <?= number_format($room->gia) ?>₫/giờ
+                                                    <option value="<?= $room->ma_phong ?>" data-price="<?= $room->gia ?>" <?= (isset($oldPhong['ma_phong']) && $oldPhong['ma_phong'] == $room->ma_phong) ? 'selected' : '' ?>>
+                                                        <?= htmlspecialchars($room->ten_phong) ?> - <?= number_format($room->gia) ?>₫/giờ
                                                     </option>
                                                 <?php endforeach; ?>
                                             <?php endif; ?>
                                         </select>
                                     </div>
-
                                     <div>
-                                        <label class="block text-sm font-semibold text-slate-700 mb-3">
-                                            Check-in <span class="text-red-500">*</span>
-                                        </label>
-                                        <input type="datetime-local" name="phongs[0][check_in]" required
-                                            onchange="calculateTotal()" min="<?= date('Y-m-d\TH:i') ?>"
-                                            value="<?= htmlspecialchars($bookingData['ngay_nhan_phong'] ?? '') ?>"
-                                            class="form-input w-full px-4 py-3">
+                                        <label class="block text-sm font-semibold text-slate-700 mb-3">Check-in <span class="text-red-500">*</span></label>
+                                        <input type="datetime-local" name="phongs[<?= $i ?>][check_in]" required onchange="calculateTotal()" min="<?= date('Y-m-d\TH:i') ?>" value="<?= isset($oldPhong['check_in']) ? htmlspecialchars($oldPhong['check_in']) : '' ?>" class="form-input w-full px-4 py-3">
                                     </div>
-
                                     <div>
-                                        <label class="block text-sm font-semibold text-slate-700 mb-3">
-                                            Check-out <span class="text-red-500">*</span>
-                                        </label>
-                                        <input type="datetime-local" name="phongs[0][check_out]" required
-                                            onchange="calculateTotal()"
-                                            value="<?= htmlspecialchars($bookingData['ngay_tra_phong'] ?? '') ?>"
-                                            class="form-input w-full px-4 py-3">
+                                        <label class="block text-sm font-semibold text-slate-700 mb-3">Check-out <span class="text-red-500">*</span></label>
+                                        <input type="datetime-local" name="phongs[<?= $i ?>][check_out]" required onchange="calculateTotal()" value="<?= isset($oldPhong['check_out']) ? htmlspecialchars($oldPhong['check_out']) : '' ?>" class="form-input w-full px-4 py-3">
                                     </div>
                                 </div>
-
                                 <!-- Services for this room -->
                                 <div class="border-t border-slate-200 pt-6">
                                     <div class="flex justify-between items-center mb-4">
                                         <h5 class="text-lg font-semibold text-slate-800">Dịch vụ cho phòng này</h5>
-                                        <button type="button" onclick="addRoomService(this)"
-                                            class="btn-primary text-white px-4 py-2 rounded-lg text-sm">
+                                        <button type="button" onclick="addRoomService(this)" class="btn-primary text-white px-4 py-2 rounded-lg text-sm">
+                                            <i class="fas fa-plus mr-2"></i>Thêm dịch vụ
+                                        </button>
+                                    </div>
+                                    <div class="room-services-container">
+                                        <?php
+                                        if (isset($oldPhong['dich_vu']) && is_array($oldPhong['dich_vu'])) {
+                                            foreach ($oldPhong['dich_vu'] as $j => $dv) {
+                                        ?>
+                                        <div class="service-item p-4 mb-4 border border-slate-200 rounded-lg">
+                                            <div class="flex justify-between items-center mb-4">
+                                                <h6 class="font-medium text-slate-700">Dịch vụ <?= $j + 1 ?></h6>
+                                                <button type="button" onclick="removeService(this)" class="text-red-500 hover:text-red-700">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                <div>
+                                                    <label class="block text-sm font-medium text-slate-700 mb-2">Dịch vụ</label>
+                                                    <select name="phongs[<?= $i ?>][dich_vu][<?= $j ?>][ma_dich_vu]" onchange="updateServicePrice(this)" class="form-input w-full px-3 py-2">
+                                                        <option value="" disabled>-- Chọn dịch vụ --</option>
+                                                        <?php if (isset($dichVus) && $dichVus): ?>
+                                                            <?php foreach ($dichVus as $service): ?>
+                                                                <option value="<?= $service->ma_dich_vu ?? $service['ma_dich_vu'] ?>" data-price="<?= $service->gia ?? $service['gia'] ?>" <?= (isset($dv['ma_dich_vu']) && $dv['ma_dich_vu'] == ($service->ma_dich_vu ?? $service['ma_dich_vu'])) ? 'selected' : '' ?>>
+                                                                    <?= htmlspecialchars($service->ten_dich_vu ?? $service['ten_dich_vu']) ?> - <?= number_format($service->gia ?? $service['gia']) ?>₫
+                                                                </option>
+                                                            <?php endforeach; ?>
+                                                        <?php endif; ?>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-slate-700 mb-2">Số lượng</label>
+                                                    <input type="number" name="phongs[<?= $i ?>][dich_vu][<?= $j ?>][so_luong]" value="<?= isset($dv['so_luong']) ? htmlspecialchars($dv['so_luong']) : 1 ?>" min="1" onchange="calculateTotal()" class="form-input w-full px-3 py-2">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-slate-700 mb-2">Thành tiền</label>
+                                                    <input type="text" readonly class="form-input w-full px-3 py-2 bg-slate-100 service-subtotal" value="0₫">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <?php
+                                            }
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php
+                                }
+                            } else {
+                                // Nếu không có oldPhongs thì render phòng mặc định như cũ
+                            ?>
+                            <div class="room-item p-6 mb-6" data-room-index="0">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h4 class="text-lg font-semibold text-slate-800">Phòng 1</h4>
+                                    <button type="button" onclick="removeRoom(this)" class="text-red-500 hover:text-red-700 text-lg">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                                    <div>
+                                        <label class="block text-sm font-semibold text-slate-700 mb-3">Chọn phòng <span class="text-red-500">*</span></label>
+                                        <select name="phongs[0][ma_phong]" required onchange="updateRoomPrice(this)" class="form-input w-full px-4 py-3">
+                                            <option value="" selected disabled>-- Chọn phòng --</option>
+                                            <?php if (isset($phongs) && $phongs): ?>
+                                                <?php foreach ($phongs as $room): ?>
+                                                    <option value="<?= $room->ma_phong ?>" data-price="<?= $room->gia ?>" <?php if (isset($phong) && $phong->ma_phong == $room->ma_phong) echo 'selected'; ?>>
+                                                        <?= htmlspecialchars($room->ten_phong) ?> - <?= number_format($room->gia) ?>₫/giờ
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-slate-700 mb-3">Check-in <span class="text-red-500">*</span></label>
+                                        <input type="datetime-local" name="phongs[0][check_in]" required onchange="calculateTotal()" min="<?= date('Y-m-d\TH:i') ?>" value="<?= htmlspecialchars($bookingData['ngay_nhan_phong'] ?? '') ?>" class="form-input w-full px-4 py-3">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-slate-700 mb-3">Check-out <span class="text-red-500">*</span></label>
+                                        <input type="datetime-local" name="phongs[0][check_out]" required onchange="calculateTotal()" value="<?= htmlspecialchars($bookingData['ngay_tra_phong'] ?? '') ?>" class="form-input w-full px-4 py-3">
+                                    </div>
+                                </div>
+                                <!-- Services for this room -->
+                                <div class="border-t border-slate-200 pt-6">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <h5 class="text-lg font-semibold text-slate-800">Dịch vụ cho phòng này</h5>
+                                        <button type="button" onclick="addRoomService(this)" class="btn-primary text-white px-4 py-2 rounded-lg text-sm">
                                             <i class="fas fa-plus mr-2"></i>Thêm dịch vụ
                                         </button>
                                     </div>
@@ -362,6 +431,7 @@ ob_start();
                                     </div>
                                 </div>
                             </div>
+                            <?php } ?>
                         </div>
                     </div>
 

@@ -41,10 +41,10 @@ class BookingController
         
         // Get all rooms for selection
         $phongs = Phong::where('trang_thai', '!=', \HotelBooking\Enums\TrangThaiPhong::NGUNG_HOAT_DONG)->get();
-        
+
         // Get all services for selection
         $dichVus = DichVu::where('trang_thai', '!=', \HotelBooking\Enums\TrangThaiDichVu::NGUNG_HOAT_DONG)->get();
-        
+
         // Convert to arrays for JSON encoding
         $phongsArray = [];
         if ($phongs && count($phongs) > 0) {
@@ -63,7 +63,7 @@ class BookingController
                 ['ma_phong' => 'P003', 'ten_phong' => 'Phòng Suite 003', 'gia' => 1200000]
             ];
         }
-        
+
         $dichVusArray = [];
         if ($dichVus && count($dichVus) > 0) {
             foreach ($dichVus as $dv) {
@@ -81,7 +81,10 @@ class BookingController
                 ['ma_dich_vu' => 'DV003', 'ten_dich_vu' => 'Ăn sáng buffet', 'gia' => 200000]
             ];
         }
-        
+
+        // Ưu tiên lấy dữ liệu phòng từ session nếu có lỗi submit trước đó
+        $oldPhongs = isset($_SESSION['old_phongs']) ? $_SESSION['old_phongs'] : null;
+
         // Get booking details from GET params if provided
         $bookingData = [
             'phong_id' => $phongId,
@@ -89,7 +92,7 @@ class BookingController
             'ngay_tra_phong' => get('ngay_tra_phong'),
             'so_nguoi' => get('so_nguoi', 1)
         ];
-        
+
         view('Client.Booking.checkout', [
             'phong' => $phong,
             'loaiPhong' => $loaiPhong,
@@ -98,7 +101,8 @@ class BookingController
             'phongsArray' => $phongsArray,
             'dichVusArray' => $dichVusArray,
             'bookingData' => $bookingData,
-            'user' => $user
+            'user' => $user,
+            'oldPhongs' => $oldPhongs
         ]);
     }
 
@@ -195,7 +199,7 @@ class BookingController
                 $checkoutDate = date('Y-m-d', strtotime($phongData['check_out']));
 
                 if (HoaDonPhong::hasConflictForRoom($phongData['ma_phong'], $checkinDate, $checkoutDate)) {
-                    throw new Exception('Phòng ' . $phong->ten_phong . ' đã được đặt trong thời gian này');
+                    throw new Exception('Phòng ' . $phong->ten_phong . ' đã được đặt trong thời gian từ ' . date('d/m/Y H:i', strtotime($phongData['check_in'])) . ' đến ' . date('d/m/Y H:i', strtotime($phongData['check_out'])));
                 }
 
                 // Tính tiền phòng theo giờ thập phân chính xác
