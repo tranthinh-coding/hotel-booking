@@ -24,7 +24,7 @@ ob_start();
                 </div>
                 
                 <div class="p-6">
-                    <form action="/admin/dich-vu" method="POST" enctype="multipart/form-data" class="space-y-6">
+                    <form action="/admin/dich-vu/store" method="POST" enctype="multipart/form-data" class="space-y-6">
                         <input type="hidden" name="MAX_FILE_SIZE" value="5242880"> <!-- 5MB -->
                         <div>
                             <label for="ten_dich_vu" class="block text-sm font-medium text-gray-700 mb-2">
