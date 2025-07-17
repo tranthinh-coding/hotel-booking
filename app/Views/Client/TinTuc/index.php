@@ -64,7 +64,7 @@ ob_start();
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <?php foreach ($tinTucs as $tinTuc): ?>
                     <article
-                        class="bg-gradient-to-br from-gray-50 via-white to-blue-50/30 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group card-hover border border-gray-100/50">
+                        class="bg-gradient-to-br from-gray-50 via-white to-blue-50/30 rounded-xl shadow-sm hover:shadow-md border border-gray-50 transition-all duration-300 overflow-hidden group card-hover border border-gray-100/50">
                         <!-- Image -->
                         <div class="relative h-48 bg-gradient-to-br from-ocean-400 to-ocean-600 overflow-hidden">
                             <?php if (isNotEmpty($tinTuc->anh_dai_dien)): ?>

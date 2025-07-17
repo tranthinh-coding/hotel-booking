@@ -49,7 +49,7 @@ ob_start();
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-600">Thời gian tạo:</span>
-                        <span><?= date('d/m/Y H:i', $hoaDon['thoi_gian_dat']) ?></span>
+                        <span><?= $hoaDon['thoi_gian_dat'] ? date('d/m/Y H:i', strtotime($hoaDon['thoi_gian_dat'])) : 'N/A' ?></span>
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-600">Trạng thái:</span>

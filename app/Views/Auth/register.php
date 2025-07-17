@@ -78,7 +78,7 @@ ob_start();
                         <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-3xl flex items-end p-6">
                             <div class="text-white">
                                 <h3 class="text-lg font-semibold">Ocean Pearl Hotel</h3>
-                                <p class="text-sm opacity-90">Nha Trang, Khánh Hòa</p>
+                                <p class="text-sm opacity-90">Hoàng Mai, Hà Nội</p>
                             </div>
                         </div>
                     </div>

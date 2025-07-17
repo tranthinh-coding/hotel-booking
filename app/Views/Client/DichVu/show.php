@@ -122,7 +122,7 @@ ob_start();
                     </div>
                     <div class="flex items-center space-x-3">
                         <i class="fas fa-envelope text-blue-600"></i>
-                        <span class="text-gray-700">info@oceanpearl.com</span>
+                        <span class="text-gray-700">nhom4@gmail.com</span>
                     </div>
                     <div class="flex items-center space-x-3">
                         <i class="fas fa-map-marker-alt text-blue-600"></i>

@@ -190,8 +190,8 @@ ob_start();
                             <div class="ml-4">
                                 <h3 class="font-bold text-gray-800 mb-2 text-lg">Địa chỉ</h3>
                                 <p class="text-gray-600 leading-relaxed">
-                                    123 Đường Trần Phú, Phường Lộc Thọ<br>
-                                    Thành phố Nha Trang, Khánh Hòa<br>
+                                    218 đường Lĩnh Nam, Hoàng Mai<br>
+                                    Hà Nội<br>
                                     Việt Nam
                                 </p>
                             </div>
@@ -284,8 +284,8 @@ ob_start();
                         </h2>
                     </div>
                     <p class="text-gray-600 leading-relaxed">
-                        Hotel Ocean tọa lạc tại vị trí đắc địa ngay trung tâm thành phố Nha Trang, 
-                        chỉ cách bãi biển 50m và sân bay quốc tế Cam Ranh 30km. Hãy ghé thăm chúng tôi!
+                        Hotel Ocean tọa lạc tại vị trí đắc địa ngay trung tâm thành phố Hà Nội, 
+                        chỉ cách sân bay quốc tế Nội Bài 30km. Hãy ghé thăm chúng tôi!
                     </p>
                 </div>
                 <div class="h-96 bg-gradient-to-br from-cyan-100 to-blue-100 flex items-center justify-center relative overflow-hidden">
@@ -488,7 +488,7 @@ ob_start();
                             </div>
                             <h3 class="text-xl font-bold mb-3">Vị trí đắc địa</h3>
                             <p class="text-white/80 leading-relaxed">
-                                Ngay trung tâm Nha Trang, cách biển chỉ 50m
+                                Ngay trung tâm Hà Nội, giao thông thuận tiện
                             </p>
                         </div>
                         

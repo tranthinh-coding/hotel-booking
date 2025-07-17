@@ -221,7 +221,7 @@ class MailSender
                 </div>
                 <div class='footer'>
                     <p>© 2025 Ocean Pearl Hotel. All rights reserved.</p>
-                    <p>📞 Hotline: 1900-1234 | 📧 info@oceanpearl.com</p>
+                    <p>📞 Hotline: 1900-1234 | 📧 nhom4@gmail.com</p>
                 </div>
             </div>
         </body>

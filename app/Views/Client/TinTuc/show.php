@@ -4,7 +4,9 @@ ob_start();
 ?>
 
 <!-- Hero Section -->
-<div class="relative h-96 bg-gradient-to-r from-ocean-600 via-ocean-700 to-teal-600 overflow-hidden">
+<div class="relative h-9                        <p class="text-ocean-100 mb-6 leading-relaxed">
+                            Khách sạn 5 sao với dịch vụ chuyên nghiệp và vị trí thuận tiện tại Hà Nội.
+                        </p>g-gradient-to-r from-ocean-600 via-ocean-700 to-teal-600 overflow-hidden">
     <?php if (isset($tinTuc) && isNotEmpty($tinTuc->anh_dai_dien)): ?>
         <img src="<?= safe_htmlspecialchars($tinTuc->anh_dai_dien) ?>" alt="<?= safe_htmlspecialchars($tinTuc->tieu_de) ?>"
             class="absolute inset-0 w-full h-full object-cover opacity-30">
@@ -206,12 +208,12 @@ ob_start();
                     <div class="bg-gradient-to-br from-ocean-600 to-teal-600 rounded-xl p-6 text-white">
                         <h3 class="text-xl font-bold mb-4">Ocean Pearl Hotel</h3>
                         <p class="text-ocean-100 mb-6 leading-relaxed">
-                            Khách sạn 5 sao với view biển tuyệt đẹp và dịch vụ chuyên nghiệp tại Nha Trang.
+                            Khách sạn 5 sao với dịch vụ chuyên nghiệp và vị trí thuận tiện tại Hà Nội.
                         </p>
                         <div class="space-y-3 text-sm">
                             <div class="flex items-center">
                                 <i class="fas fa-map-marker-alt mr-3 text-ocean-200"></i>
-                                <span>123 Trần Phú, Nha Trang</span>
+                                <span>218 đường Lĩnh Nam, Hoàng Mai, Hà Nội</span>
                             </div>
                             <div class="flex items-center">
                                 <i class="fas fa-phone mr-3 text-ocean-200"></i>
@@ -219,7 +221,7 @@ ob_start();
                             </div>
                             <div class="flex items-center">
                                 <i class="fas fa-envelope mr-3 text-ocean-200"></i>
-                                <span>info@oceanpearl.com</span>
+                                <span>nhom4@gmail.com</span>
                             </div>
                         </div>
                         <div class="mt-6">

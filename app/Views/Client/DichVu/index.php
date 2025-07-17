@@ -56,7 +56,7 @@ ob_start();
             <?php if (isNotEmpty($services)): ?>
                 <?php foreach ($services as $service): ?>
                     <div
-                        class="bg-white rounded-2xl shadow-xl overflow-hidden group hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+                        class="bg-white rounded-2xl shadow-sm overflow-hidden group hover:shadow-md transition-all duration-300">
                         <!-- Service Image -->
                         <div class="h-64 bg-gradient-to-br from-blue-100 to-cyan-100 relative overflow-hidden">
                             <?php if (isNotEmpty($service['hinh_anh'])): ?>

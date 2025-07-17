@@ -3,7 +3,7 @@ $title = 'Tài khoản của tôi - Ocean Pearl Hotel';
 ob_start();
 ?>
 
-<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50">
+<div class="min-h-screen bg-gray-50">
     <!-- Header -->
     <div class="bg-gradient-to-r from-blue-600 to-teal-600 py-16">
         <div class="max-w-7xl mx-auto px-4">
@@ -40,7 +40,7 @@ ob_start();
 
         <!-- Statistics Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center">
                     <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                         <i class="fas fa-calendar-check text-blue-600 text-xl"></i>
@@ -52,7 +52,7 @@ ob_start();
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center">
                     <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                         <i class="fas fa-check-circle text-green-600 text-xl"></i>
@@ -64,7 +64,7 @@ ob_start();
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center">
                     <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
                         <i class="fas fa-clock text-yellow-600 text-xl"></i>
@@ -76,7 +76,7 @@ ob_start();
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center">
                     <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
                         <i class="fas fa-money-bill-wave text-purple-600 text-xl"></i>
@@ -93,7 +93,7 @@ ob_start();
         <!-- Quick Actions & Recent Activity -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <!-- Quick Actions -->
-            <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <h3 class="text-xl font-bold text-gray-900 mb-6">Thao tác nhanh</h3>
                 <div class="space-y-4">
                     <a href="/dat-phong"
@@ -132,7 +132,7 @@ ob_start();
             </div>
 
             <!-- Account Information -->
-            <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <h3 class="text-xl font-bold text-gray-900 mb-6">Thông tin tài khoản</h3>
                 <div class="space-y-4">
                     <div class="flex justify-between items-center py-3 border-b border-gray-100">
@@ -169,7 +169,7 @@ ob_start();
         </div>
 
         <!-- Recent Bookings Preview -->
-        <div class="bg-white rounded-xl shadow-lg p-6 mt-8">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mt-8">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl font-bold text-gray-900">Đặt phòng gần đây</h3>
                 <a href="/tai-khoan/lich-su-dat-phong" class="text-blue-600 hover:text-blue-800 font-medium">
