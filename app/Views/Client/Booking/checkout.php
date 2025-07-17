@@ -3,432 +3,445 @@ $title = 'Đặt phòng - Ocean Pearl Hotel';
 ob_start();
 ?>
 
-<!-- Modern CSS Styles -->
 <style>
-    .booking-card {
-        backdrop-filter: blur(20px);
-        background: rgba(255, 255, 255, 0.98);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .booking-card:hover {
-        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
-        transform: translateY(-2px);
-    }
-    
     .gradient-bg {
-        background: linear-gradient(135deg, 
-            rgba(56, 189, 248, 0.05) 0%, 
-            rgba(14, 165, 233, 0.05) 50%, 
-            rgba(6, 182, 212, 0.05) 100%);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background-attachment: fixed;
     }
-    
-    .form-input {
+
+    .form-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
         border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        transition: all 0.2s ease;
-        background: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.012);
     }
-    
-    .form-input:focus {
-        border-color: #0ea5e9;
-        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
-        outline: none;
-        background: rgba(255, 255, 255, 1);
-    }
-    
-    .btn-primary {
-        background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
-        border: none;
-        box-shadow: 0 4px 14px rgba(14, 165, 233, 0.2);
-        transition: all 0.3s ease;
-    }
-    
-    .btn-primary:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 6px 20px rgba(14, 165, 233, 0.3);
-        background: linear-gradient(135deg, #0284c7 0%, #0891b2 100%);
-    }
-    
-    .step-indicator {
-        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+
+    .form-input {
         border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.9);
     }
-    
-    .step-indicator.active {
-        background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
-        border-color: #0ea5e9;
-        color: white;
+
+    .form-input:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        transform: translateY(-1px);
+        outline: none;
     }
-    
-    .step-indicator.completed {
+
+    .btn-primary {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-secondary {
         background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        border-color: #10b981;
-        color: white;
+        transition: all 0.3s ease;
+        border: none;
     }
-    
-    .room-summary {
+
+    .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+    }
+
+    .room-item,
+    .service-item {
         background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
         border: 1px solid #e2e8f0;
         border-radius: 16px;
+        transition: all 0.3s ease;
+        animation: slideInUp 0.5s ease-out;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .room-item:hover,
+    .service-item:hover {
+        border-color: #3b82f6;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 6px rgba(59, 130, 246, 0.08);
+    }
+
+    .progress-step {
+        transition: all 0.3s ease;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+
+    .progress-step.active {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        transform: scale(1.1);
+        box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+    }
+
+    .progress-line {
+        height: 3px;
+        background: rgba(255, 255, 255, 0.3);
+        flex: 1;
+        margin: 0 20px;
+    }
+
+    .progress-line.active {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    .total-card {
+        background: rgba(255, 255, 255, 0.95);
+        color: #1e293b;
+        border-radius: 20px;
+        border: 1px solid #e2e8f0;
+        position: sticky;
+        top: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.012);
+    }
+
+    .section-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.012);
+        transition: all 0.3s ease;
+    }
+
+    .section-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes pulse {
+
+        0%,
+        100% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.5;
+        }
+    }
+
+    .calculating {
+        animation: pulse 1s infinite;
+    }
+
+    .icon-gradient {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .glass-effect {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
     }
 </style>
 
-<!-- Header with Breadcrumb -->
-<div class="gradient-bg py-16">
+<!-- Header với Progress Steps -->
+<div class="gradient-bg py-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Breadcrumb -->
-        <nav class="flex items-center space-x-2 text-slate-600 mb-8">
-            <a href="/" class="hover:text-blue-600 transition-colors text-sm">
-                <i class="fas fa-home mr-1"></i>Trang chủ
-            </a>
-            <i class="fas fa-chevron-right text-xs text-slate-400"></i>
-            <a href="/phong" class="hover:text-blue-600 transition-colors text-sm">Phòng</a>
-            <i class="fas fa-chevron-right text-xs text-slate-400"></i>
-            <?php if ($phong): ?>
-                <a href="/phong/<?= $phong->ma_phong ?>" class="hover:text-blue-600 transition-colors text-sm">
-                    <?= htmlspecialchars($phong->ten_phong) ?>
-                </a>
-                <i class="fas fa-chevron-right text-xs text-slate-400"></i>
-            <?php endif; ?>
-            <span class="text-slate-800 font-medium text-sm">Đặt phòng</span>
-        </nav>
 
         <!-- Progress Steps -->
-        <div class="flex items-center justify-center space-x-8 mb-8">
-            <div class="flex items-center">
-                <div class="step-indicator completed w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm">
-                    <i class="fas fa-check"></i>
-                </div>
-                <span class="ml-3 text-sm font-medium text-slate-700">Chọn phòng</span>
+        <div class="flex items-center justify-center mb-12">
+            <div class="progress-step active">
+                <i class="fas fa-user text-lg"></i>
             </div>
-            <div class="w-16 h-0.5 bg-slate-300"></div>
-            <div class="flex items-center">
-                <div class="step-indicator active w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm">
-                    2
-                </div>
-                <span class="ml-3 text-sm font-medium text-slate-700">Thông tin đặt phòng</span>
+            <div class="progress-line active"></div>
+            <div class="progress-step">
+                <i class="fas fa-bed text-lg"></i>
             </div>
-            <div class="w-16 h-0.5 bg-slate-300"></div>
-            <div class="flex items-center">
-                <div class="step-indicator w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm">
-                    3
-                </div>
-                <span class="ml-3 text-sm font-medium text-slate-400">Xác nhận</span>
+            <div class="progress-line"></div>
+            <div class="progress-step">
+                <i class="fas fa-concierge-bell text-lg"></i>
+            </div>
+            <div class="progress-line"></div>
+            <div class="progress-step">
+                <i class="fas fa-credit-card text-lg"></i>
             </div>
         </div>
 
         <!-- Page Title -->
         <div class="text-center">
-            <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
-                Hoàn tất đặt phòng
+            <h1 class="text-5xl md:text-6xl font-bold text-white mb-6">
+                Đặt phòng tại Ocean Pearl
             </h1>
-            <p class="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
-                Điền thông tin để hoàn tất việc đặt phòng tại Ocean Pearl Hotel
+            <p class="text-xl text-white/90 max-w-3xl mx-auto leading-relaxed">
+                Trải nghiệm dịch vụ đẳng cấp với quy trình đặt phòng đơn giản và nhanh chóng
             </p>
         </div>
     </div>
 </div>
 
 <!-- Main Content -->
-<div class="py-16">
+<div class="py-20 bg-gradient-to-br from-slate-50 to-blue-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Flash Messages -->
         <?php if (flash_get('success')): ?>
-            <div class="bg-green-50 border border-green-200 text-green-700 px-6 py-4 rounded-xl mb-8 flex items-center">
-                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+            <div class="glass-effect border-green-200 text-green-800 px-6 py-4 rounded-xl mb-8 flex items-center">
+                <i class="fas fa-check-circle text-green-600 mr-3 text-lg"></i>
                 <div><?= flash_get('success') ?></div>
             </div>
         <?php endif; ?>
 
         <?php if (flash_get('error')): ?>
-            <div class="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl mb-8 flex items-center">
-                <i class="fas fa-exclamation-circle text-red-500 mr-3"></i>
+            <div class="glass-effect border-red-200 text-red-800 px-6 py-4 rounded-xl mb-8 flex items-center">
+                <i class="fas fa-exclamation-circle text-red-600 mr-3 text-lg"></i>
                 <div><?= flash_get('error') ?></div>
             </div>
         <?php endif; ?>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Booking Form -->
-            <div class="lg:col-span-2">
-                <div class="booking-card rounded-3xl overflow-hidden">
-                    <!-- Form Header -->
-                    <div class="bg-gradient-to-r from-blue-50 to-cyan-50 px-8 py-6">
-                        <h2 class="text-2xl font-bold text-slate-800 flex items-center">
-                            <i class="fas fa-edit text-blue-500 mr-3"></i>
-                            Thông tin đặt phòng
-                        </h2>
-                        <p class="text-slate-600 mt-2">Vui lòng điền đầy đủ thông tin để hoàn tất đặt phòng</p>
+            <!-- Main Form -->
+            <div class="lg:col-span-2 space-y-8">
+                <form method="POST" action="/booking/process" id="bookingForm" class="space-y-8">
+                    <!-- Customer Information -->
+                    <div class="section-card p-8">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-6 flex items-center">
+                            <i class="fas fa-user icon-gradient mr-3 text-xl"></i>
+                            Thông tin khách hàng
+                        </h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="ho_ten" class="block text-sm font-semibold text-slate-700 mb-3">
+                                    Họ và tên <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="ho_ten" name="ho_ten" required
+                                    class="form-input w-full px-4 py-3" placeholder="Nhập họ và tên"
+                                    value="<?= htmlspecialchars(old('ho_ten') ?? '') ?>">
+                            </div>
+
+                            <div>
+                                <label for="so_dien_thoai" class="block text-sm font-semibold text-slate-700 mb-3">
+                                    Số điện thoại <span class="text-red-500">*</span>
+                                </label>
+                                <input type="tel" id="so_dien_thoai" name="so_dien_thoai" required
+                                    class="form-input w-full px-4 py-3" placeholder="Nhập số điện thoại"
+                                    value="<?= htmlspecialchars(old('so_dien_thoai') ?? '') ?>">
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label for="email" class="block text-sm font-semibold text-slate-700 mb-3">
+                                    Email <span class="text-red-500">*</span>
+                                </label>
+                                <input type="email" id="email" name="email" required class="form-input w-full px-4 py-3"
+                                    placeholder="Nhập địa chỉ email"
+                                    value="<?= htmlspecialchars(old('email') ?? '') ?>">
+                            </div>
+                        </div>
                     </div>
 
-                    <form method="POST" action="/booking/process" class="p-8 space-y-8" id="bookingForm">
-                        <?php if ($phong): ?>
-                            <input type="hidden" name="phong_id" value="<?= $phong->ma_phong ?>">
-                        <?php endif; ?>
-                        
-                        <!-- Customer Information -->
-                        <div class="space-y-6">
-                            <h3 class="text-lg font-semibold text-slate-800 flex items-center border-b border-slate-200 pb-3">
-                                <i class="fas fa-user text-blue-500 mr-2"></i>
-                                Thông tin khách hàng
+                    <!-- Room Selection -->
+                    <div class="section-card p-8">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-slate-800 flex items-center">
+                                <i class="fas fa-bed icon-gradient mr-3 text-xl"></i>
+                                Chọn phòng
                             </h3>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label for="ho_ten" class="block text-sm font-semibold text-slate-700 mb-3">
-                                        Họ và tên <span class="text-red-500">*</span>
-                                    </label>
-                                    <input type="text" 
-                                           id="ho_ten" 
-                                           name="ho_ten" 
-                                           required
-                                           class="form-input w-full px-4 py-3"
-                                           placeholder="Nhập họ và tên"
-                                           value="<?= htmlspecialchars(old('ho_ten') ?? '') ?>">
-                                </div>
-
-                                <div>
-                                    <label for="so_dien_thoai" class="block text-sm font-semibold text-slate-700 mb-3">
-                                        Số điện thoại <span class="text-red-500">*</span>
-                                    </label>
-                                    <input type="tel" 
-                                           id="so_dien_thoai" 
-                                           name="so_dien_thoai" 
-                                           required
-                                           class="form-input w-full px-4 py-3"
-                                           placeholder="Nhập số điện thoại"
-                                           value="<?= htmlspecialchars(old('so_dien_thoai') ?? '') ?>">
-                                </div>
-
-                                <div class="md:col-span-2">
-                                    <label for="email" class="block text-sm font-semibold text-slate-700 mb-3">
-                                        Email <span class="text-red-500">*</span>
-                                    </label>
-                                    <input type="email" 
-                                           id="email" 
-                                           name="email" 
-                                           required
-                                           class="form-input w-full px-4 py-3"
-                                           placeholder="Nhập địa chỉ email"
-                                           value="<?= htmlspecialchars(old('email') ?? '') ?>">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Booking Details -->
-                        <div class="space-y-6">
-                            <h3 class="text-lg font-semibold text-slate-800 flex items-center border-b border-slate-200 pb-3">
-                                <i class="fas fa-calendar-alt text-blue-500 mr-2"></i>
-                                Chi tiết đặt phòng
-                            </h3>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label for="ngay_nhan_phong" class="block text-sm font-semibold text-slate-700 mb-3">
-                                        <i class="fas fa-calendar-plus mr-2 text-blue-500"></i>
-                                        Thời gian nhận phòng <span class="text-red-500">*</span>
-                                    </label>
-                                    <input type="datetime-local" 
-                                           id="ngay_nhan_phong" 
-                                           name="ngay_nhan_phong" 
-                                           required
-                                           class="form-input w-full px-4 py-3"
-                                           min="<?= date('Y-m-d\TH:i') ?>"
-                                           value="<?= htmlspecialchars(old('ngay_nhan_phong') ?? ($bookingData['ngay_nhan_phong'] ?? '')) ?>">
-                                </div>
-
-                                <div>
-                                    <label for="ngay_tra_phong" class="block text-sm font-semibold text-slate-700 mb-3">
-                                        <i class="fas fa-calendar-minus mr-2 text-blue-500"></i>
-                                        Thời gian trả phòng <span class="text-red-500">*</span>
-                                    </label>
-                                    <input type="datetime-local" 
-                                           id="ngay_tra_phong" 
-                                           name="ngay_tra_phong" 
-                                           required
-                                           class="form-input w-full px-4 py-3"
-                                           value="<?= htmlspecialchars(old('ngay_tra_phong') ?? ($bookingData['ngay_tra_phong'] ?? '')) ?>">
-                                </div>
-
-                                <div>
-                                    <label for="so_nguoi" class="block text-sm font-semibold text-slate-700 mb-3">
-                                        <i class="fas fa-users mr-2 text-blue-500"></i>
-                                        Số khách <span class="text-red-500">*</span>
-                                    </label>
-                                    <select id="so_nguoi" 
-                                            name="so_nguoi" 
-                                            required
-                                            class="form-input w-full px-4 py-3">
-                                        <?php 
-                                        $maxGuests = $phong ? ($phong->suc_chua ?? 4) : 4;
-                                        $selectedGuests = old('so_nguoi') ?? ($bookingData['so_nguoi'] ?? 1);
-                                        for ($i = 1; $i <= $maxGuests; $i++): 
-                                        ?>
-                                            <option value="<?= $i ?>" <?= $i == $selectedGuests ? 'selected' : '' ?>>
-                                                <?= $i ?> khách
-                                            </option>
-                                        <?php endfor; ?>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label for="ma_phong" class="block text-sm font-semibold text-slate-700 mb-3">
-                                        <i class="fas fa-bed mr-2 text-blue-500"></i>
-                                        Chọn phòng <span class="text-red-500">*</span>
-                                    </label>
-                                    <select id="ma_phong" 
-                                            name="ma_phong" 
-                                            required
-                                            class="form-input w-full px-4 py-3">
-                                        <?php if ($phong): ?>
-                                            <option value="<?= $phong->ma_phong ?>" selected>
-                                                <?= htmlspecialchars($phong->ten_phong) ?> - <?= number_format($phong->gia) ?>₫/giờ
-                                            </option>
-                                        <?php else: ?>
-                                            <option value="">Chọn phòng</option>
-                                            <?php if (isset($phongs) && $phongs): ?>
-                                                <?php foreach ($phongs as $room): ?>
-                                                    <option value="<?= $room->ma_phong ?>" <?= old('ma_phong') == $room->ma_phong ? 'selected' : '' ?>>
-                                                        <?= htmlspecialchars($room->ten_phong) ?> - <?= number_format($room->gia) ?>₫/giờ
-                                                    </option>
-                                                <?php endforeach; ?>
-                                            <?php endif; ?>
-                                        <?php endif; ?>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Special Requests -->
-                        <div class="space-y-6">
-                            <h3 class="text-lg font-semibold text-slate-800 flex items-center border-b border-slate-200 pb-3">
-                                <i class="fas fa-comment-alt text-blue-500 mr-2"></i>
-                                Yêu cầu đặc biệt
-                            </h3>
-                            
-                            <div>
-                                <label for="ghi_chu" class="block text-sm font-semibold text-slate-700 mb-3">
-                                    Ghi chú (không bắt buộc)
-                                </label>
-                                <textarea id="ghi_chu" 
-                                          name="ghi_chu" 
-                                          rows="4"
-                                          class="form-input w-full px-4 py-3"
-                                          placeholder="Nhập yêu cầu đặc biệt của bạn (giường đôi, tầng cao, view biển...)"><?= htmlspecialchars(old('ghi_chu') ?? '') ?></textarea>
-                            </div>
-                        </div>
-
-                        <!-- Terms and Submit -->
-                        <div class="space-y-6">
-                            <div class="flex items-start">
-                                <input type="checkbox" 
-                                       id="agree_terms" 
-                                       name="agree_terms" 
-                                       required
-                                       class="mt-1 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
-                                <label for="agree_terms" class="ml-3 text-sm text-slate-600">
-                                    Tôi đồng ý với <a href="/terms" class="text-blue-600 hover:underline">điều khoản và điều kiện</a> 
-                                    của Ocean Pearl Hotel <span class="text-red-500">*</span>
-                                </label>
-                            </div>
-
-                            <button type="submit" 
-                                    class="btn-primary w-full text-white py-4 rounded-xl font-semibold text-lg transition-all transform hover:scale-105">
-                                <i class="fas fa-credit-card mr-2"></i>
-                                Xác nhận đặt phòng
+                            <button type="button" onclick="addRoom()"
+                                class="btn-secondary text-white px-6 py-3 rounded-xl font-semibold">
+                                <i class="fas fa-plus mr-2"></i>Thêm phòng
                             </button>
                         </div>
-                    </form>
-                </div>
-            </div>
 
-            <!-- Booking Summary -->
-            <div class="lg:col-span-1">
-                <div class="booking-card rounded-3xl p-8 sticky top-8">
-                    <h3 class="text-xl font-bold text-slate-800 mb-6">
-                        <i class="fas fa-receipt text-blue-500 mr-2"></i>
-                        Tóm tắt đặt phòng
-                    </h3>
+                        <div id="roomsContainer">
+                            <div class="room-item p-6 mb-6" data-room-index="0">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h4 class="text-lg font-semibold text-slate-800">Phòng 1</h4>
+                                    <button type="button" onclick="removeRoom(this)"
+                                        class="text-red-500 hover:text-red-700 text-lg">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
 
-                    <?php if ($phong): ?>
-                        <!-- Room Info -->
-                        <div class="room-summary p-6 mb-6">
-                            <div class="flex items-start space-x-4">
-                                <img src="<?= htmlspecialchars($phong->hinh_anh ?? '/assets/images/default-room.jpg') ?>" 
-                                     alt="<?= htmlspecialchars($phong->ten_phong) ?>"
-                                     class="w-20 h-20 object-cover rounded-xl">
-                                <div class="flex-1">
-                                    <h4 class="font-semibold text-slate-800 mb-1">
-                                        <?= htmlspecialchars($phong->ten_phong) ?>
-                                    </h4>
-                                    <p class="text-sm text-slate-600 mb-2">
-                                        <?= htmlspecialchars($phong->loai_phong ?? 'Standard Room') ?>
-                                    </p>
-                                    <div class="text-lg font-bold text-blue-600">
-                                        <?= number_format($phong->gia) ?>₫/giờ
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                                    <div>
+                                        <label class="block text-sm font-semibold text-slate-700 mb-3">
+                                            Chọn phòng <span class="text-red-500">*</span>
+                                        </label>
+                                        <select name="phongs[0][ma_phong]" required onchange="updateRoomPrice(this)"
+                                            class="form-input w-full px-4 py-3">
+                                            <option value="">-- Chọn phòng --</option>
+                                            <?php if ($phong): ?>
+                                                <option value="<?= $phong->ma_phong ?>" data-price="<?= $phong->gia ?>"
+                                                    selected>
+                                                    <?= htmlspecialchars($phong->ten_phong) ?> -
+                                                    <?= number_format($phong->gia) ?>₫/giờ
+                                                </option>
+                                            <?php endif; ?>
+                                            <?php if (isset($phongs) && $phongs): ?>
+                                                <?php foreach ($phongs as $room): ?>
+                                                    <?php if (!$phong || $room->ma_phong != $phong->ma_phong): ?>
+                                                        <option value="<?= $room->ma_phong ?>" data-price="<?= $room->gia ?>">
+                                                            <?= htmlspecialchars($room->ten_phong) ?> -
+                                                            <?= number_format($room->gia) ?>₫/giờ
+                                                        </option>
+                                                    <?php endif; ?>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-semibold text-slate-700 mb-3">
+                                            Check-in <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="datetime-local" name="phongs[0][check_in]" required
+                                            onchange="calculateTotal()" min="<?= date('Y-m-d\TH:i') ?>"
+                                            value="<?= htmlspecialchars($bookingData['ngay_nhan_phong'] ?? '') ?>"
+                                            class="form-input w-full px-4 py-3">
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-semibold text-slate-700 mb-3">
+                                            Check-out <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="datetime-local" name="phongs[0][check_out]" required
+                                            onchange="calculateTotal()"
+                                            value="<?= htmlspecialchars($bookingData['ngay_tra_phong'] ?? '') ?>"
+                                            class="form-input w-full px-4 py-3">
+                                    </div>
+                                </div>
+
+                                <!-- Services for this room -->
+                                <div class="border-t border-slate-200 pt-6">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <h5 class="text-lg font-semibold text-slate-800">Dịch vụ cho phòng này</h5>
+                                        <button type="button" onclick="addRoomService(this)"
+                                            class="btn-primary text-white px-4 py-2 rounded-lg text-sm">
+                                            <i class="fas fa-plus mr-2"></i>Thêm dịch vụ
+                                        </button>
+                                    </div>
+                                    <div class="room-services-container">
+                                        <!-- Room services will be added here -->
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    <?php endif; ?>
+                    </div>
 
-                    <!-- Price Breakdown -->
+                    <!-- General Services -->
+                    <div class="section-card p-8">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-slate-800 flex items-center">
+                                <i class="fas fa-concierge-bell icon-gradient mr-3 text-xl"></i>
+                                Dịch vụ chung
+                            </h3>
+                            <button type="button" onclick="addGeneralService()"
+                                class="btn-primary text-white px-6 py-3 rounded-xl font-semibold">
+                                <i class="fas fa-plus mr-2"></i>Thêm dịch vụ
+                            </button>
+                        </div>
+
+                        <div id="generalServicesContainer">
+                            <p class="text-slate-600 text-center py-8">Chưa có dịch vụ chung nào được chọn</p>
+                        </div>
+                    </div>
+
+                    <!-- Special Requests -->
+                    <div class="section-card p-8">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-6 flex items-center">
+                            <i class="fas fa-comment-alt icon-gradient mr-3 text-xl"></i>
+                            Yêu cầu đặc biệt
+                        </h3>
+
+                        <textarea id="ghi_chu" name="ghi_chu" rows="4" class="form-input w-full px-4 py-3"
+                            placeholder="Nhập các yêu cầu đặc biệt (nếu có)..."><?= htmlspecialchars(old('ghi_chu') ?? '') ?></textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="text-center">
+                        <button type="submit"
+                            class="btn-primary text-white px-12 py-4 rounded-xl text-lg font-semibold">
+                            <i class="fas fa-credit-card mr-3"></i>
+                            Xác nhận đặt phòng
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Summary Sidebar -->
+            <div class="lg:col-span-1">
+                <div class="total-card p-8">
+                    <h3 class="text-2xl font-bold mb-6 flex items-center text-slate-800">
+                        <i class="fas fa-calculator mr-3"></i>
+                        Tổng kết đặt phòng
+                    </h3>
+
                     <div class="space-y-4">
-                        <h4 class="font-semibold text-slate-800">Chi tiết giá</h4>
-                        
-                        <div class="space-y-3 text-sm">
-                            <div class="flex justify-between">
-                                <span class="text-slate-600">Giá phòng/giờ:</span>
-                                <span class="font-semibold" id="room-rate">
-                                    <?= $phong ? number_format($phong->gia) . '₫' : '0₫' ?>
-                                </span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-slate-600">Thời gian thuê:</span>
-                                <span class="font-semibold" id="rental-duration">-</span>
-                            </div>
-                            <div class="border-t border-slate-200 pt-3">
-                                <div class="flex justify-between items-center">
-                                    <span class="text-lg font-bold text-slate-800">Tổng tiền:</span>
-                                    <span class="text-xl font-bold text-blue-600" id="total-amount">0₫</span>
-                                </div>
-                            </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-600">Tiền phòng:</span>
+                            <span class="font-bold text-xl text-slate-800" id="roomTotal">0₫</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-600">Tiền dịch vụ:</span>
+                            <span class="font-bold text-xl text-slate-800" id="serviceTotal">0₫</span>
+                        </div>
+                        <hr class="border-slate-200 my-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-slate-800">Tổng cộng:</span>
+                            <span class="text-3xl font-bold text-blue-600" id="grandTotal">0₫</span>
                         </div>
                     </div>
 
-                    <!-- Security Info -->
-                    <div class="bg-green-50 border border-green-200 rounded-xl p-4 mt-6">
-                        <div class="flex items-start">
-                            <i class="fas fa-shield-check text-green-500 mt-1 mr-3"></i>
-                            <div>
-                                <h5 class="font-semibold text-green-800 mb-1">Đặt phòng an toàn</h5>
-                                <p class="text-sm text-green-700">
-                                    • Miễn phí hủy phòng trong 24h<br>
-                                    • Thanh toán bảo mật 100%<br>
-                                    • Hỗ trợ khách hàng 24/7
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Contact Info -->
-                    <div class="mt-6 pt-6 border-t border-slate-200">
-                        <h4 class="font-semibold text-slate-800 mb-4">
-                            <i class="fas fa-headset text-blue-500 mr-2"></i>
-                            Cần hỗ trợ?
+                    <div class="mt-8 p-6 bg-slate-50 border border-slate-200 rounded-xl">
+                        <h4 class="font-semibold mb-3 flex items-center text-slate-800">
+                            <i class="fas fa-shield-alt mr-2"></i>
+                            Cam kết của chúng tôi
                         </h4>
-                        <div class="space-y-2 text-sm">
-                            <div class="flex items-center text-slate-600">
-                                <i class="fas fa-phone text-blue-500 mr-3 w-4"></i>
-                                <span>Hotline: +84 123 456 789</span>
-                            </div>
-                            <div class="flex items-center text-slate-600">
-                                <i class="fas fa-envelope text-blue-500 mr-3 w-4"></i>
-                                <span>booking@oceanpearl.com</span>
-                            </div>
-                        </div>
+                        <ul class="space-y-2 text-sm text-slate-600">
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                Miễn phí hủy phòng trong 24h
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                Thanh toán bảo mật 100%
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                Hỗ trợ 24/7
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -436,132 +449,405 @@ ob_start();
     </div>
 </div>
 
-<!-- JavaScript -->
+<?php if (isset($_GET['debug'])): ?>
+    <div style="background: #000; color: #0f0; padding: 20px; font-family: monospace; white-space: pre;">
+        === DEBUG INFO ===
+
+        Rooms data:
+        <?= print_r($phongs ?? [], true) ?>
+
+        Services data:
+        <?= print_r($dichVus ?? [], true) ?>
+
+        Rooms Array for JS:
+        <?= print_r($phongsArray ?? [], true) ?>
+
+        Services Array for JS:
+        <?= print_r($dichVusArray ?? [], true) ?>
+
+        JSON Rooms:
+        <?= json_encode($phongsArray ?? [], JSON_PRETTY_PRINT) ?>
+
+        JSON Services:
+        <?= json_encode($dichVusArray ?? [], JSON_PRETTY_PRINT) ?>
+    </div>
+<?php endif; ?>
+
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const checkinInput = document.getElementById('ngay_nhan_phong');
-    const checkoutInput = document.getElementById('ngay_tra_phong');
-    const roomSelect = document.getElementById('ma_phong');
-    const roomRateEl = document.getElementById('room-rate');
-    const rentalDurationEl = document.getElementById('rental-duration');
-    const totalAmountEl = document.getElementById('total-amount');
-    
-    // Set minimum time to current time
-    const now = new Date();
-    const currentDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-    checkinInput.min = currentDateTime;
-    
-    // Room rates (this should come from server)
-    const roomRates = {
-        <?php 
-        $roomRateEntries = [];
-        if (isset($phongs) && $phongs): 
-            foreach ($phongs as $room):
-                $roomRateEntries[] = "'{$room->ma_phong}': {$room->gia}";
-            endforeach; 
-        endif;
-        if ($phong):
-            $roomRateEntries[] = "'{$phong->ma_phong}': {$phong->gia}";
-        endif;
-        echo implode(',', $roomRateEntries);
-        ?>
-    };
-    
-    function formatCurrency(amount) {
-        return new Intl.NumberFormat('vi-VN').format(amount) + '₫';
+    let roomIndex = 1;
+    let generalServiceIndex = 0;
+
+    // Data from server
+    const phongs = <?= json_encode($phongsArray ?? [], JSON_NUMERIC_CHECK) ?>;
+    const dichVus = <?= json_encode($dichVusArray ?? [], JSON_NUMERIC_CHECK) ?>;
+
+    console.log('Phongs data:', phongs);
+    console.log('DichVus data:', dichVus);
+
+    // Generate room options HTML
+    function generateRoomOptions() {
+        let options = '<option value="">-- Chọn phòng --</option>';
+        phongs.forEach(room => {
+            const price = parseFloat(room.gia) || 0;
+            options += `<option value="${room.ma_phong}" data-price="${price}">
+                        ${room.ten_phong} - ${formatCurrency(price)}/giờ
+                    </option>`;
+        });
+        return options;
     }
-    
-    function calculatePrice() {
-        const checkin = new Date(checkinInput.value);
-        const checkout = new Date(checkoutInput.value);
-        const selectedRoom = roomSelect.value;
-        
-        if (checkinInput.value && checkoutInput.value && checkout > checkin && selectedRoom) {
-            const diffMs = checkout - checkin;
-            const hours = Math.ceil(diffMs / (1000 * 60 * 60));
-            const minHours = Math.max(hours, 2); // Minimum 2 hours
+
+    // Generate service options HTML
+    function generateServiceOptions() {
+        let options = '<option value="">-- Chọn dịch vụ --</option>';
+        dichVus.forEach(service => {
+            const price = parseFloat(service.gia) || 0;
+            options += `<option value="${service.ma_dich_vu}" data-price="${price}">
+                        ${service.ten_dich_vu} - ${formatCurrency(price)}
+                    </option>`;
+        });
+        return options;
+    }
+
+    // Add new room
+    function addRoom() {
+        const container = document.getElementById('roomsContainer');
+        const minDateTime = new Date().toISOString().slice(0, 16);
+        const roomHtml = `
+        <div class="room-item p-6 mb-6" data-room-index="${roomIndex}">
+            <div class="flex justify-between items-center mb-6">
+                <h4 class="text-lg font-semibold text-slate-800">Phòng ${roomIndex + 1}</h4>
+                <button type="button" onclick="removeRoom(this)" class="text-red-500 hover:text-red-700 text-lg">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
             
-            const rate = roomRates[selectedRoom] || 0;
-            roomRateEl.textContent = formatCurrency(rate);
-            rentalDurationEl.textContent = minHours + ' giờ';
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-3">
+                        Chọn phòng <span class="text-red-500">*</span>
+                    </label>
+                    <select name="phongs[${roomIndex}][ma_phong]" required onchange="updateRoomPrice(this)"
+                            class="form-input w-full px-4 py-3">
+                        ${generateRoomOptions()}
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-3">
+                        Check-in <span class="text-red-500">*</span>
+                    </label>
+                    <input type="datetime-local" 
+                           name="phongs[${roomIndex}][check_in]" 
+                           required
+                           onchange="calculateTotal()"
+                           min="${minDateTime}"
+                           class="form-input w-full px-4 py-3">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-3">
+                        Check-out <span class="text-red-500">*</span>
+                    </label>
+                    <input type="datetime-local" 
+                           name="phongs[${roomIndex}][check_out]" 
+                           required
+                           onchange="calculateTotal()"
+                           class="form-input w-full px-4 py-3">
+                </div>
+            </div>
             
-            const total = minHours * rate;
-            totalAmountEl.textContent = formatCurrency(total);
-            
-            return true;
+            <div class="border-t border-slate-200 pt-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h5 class="text-lg font-semibold text-slate-800">Dịch vụ cho phòng này</h5>
+                    <button type="button" onclick="addRoomService(this)" class="btn-primary text-white px-4 py-2 rounded-lg text-sm">
+                        <i class="fas fa-plus mr-2"></i>Thêm dịch vụ
+                    </button>
+                </div>
+                <div class="room-services-container">
+                    <!-- Room services will be added here -->
+                </div>
+            </div>
+        </div>
+    `;
+        container.insertAdjacentHTML('beforeend', roomHtml);
+        roomIndex++;
+        updateProgressSteps();
+    }
+
+    // Remove room
+    function removeRoom(button) {
+        const roomItem = button.closest('.room-item');
+        const container = document.getElementById('roomsContainer');
+
+        if (container.children.length > 1) {
+            roomItem.style.animation = 'slideInUp 0.3s ease-out reverse';
+            setTimeout(() => {
+                roomItem.remove();
+                updateRoomNumbers();
+                calculateTotal();
+            }, 300);
         } else {
-            rentalDurationEl.textContent = '-';
-            totalAmountEl.textContent = '0₫';
-            return false;
+            alert('Phải có ít nhất một phòng!');
         }
     }
-    
-    // Update minimum checkout time when checkin changes
-    checkinInput.addEventListener('change', function() {
-        if (this.value) {
-            const minCheckout = new Date(this.value);
-            minCheckout.setHours(minCheckout.getHours() + 2);
-            const minCheckoutStr = new Date(minCheckout.getTime() - minCheckout.getTimezoneOffset() * 60000)
-                                   .toISOString().slice(0, 16);
-            checkoutInput.min = minCheckoutStr;
-            
-            // Auto-set checkout if not set
-            if (!checkoutInput.value) {
-                checkoutInput.value = minCheckoutStr;
+
+    // Update room numbers after removal
+    function updateRoomNumbers() {
+        const rooms = document.querySelectorAll('.room-item');
+        rooms.forEach((room, index) => {
+            const title = room.querySelector('h4');
+            title.textContent = `Phòng ${index + 1}`;
+            room.setAttribute('data-room-index', index);
+
+            // Update input names
+            const inputs = room.querySelectorAll('select, input');
+            inputs.forEach(input => {
+                if (input.name && input.name.includes('phongs[')) {
+                    const newName = input.name.replace(/phongs\[\d+\]/, `phongs[${index}]`);
+                    input.name = newName;
+                }
+            });
+        });
+    }
+
+    // Add room service
+    function addRoomService(button) {
+        const roomItem = button.closest('.room-item');
+        const roomIndex = roomItem.getAttribute('data-room-index');
+        const container = roomItem.querySelector('.room-services-container');
+        const serviceIndex = container.children.length;
+
+        const serviceHtml = `
+        <div class="service-item p-4 mb-4 border border-slate-200 rounded-lg">
+            <div class="flex justify-between items-center mb-4">
+                <h6 class="font-medium text-slate-700">Dịch vụ ${serviceIndex + 1}</h6>
+                <button type="button" onclick="removeService(this)" class="text-red-500 hover:text-red-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Dịch vụ</label>
+                    <select name="phongs[${roomIndex}][dich_vu][${serviceIndex}][ma_dich_vu]" onchange="updateServicePrice(this)"
+                            class="form-input w-full px-3 py-2">
+                        ${generateServiceOptions()}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Số lượng</label>
+                    <input type="number" name="phongs[${roomIndex}][dich_vu][${serviceIndex}][so_luong]" 
+                           value="1" min="1" onchange="calculateTotal()"
+                           class="form-input w-full px-3 py-2">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Thành tiền</label>
+                    <input type="text" readonly class="form-input w-full px-3 py-2 bg-slate-100 service-subtotal"
+                           value="0₫">
+                </div>
+            </div>
+        </div>
+    `;
+        container.insertAdjacentHTML('beforeend', serviceHtml);
+    }
+
+    // Add general service
+    function addGeneralService() {
+        const container = document.getElementById('generalServicesContainer');
+
+        // Remove empty message if exists
+        const emptyMessage = container.querySelector('p');
+        if (emptyMessage) {
+            emptyMessage.remove();
+        }
+
+        const serviceHtml = `
+        <div class="service-item p-6 mb-6 border border-slate-200 rounded-lg">
+            <div class="flex justify-between items-center mb-4">
+                <h5 class="text-lg font-semibold text-slate-800">Dịch vụ chung ${generalServiceIndex + 1}</h5>
+                <button type="button" onclick="removeService(this)" class="text-red-500 hover:text-red-700 text-lg">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-3">Dịch vụ</label>
+                    <select name="dich_vu_chung[${generalServiceIndex}][ma_dich_vu]" onchange="updateServicePrice(this)"
+                            class="form-input w-full px-4 py-3">
+                        ${generateServiceOptions()}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-3">Số lượng</label>
+                    <input type="number" name="dich_vu_chung[${generalServiceIndex}][so_luong]" 
+                           value="1" min="1" onchange="calculateTotal()"
+                           class="form-input w-full px-4 py-3">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-3">Thành tiền</label>
+                    <input type="text" readonly class="form-input w-full px-4 py-3 bg-slate-100 service-subtotal"
+                           value="0₫">
+                </div>
+            </div>
+        </div>
+    `;
+        container.insertAdjacentHTML('beforeend', serviceHtml);
+        generalServiceIndex++;
+    }
+
+    // Remove service
+    function removeService(button) {
+        const serviceItem = button.closest('.service-item');
+        serviceItem.style.animation = 'slideInUp 0.3s ease-out reverse';
+        setTimeout(() => {
+            serviceItem.remove();
+            calculateTotal();
+
+            // Check if general services container is empty
+            const generalContainer = document.getElementById('generalServicesContainer');
+            if (generalContainer.children.length === 0) {
+                generalContainer.innerHTML = '<p class="text-slate-600 text-center py-8">Chưa có dịch vụ chung nào được chọn</p>';
             }
+        }, 300);
+    }
+
+    // Update room price when room selection changes
+    function updateRoomPrice(select) {
+        console.log('Room selection changed:', select.value);
+        calculateTotal();
+    }
+
+    // Update service price when service selection changes
+    function updateServicePrice(select) {
+        console.log('Service selection changed:', select.value);
+        const serviceItem = select.closest('.service-item');
+        const quantityInput = serviceItem.querySelector('input[name*="so_luong"]');
+        const subtotalInput = serviceItem.querySelector('.service-subtotal');
+
+        const priceAttr = select.selectedOptions[0]?.dataset.price;
+        const price = priceAttr ? parseFloat(priceAttr) : 0;
+        const quantity = parseInt(quantityInput.value) || 1;
+        const subtotal = isNaN(price) ? 0 : price * quantity;
+
+        console.log('Service price calculation:', { price, quantity, subtotal });
+
+        subtotalInput.value = formatCurrency(subtotal);
+        calculateTotal();
+    }
+
+    // Calculate total price
+    function calculateTotal() {
+        let roomTotal = 0;
+        let serviceTotal = 0;
+
+        // Calculate room costs
+        document.querySelectorAll('.room-item').forEach(room => {
+            const roomSelect = room.querySelector('select[name*="ma_phong"]');
+            const checkinInput = room.querySelector('input[name*="check_in"]');
+            const checkoutInput = room.querySelector('input[name*="check_out"]');
+
+            if (roomSelect && roomSelect.value && checkinInput && checkinInput.value && checkoutInput && checkoutInput.value) {
+                const priceAttr = roomSelect.selectedOptions[0]?.dataset.price;
+                const price = priceAttr ? parseFloat(priceAttr) : 0;
+
+                if (!isNaN(price) && price > 0) {
+                    const checkin = new Date(checkinInput.value);
+                    const checkout = new Date(checkoutInput.value);
+
+                    if (checkin && checkout && !isNaN(checkin.getTime()) && !isNaN(checkout.getTime())) {
+                        const timeDiff = checkout.getTime() - checkin.getTime();
+                        const hoursExact = Math.max(1, timeDiff / (1000 * 60 * 60)); // Giờ chính xác thập phân
+                        const hours = Math.max(1, Math.ceil(timeDiff / (1000 * 60 * 60))); // Giờ hiển thị
+
+                        if (!isNaN(hoursExact) && hoursExact > 0) {
+                            roomTotal += Math.round(price * hoursExact); // Tính theo giờ chính xác và làm tròn
+                        }
+                    }
+                }
+            }
+        });
+
+        // Calculate service costs
+        document.querySelectorAll('.service-item').forEach(service => {
+            const serviceSelect = service.querySelector('select[name*="ma_dich_vu"]');
+            const quantityInput = service.querySelector('input[name*="so_luong"]');
+
+            if (serviceSelect && serviceSelect.value) {
+                const priceAttr = serviceSelect.selectedOptions[0]?.dataset.price;
+                const price = priceAttr ? parseFloat(priceAttr) : 0;
+                const quantity = parseInt(quantityInput.value) || 1;
+
+                if (!isNaN(price) && price > 0 && !isNaN(quantity) && quantity > 0) {
+                    serviceTotal += price * quantity;
+                }
+            }
+        });
+
+        const grandTotal = roomTotal + serviceTotal;
+
+        // Update display with safe values
+        const roomTotalEl = document.getElementById('roomTotal');
+        const serviceTotalEl = document.getElementById('serviceTotal');
+        const grandTotalEl = document.getElementById('grandTotal');
+
+        if (roomTotalEl) roomTotalEl.textContent = formatCurrency(isNaN(roomTotal) ? 0 : roomTotal);
+        if (serviceTotalEl) serviceTotalEl.textContent = formatCurrency(isNaN(serviceTotal) ? 0 : serviceTotal);
+        if (grandTotalEl) {
+            grandTotalEl.textContent = formatCurrency(isNaN(grandTotal) ? 0 : grandTotal);
+
+            // Add calculating animation
+            grandTotalEl.classList.add('calculating');
+            setTimeout(() => {
+                grandTotalEl.classList.remove('calculating');
+            }, 1000);
         }
-        calculatePrice();
+    }
+
+    // Format currency - safer version
+    function formatCurrency(amount) {
+        if (isNaN(amount) || amount === null || amount === undefined) {
+            amount = 0;
+        }
+
+        try {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(Math.round(amount));
+        } catch (error) {
+            // Fallback formatting
+            return Math.round(amount).toLocaleString('vi-VN') + '₫';
+        }
+    }
+
+    // Update progress steps
+    function updateProgressSteps() {
+        const steps = document.querySelectorAll('.progress-step');
+        const lines = document.querySelectorAll('.progress-line');
+
+        // Simple progress animation
+        steps.forEach((step, index) => {
+            if (index <= 1) { // Customer info and rooms are active
+                step.classList.add('active');
+            }
+        });
+
+        lines.forEach((line, index) => {
+            if (index === 0) {
+                line.classList.add('active');
+            }
+        });
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function () {
+        calculateTotal();
+        updateProgressSteps();
     });
-    
-    checkoutInput.addEventListener('change', calculatePrice);
-    roomSelect.addEventListener('change', calculatePrice);
-    
-    // Initial calculation
-    calculatePrice();
-    
-    // Form validation
-    const form = document.getElementById('bookingForm');
-    form.addEventListener('submit', function(e) {
-        console.log('Form submission started');
-        console.log('calculatePrice result:', calculatePrice());
-        
-        if (!calculatePrice()) {
-            e.preventDefault();
-            alert('Vui lòng chọn thời gian nhận và trả phòng hợp lệ!');
-            return false;
-        }
-        
-        const checkin = new Date(checkinInput.value);
-        const checkout = new Date(checkoutInput.value);
-        const now = new Date();
-        
-        console.log('Validation - Checkin:', checkin, 'Checkout:', checkout, 'Now:', now);
-        
-        if (checkin < now) {
-            e.preventDefault();
-            alert('Thời gian nhận phòng phải sau thời điểm hiện tại!');
-            return false;
-        }
-        
-        if (checkout <= checkin) {
-            e.preventDefault();
-            alert('Thời gian trả phòng phải sau thời gian nhận phòng!');
-            return false;
-        }
-        
-        console.log('Form validation passed, submitting...');
-        
-        // Show loading
-        const submitBtn = form.querySelector('button[type="submit"]');
-        if (submitBtn) {
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Đang xử lý...';
-            submitBtn.disabled = true;
-        }
-    });
-});
 </script>
 
 <?php
 $content = ob_get_clean();
-include __DIR__ . '/../../layouts/app.php';
+include 'app/Views/layouts/app.php';
 ?>

@@ -89,7 +89,7 @@ class BookingController
             'so_nguoi' => get('so_nguoi', 1)
         ];
         
-        view('Client.Booking.checkout_new', [
+        view('Client.Booking.checkout', [
             'phong' => $phong,
             'loaiPhong' => $loaiPhong,
             'phongs' => $phongs,

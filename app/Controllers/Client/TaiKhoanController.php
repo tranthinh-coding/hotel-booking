@@ -94,8 +94,8 @@ class TaiKhoanController
             FROM danh_gia dg
             LEFT JOIN phong p ON dg.ma_phong = p.ma_phong
             LEFT JOIN loai_phong lp ON p.ma_loai_phong = lp.ma_loai_phong
-            WHERE dg.ma_tai_khoan = ?
-            ORDER BY dg.ngay_tao DESC
+            WHERE dg.ma_khach_hang = ?
+            ORDER BY dg.ngay_gui DESC
         ";
 
         $reviews = \HotelBooking\Facades\DB::query($sql, [$_SESSION['user_id']]);
@@ -148,12 +148,12 @@ class TaiKhoanController
 
             // Tạo đánh giá
             $result = DanhGia::create([
-                'ma_tai_khoan' => $_SESSION['user_id'],
+                'ma_khach_hang' => $_SESSION['user_id'],
                 'ma_phong' => $data['ma_phong'],
                 'ma_hoa_don' => $data['ma_hoa_don'],
-                'diem_so' => $data['diem_so'],
+                'diem_danh_gia' => $data['diem_so'],
                 'noi_dung' => $data['noi_dung'],
-                'ngay_tao' => date('Y-m-d H:i:s')
+                'ngay_gui' => date('Y-m-d H:i:s')
             ]);
 
             if ($result) {
@@ -208,14 +208,14 @@ class TaiKhoanController
             }
 
             // Kiểm tra quyền sở hữu
-            if ($review->ma_tai_khoan != $_SESSION['user_id']) {
+            if ($review->ma_khach_hang != $_SESSION['user_id']) {
                 flash_error('Bạn không có quyền sửa đánh giá này');
                 back();
                 return;
             }
 
             // Cập nhật đánh giá
-            $review->diem_so = $diemSo;
+            $review->diem_danh_gia = $diemSo;
             $review->noi_dung = $noiDung;
             $review->ngay_cap_nhat = date('Y-m-d H:i:s');
             $review->save();
@@ -251,7 +251,7 @@ class TaiKhoanController
             }
 
             // Kiểm tra quyền sở hữu
-            if ($review->ma_tai_khoan != $_SESSION['user_id']) {
+            if ($review->ma_khach_hang != $_SESSION['user_id']) {
                 flash_error('Bạn không có quyền xóa đánh giá này');
                 back();
                 return;
@@ -313,7 +313,7 @@ class TaiKhoanController
             $checkInResult = \HotelBooking\Facades\DB::query($sqlCheckIn, [$maHoaDon]);
             
             if ($checkInResult && count($checkInResult) > 0) {
-                $earliestCheckIn = $checkInResult[0]->earliest_checkin;
+                $earliestCheckIn = $checkInResult[0]->earliest_checkin ?? null;
                 
                 if ($earliestCheckIn) {
                     // Đảm bảo timezone đúng
