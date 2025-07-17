@@ -12,8 +12,8 @@ Route::post('/search-rooms', 'HotelBooking\Controllers\Client\HomeController', '
 
 // Trang thông tin
 Route::get('/about', 'HotelBooking\Controllers\Client\HomeController', 'about');
-Route::get('/contact', 'HotelBooking\Controllers\Client\HomeController', 'contact');
-Route::post('/contact', 'HotelBooking\Controllers\Client\HomeController', 'sendContact');
+Route::get('/contact', 'HotelBooking\Controllers\Client\ContactController', 'show');
+Route::post('/contact', 'HotelBooking\Controllers\Client\ContactController', 'submit');
 
 // ===== AUTHENTICATION ROUTES =====
 
