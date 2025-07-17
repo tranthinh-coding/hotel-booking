@@ -32,7 +32,7 @@ ob_start();
         </div>
 
         <!-- Booking List -->
-        <?php if (empty($bookings)): ?>
+        <?php if (isEmpty($bookings)): ?>
             <!-- Empty State -->
             <div class="bg-white rounded-xl shadow-lg p-8 text-center">
                 <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">

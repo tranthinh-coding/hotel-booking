@@ -94,7 +94,7 @@ if (!function_exists('back')) {
 if (!function_exists('isEmpty')) {
     /**
      * Custom empty function with better logic.
-     * This replaces PHP's empty() function with more robust checking.
+     * This replaces PHP's isEmpty() function with more robust checking.
      * 
      * @param mixed $value
      * @return bool
@@ -132,7 +132,7 @@ if (!function_exists('isEmpty')) {
         }
         
         // Default fallback to PHP's empty for other types
-        return empty($value);
+        return isEmpty($value);
     }
 }
 
@@ -573,7 +573,7 @@ if (!function_exists('validate_required')) {
      */
     function validate_required(string $field, $value, ?string $message = null): bool
     {
-        if (empty($value) && $value !== '0') {
+        if (isEmpty($value) && $value !== '0') {
             $message = $message ?: ucfirst($field) . ' là bắt buộc.';
             set_error($field, $message);
             return false;
@@ -771,7 +771,7 @@ if (!function_exists('deleteFile')) {
      */
     function deleteFile(string $fileName): bool
     {
-        if (empty($fileName)) {
+        if (isEmpty($fileName)) {
             return false;
         }
 

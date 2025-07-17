@@ -113,7 +113,7 @@ class HoaDonDichVu extends Model
      */
     public static function bulkInsertServices($services)
     {
-        if (empty($services)) return false;
+        if (isEmpty($services)) return false;
         
         $values = [];
         $params = [];

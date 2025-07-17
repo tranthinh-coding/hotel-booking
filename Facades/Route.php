@@ -31,7 +31,7 @@ class Route
         $uri = trim($uri, '/');
 
         // Build final path
-        if (empty($prefix)) {
+        if (isEmpty($prefix)) {
             $path = '/' . $uri;
         } else {
             $path = '/' . $prefix . '/' . $uri;

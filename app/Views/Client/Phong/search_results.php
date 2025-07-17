@@ -28,7 +28,7 @@ ob_start();
             </div>
         </div>
 
-        <?php if (empty($rooms)): ?>
+        <?php if (isEmpty($rooms)): ?>
             <!-- No Results -->
             <div class="bg-white rounded-2xl soft-shadow p-12 text-center">
                 <div class="w-24 h-24 bg-ocean-100 rounded-full flex items-center justify-center mx-auto mb-6">

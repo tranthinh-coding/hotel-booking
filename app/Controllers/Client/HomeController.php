@@ -71,7 +71,7 @@ class HomeController
         $noi_dung = post('noi_dung', '');
 
         // Basic validation
-        if (empty($ho_ten) || empty($email) || empty($noi_dung)) {
+        if (isEmpty($ho_ten) || isEmpty($email) || isEmpty($noi_dung)) {
             flash_error('Vui lòng nhập đầy đủ thông tin bắt buộc');
             set_old_input();
             back();

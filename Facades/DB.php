@@ -83,7 +83,7 @@ class DB
         $escaped = $conn->real_escape_string($value);
         self::close();
         
-        if (empty($this->wheres)) {
+        if (isEmpty($this->wheres)) {
             $this->wheres[] = "$column $operator '$escaped'";
         } else {
             // Lấy điều kiện cuối cùng và thêm OR

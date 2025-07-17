@@ -187,7 +187,7 @@ class TaiKhoanController
         $noiDung = post('noi_dung', '');
 
         // Validation
-        if (empty($maDanhGia) || empty($diemSo) || empty($noiDung)) {
+        if (isEmpty($maDanhGia) || isEmpty($diemSo) || isEmpty($noiDung)) {
             flash_error('Vui lòng điền đầy đủ thông tin');
             back();
             return;
@@ -350,11 +350,11 @@ class TaiKhoanController
     {
         $errors = [];
 
-        if (empty($data['ma_phong'])) {
+        if (isEmpty($data['ma_phong'])) {
             $errors[] = 'Thiếu thông tin phòng';
         }
 
-        if (empty($data['ma_hoa_don'])) {
+        if (isEmpty($data['ma_hoa_don'])) {
             $errors[] = 'Thiếu thông tin hóa đơn';
         }
 
@@ -362,7 +362,7 @@ class TaiKhoanController
             $errors[] = 'Điểm số phải từ 1 đến 5';
         }
 
-        if (empty($data['noi_dung'])) {
+        if (isEmpty($data['noi_dung'])) {
             $errors[] = 'Vui lòng nhập nội dung đánh giá';
         }
 

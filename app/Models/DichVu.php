@@ -29,7 +29,7 @@ class DichVu extends Model
      */
     public static function getServicesPricesByIds($serviceIds)
     {
-        if (empty($serviceIds)) {
+        if (isEmpty($serviceIds)) {
             return [];
         }
         
@@ -53,7 +53,7 @@ class DichVu extends Model
      */
     public static function getExistingServiceIds($serviceIds)
     {
-        if (empty($serviceIds)) {
+        if (isEmpty($serviceIds)) {
             return [];
         }
         

@@ -130,7 +130,7 @@ class HoaDonPhong extends Model
      */
     public static function checkMultipleRoomConflicts($roomBookings, $excludeInvoiceId = null)
     {
-        if (empty($roomBookings)) return [];
+        if (isEmpty($roomBookings)) return [];
         
         $conflicts = [];
         $placeholders = [];

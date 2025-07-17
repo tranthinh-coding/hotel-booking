@@ -38,7 +38,7 @@ class Phong extends Model
     public static function searchAvailable($checkin, $checkout, $guests = 1, $roomType = '')
     {
         // Validate input dates
-        if (empty($checkin) || empty($checkout)) {
+        if (isEmpty($checkin) || isEmpty($checkout)) {
             return static::all();
         }
 
@@ -131,7 +131,7 @@ class Phong extends Model
      */
     public static function getRoomsPricesByIds($roomIds)
     {
-        if (empty($roomIds)) return [];
+        if (isEmpty($roomIds)) return [];
         
         $placeholders = str_repeat('?,', count($roomIds) - 1) . '?';
         $sql = "
@@ -170,7 +170,7 @@ class Phong extends Model
      */
     public static function batchUpdateRoomStatus($roomStatusPairs)
     {
-        if (empty($roomStatusPairs)) return false;
+        if (isEmpty($roomStatusPairs)) return false;
         
         $cases = [];
         $roomIds = [];

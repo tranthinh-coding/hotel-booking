@@ -94,11 +94,11 @@ class AdminPhongController
         $maLoaiPhong = post('ma_loai_phong', null);
         $gia = post('gia', 0);
         
-        if (empty($tenPhong)) {
+        if (isEmpty($tenPhong)) {
             $errors[] = 'Tên phòng không được để trống';
         }
         
-        if (empty($maLoaiPhong)) {
+        if (isEmpty($maLoaiPhong)) {
             $errors[] = 'Vui lòng chọn loại phòng';
         } else {
             // Kiểm tra loại phòng có tồn tại không
@@ -276,7 +276,7 @@ class AdminPhongController
         }
 
         $trangThai = post('trang_thai');
-        if (empty($trangThai)) {
+        if (isEmpty($trangThai)) {
             redirect('/admin/phong?error=validation');
             return;
         }

@@ -34,7 +34,7 @@ class BookingController
         
         // Get room type info if room exists
         $loaiPhong = null;
-        if ($phong && !empty($phong->ma_loai_phong)) {
+        if ($phong && isNotEmpty($phong->ma_loai_phong)) {
             $loaiPhong = LoaiPhong::find($phong->ma_loai_phong);
         }
         
@@ -111,7 +111,7 @@ class BookingController
 
             // Xử lý từng phòng
             foreach ($phongs as $phongData) {
-                if (empty($phongData['ma_phong']) || empty($phongData['check_in']) || empty($phongData['check_out'])) {
+                if (isEmpty($phongData['ma_phong']) || isEmpty($phongData['check_in']) || isEmpty($phongData['check_out'])) {
                     continue;
                 }
 
@@ -153,7 +153,7 @@ class BookingController
                 // Xử lý dịch vụ theo phòng
                 if (isset($phongData['dich_vu']) && is_array($phongData['dich_vu'])) {
                     foreach ($phongData['dich_vu'] as $dichVuData) {
-                        if (empty($dichVuData['ma_dich_vu'])) continue;
+                        if (isEmpty($dichVuData['ma_dich_vu'])) continue;
 
                         $dichVu = DichVu::find($dichVuData['ma_dich_vu']);
                         if (!$dichVu) continue;
@@ -179,7 +179,7 @@ class BookingController
             // Xử lý dịch vụ chung
             if (is_array($dichVuChung)) {
                 foreach ($dichVuChung as $dichVuData) {
-                    if (empty($dichVuData['ma_dich_vu'])) continue;
+                    if (isEmpty($dichVuData['ma_dich_vu'])) continue;
 
                     $dichVu = DichVu::find($dichVuData['ma_dich_vu']);
                     if (!$dichVu) continue;
@@ -223,41 +223,41 @@ class BookingController
         $errors = [];
 
         // Validate customer data
-        if (empty($customerData['ho_ten'])) {
+        if (isEmpty($customerData['ho_ten'])) {
             $errors[] = 'Vui lòng nhập họ tên';
         }
 
-        if (empty($customerData['so_dien_thoai'])) {
+        if (isEmpty($customerData['so_dien_thoai'])) {
             $errors[] = 'Vui lòng nhập số điện thoại';
         } elseif (!preg_match('/^[0-9]{10,11}$/', $customerData['so_dien_thoai'])) {
             $errors[] = 'Số điện thoại không hợp lệ';
         }
 
-        if (empty($customerData['email'])) {
+        if (isEmpty($customerData['email'])) {
             $errors[] = 'Vui lòng nhập email';
         } elseif (!filter_var($customerData['email'], FILTER_VALIDATE_EMAIL)) {
             $errors[] = 'Email không hợp lệ';
         }
 
         // Validate rooms
-        if (empty($phongs) || !is_array($phongs)) {
+        if (isEmpty($phongs) || !is_array($phongs)) {
             $errors[] = 'Vui lòng chọn ít nhất một phòng';
         } else {
             foreach ($phongs as $index => $phong) {
-                if (empty($phong['ma_phong'])) {
+                if (isEmpty($phong['ma_phong'])) {
                     $errors[] = 'Vui lòng chọn phòng cho phòng thứ ' . ($index + 1);
                     continue;
                 }
 
-                if (empty($phong['check_in'])) {
+                if (isEmpty($phong['check_in'])) {
                     $errors[] = 'Vui lòng chọn thời gian check-in cho phòng thứ ' . ($index + 1);
                 }
 
-                if (empty($phong['check_out'])) {
+                if (isEmpty($phong['check_out'])) {
                     $errors[] = 'Vui lòng chọn thời gian check-out cho phòng thứ ' . ($index + 1);
                 }
 
-                if (!empty($phong['check_in']) && !empty($phong['check_out'])) {
+                if (isNotEmpty($phong['check_in']) && isNotEmpty($phong['check_out'])) {
                     $checkin = strtotime($phong['check_in']);
                     $checkout = strtotime($phong['check_out']);
 

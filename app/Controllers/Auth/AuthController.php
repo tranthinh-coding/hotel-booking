@@ -76,25 +76,25 @@ class AuthController
         // Validation
         $errors = [];
 
-        if (empty($data['ho_ten'])) {
+        if (isEmpty($data['ho_ten'])) {
             $errors[] = 'Họ tên không được để trống';
         }
 
-        if (empty($data['so_cccd'])) {
+        if (isEmpty($data['so_cccd'])) {
             $errors[] = 'Số CCCD không được để trống';
         }
 
-        if (empty($data['sdt'])) {
+        if (isEmpty($data['sdt'])) {
             $errors[] = 'Số điện thoại không được để trống';
         }
 
-        if (empty($data['mail'])) {
+        if (isEmpty($data['mail'])) {
             $errors[] = 'Email không được để trống';
         } elseif (!filter_var($data['mail'], FILTER_VALIDATE_EMAIL)) {
             $errors[] = 'Email không hợp lệ';
         }
 
-        if (empty($data['mat_khau'])) {
+        if (isEmpty($data['mat_khau'])) {
             $errors[] = 'Mật khẩu không được để trống';
         } elseif (strlen($data['mat_khau']) < 6) {
             $errors[] = 'Mật khẩu phải có ít nhất 6 ký tự';
@@ -173,13 +173,13 @@ class AuthController
         // Validation
         $errors = [];
 
-        if (empty($currentPassword)) {
+        if (isEmpty($currentPassword)) {
             $errors[] = 'Vui lòng nhập mật khẩu hiện tại';
         } elseif (!password_verify($currentPassword, $user->mat_khau)) {
             $errors[] = 'Mật khẩu hiện tại không đúng';
         }
 
-        if (empty($newPassword)) {
+        if (isEmpty($newPassword)) {
             $errors[] = 'Vui lòng nhập mật khẩu mới';
         } elseif (strlen($newPassword) < 6) {
             $errors[] = 'Mật khẩu mới phải có ít nhất 6 ký tự';
@@ -216,7 +216,7 @@ class AuthController
     {
         $email = post('email');
 
-        if (empty($email)) {
+        if (isEmpty($email)) {
             flash_error('Vui lòng nhập email');
             back();
             return;
@@ -300,7 +300,7 @@ class AuthController
         // Validation
         $errors = [];
 
-        if (empty($newPassword)) {
+        if (isEmpty($newPassword)) {
             $errors[] = 'Vui lòng nhập mật khẩu mới';
         } elseif (strlen($newPassword) < 6) {
             $errors[] = 'Mật khẩu mới phải có ít nhất 6 ký tự';
@@ -362,15 +362,15 @@ class AuthController
         // Validation
         $errors = [];
 
-        if (empty($data['ho_ten'])) {
+        if (isEmpty($data['ho_ten'])) {
             $errors[] = 'Họ tên không được để trống';
         }
 
-        if (empty($data['so_cccd'])) {
+        if (isEmpty($data['so_cccd'])) {
             $errors[] = 'Số CCCD không được để trống';
         }
 
-        if (empty($data['sdt'])) {
+        if (isEmpty($data['sdt'])) {
             $errors[] = 'Số điện thoại không được để trống';
         }
 

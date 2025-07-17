@@ -97,18 +97,6 @@ ob_start();
 <!-- Hero Section with Breadcrumb -->
 <div class="gradient-bg py-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Breadcrumb -->
-        <nav class="flex items-center space-x-2 text-slate-600 mb-8">
-            <a href="/" class="hover:text-blue-600 transition-colors text-sm">
-                <i class="fas fa-home mr-1"></i>Trang chủ
-            </a>
-            <i class="fas fa-chevron-right text-xs text-slate-400"></i>
-            <a href="/phong" class="hover:text-blue-600 transition-colors text-sm">Phòng</a>
-            <i class="fas fa-chevron-right text-xs text-slate-400"></i>
-            <span
-                class="text-slate-800 font-medium text-sm"><?= htmlspecialchars($phong->ten_phong ?? 'Chi tiết phòng') ?></span>
-        </nav>
-
         <!-- Page Header -->
         <div class="text-center">
             <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
@@ -118,7 +106,7 @@ ob_start();
                 <span
                     class="px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full text-sm font-medium border border-slate-200">
                     <i class="fas fa-tag mr-2 text-blue-500"></i>
-                    <?= htmlspecialchars($loaiPhong->ten_loai_phong ?? 'Loại phòng') ?>
+                    <?= htmlspecialchars($loaiPhong->ten ?? 'Loại phòng') ?>
                 </span>
                 <span class="px-4 py-2 bg-blue-50 rounded-full text-sm font-semibold text-blue-700">
                     <?= number_format($phong->gia ?? 0) ?>₫/giờ
@@ -136,7 +124,7 @@ ob_start();
             <div class="lg:col-span-2 space-y-8">
                 <!-- Room Images Gallery -->
                 <div class="room-card rounded-3xl overflow-hidden">
-                    <?php if (!empty($hinhAnhPhong) && count($hinhAnhPhong) > 0): ?>
+                    <?php if (isNotEmpty($hinhAnhPhong) && count($hinhAnhPhong) > 0): ?>
                         <!-- Main Image -->
                         <div class="relative">
                             <img id="main-image" src="<?= $hinhAnhPhong[0]->getImageUrl() ?>"
@@ -194,44 +182,6 @@ ob_start();
                             </div>
                         </div>
                     <?php endif; ?>
-                </div>
-
-                <!-- Room Info Cards -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="stat-card">
-                        <div class="amenity-icon mx-auto mb-3">
-                            <i class="fas fa-bed"></i>
-                        </div>
-                        <div class="text-sm text-slate-600 mb-1">Loại phòng</div>
-                        <div class="font-semibold text-slate-800">
-                            <?= htmlspecialchars($loaiPhong->ten_loai_phong ?? 'Standard') ?></div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="amenity-icon mx-auto mb-3">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="text-sm text-slate-600 mb-1">Sức chứa</div>
-                        <div class="font-semibold text-slate-800"><?= $loaiPhong->suc_chua ?? $phong->suc_chua ?? 2 ?>
-                            người</div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="amenity-icon mx-auto mb-3">
-                            <i class="fas fa-ruler-combined"></i>
-                        </div>
-                        <div class="text-sm text-slate-600 mb-1">Diện tích</div>
-                        <div class="font-semibold text-slate-800">
-                            <?= $loaiPhong->dien_tich ?? $phong->dien_tich ?? 25 ?>m²</div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="amenity-icon mx-auto mb-3">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <div class="text-sm text-slate-600 mb-1">Giá/giờ</div>
-                        <div class="font-semibold text-slate-800"><?= number_format($phong->gia ?? 0) ?>₫</div>
-                    </div>
                 </div>
 
                 <!-- Room Description -->

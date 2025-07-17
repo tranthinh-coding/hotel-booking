@@ -64,7 +64,7 @@ class PhongController
         
         // Get room type info
         $loaiPhong = null;
-        if (!empty($phong->ma_loai_phong)) {
+        if (isNotEmpty($phong->ma_loai_phong)) {
             $loaiPhong = LoaiPhong::find($phong->ma_loai_phong);
         }
 
