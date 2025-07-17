@@ -43,7 +43,7 @@ ob_start();
                             echo 'Thời gian check-in phải trước check-out!';
                             break;
                         case 'room_conflict':
-                            echo 'Phòng đã có người đặt trong thời gian này!';
+                            echo 'Khung giờ đã có người đặt trong thời gian này!';
                             break;
                         case 'update_failed':
                             echo 'Cập nhật hóa đơn thất bại!';
@@ -228,6 +228,10 @@ ob_start();
         <!-- Total Preview -->
         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">Tổng kết</h3>
+            <div class="text-sm text-gray-600 mb-4">
+                <i class="fas fa-info-circle mr-2"></i>
+                Tiền phòng được tính theo giờ thập phân (ví dụ: 2.5 giờ = 2 giờ 30 phút)
+            </div>
             <div class="space-y-2">
                 <div class="flex justify-between">
                     <span>Tiền phòng:</span>
@@ -359,7 +363,7 @@ function updateTotal() {
     let roomTotal = 0;
     let serviceTotal = 0;
 
-    // Calculate room total
+    // Calculate room total by hours (to match backend calculation)
     document.querySelectorAll('.room-item').forEach(item => {
         const select = item.querySelector('select[name*="[ma_phong]"]');
         const checkin = item.querySelector('input[name*="[check_in]"]');
@@ -367,9 +371,16 @@ function updateTotal() {
         
         if (select.value && checkin.value && checkout.value) {
             const price = parseFloat(select.options[select.selectedIndex].dataset.price || 0);
-            const nights = (new Date(checkout.value) - new Date(checkin.value)) / (1000 * 60 * 60 * 24);
-            if (nights > 0) {
-                roomTotal += price * nights;
+            const checkinDate = new Date(checkin.value);
+            const checkoutDate = new Date(checkout.value);
+            
+            if (checkinDate < checkoutDate) {
+                // Calculate hours (exact decimal hours like backend)
+                const timeDiffMs = checkoutDate.getTime() - checkinDate.getTime();
+                const hoursExact = Math.max(1, timeDiffMs / (1000 * 60 * 60));
+                
+                // Round the total amount (like backend does)
+                roomTotal += Math.round(price * hoursExact);
             }
         }
     });

@@ -70,6 +70,7 @@ Route::get('/booking/success', 'HotelBooking\Controllers\Client\BookingControlle
 // Tài khoản khách hàng
 Route::get('/tai-khoan', 'HotelBooking\Controllers\Client\TaiKhoanController', 'show');
 Route::get('/tai-khoan/lich-su-dat-phong', 'HotelBooking\Controllers\Client\TaiKhoanController', 'bookingHistory');
+Route::get('/tai-khoan/chi-tiet-hoa-don', 'HotelBooking\Controllers\Client\TaiKhoanController', 'getBookingDetails');
 Route::get('/tai-khoan/lich-su-danh-gia', 'HotelBooking\Controllers\Client\TaiKhoanController', 'reviewHistory');
 Route::post('/tai-khoan/gui-danh-gia', 'HotelBooking\Controllers\Client\TaiKhoanController', 'submitReview');
 Route::post('/tai-khoan/cap-nhat-danh-gia', 'HotelBooking\Controllers\Client\TaiKhoanController', 'updateReview');

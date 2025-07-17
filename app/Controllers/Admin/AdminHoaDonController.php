@@ -309,7 +309,7 @@ class AdminHoaDonController
             redirect('/admin/hoa-don?error=notfound');
         }
 
-        // Update basic invoice information
+        // Update basic invoice information first
         $data = [
             'ma_nhan_vien' => post('ma_nhan_vien', $hoaDon->ma_nhan_vien),
             'ma_khach_hang' => post('ma_khach_hang', $hoaDon->ma_khach_hang),
@@ -319,8 +319,23 @@ class AdminHoaDonController
 
         $hoaDon->update($data);
 
-        // Handle existing rooms
+        // Get room and service data
         $existingRooms = post('existing_rooms', []);
+        $newRooms = post('new_rooms', []);
+        $existingServices = post('existing_services', []);
+        $newServices = post('new_services', []);
+        
+        // Check if there are any room/service changes
+        $hasRoomServiceChanges = !isEmpty($existingRooms) || !isEmpty($newRooms) || 
+                                !isEmpty($existingServices) || !isEmpty($newServices);
+
+        // If no room/service changes, just redirect with success
+        if (!$hasRoomServiceChanges) {
+            redirect('/admin/hoa-don/show?id=' . $id . '&success=updated');
+            return;
+        }
+
+        // Handle existing rooms - check for time changes that require conflict checking
         foreach ($existingRooms as $roomData) {
             if (isNotEmpty($roomData['ma_hd_phong'])) {
                 $hdPhong = HoaDonPhong::find($roomData['ma_hd_phong']);
@@ -333,16 +348,22 @@ class AdminHoaDonController
                         redirect('/admin/hoa-don/edit?id=' . $id . '&error=invalid_dates');
                     }
 
-                    // Check for conflicts (excluding current booking)
-                    $conflictingBookings = HoaDonPhong::query()
-                        ->where('ma_phong', '=', $roomData['ma_phong'])
-                        ->where('check_in', '<', $checkout)
-                        ->where('check_out', '>', $checkin)
-                        ->where('ma_hd_phong', '!=', $hdPhong->ma_hd_phong)
-                        ->count();
+                    // Check if room or time has changed - only then check for conflicts
+                    $roomChanged = $hdPhong->ma_phong != $roomData['ma_phong'];
+                    $timeChanged = $hdPhong->check_in != $checkin || $hdPhong->check_out != $checkout;
+                    
+                    if ($roomChanged || $timeChanged) {
+                        // Check for conflicts (excluding current booking)
+                        $conflictingBookings = HoaDonPhong::query()
+                            ->where('ma_phong', '=', $roomData['ma_phong'])
+                            ->where('check_in', '<', $checkout)
+                            ->where('check_out', '>', $checkin)
+                            ->where('ma_hd_phong', '!=', $hdPhong->ma_hd_phong)
+                            ->count();
 
-                    if ($conflictingBookings > 0) {
-                        redirect('/admin/hoa-don/edit?id=' . $id . '&error=room_conflict');
+                        if ($conflictingBookings > 0) {
+                            redirect('/admin/hoa-don/edit?id=' . $id . '&error=room_conflict');
+                        }
                     }
 
                     // Get room price
@@ -359,7 +380,7 @@ class AdminHoaDonController
             }
         }
 
-        // Handle new rooms
+        // Handle new rooms - always check for conflicts since these are new additions
         $newRooms = post('new_rooms', []);
         foreach ($newRooms as $roomData) {
             if (isNotEmpty($roomData['ma_phong']) && isNotEmpty($roomData['check_in']) && isNotEmpty($roomData['check_out'])) {
@@ -371,7 +392,7 @@ class AdminHoaDonController
                     redirect('/admin/hoa-don/edit?id=' . $id . '&error=invalid_dates');
                 }
 
-                // Check for conflicts
+                // Always check for conflicts when adding new rooms
                 if (HoaDonPhong::hasConflictForRoom($roomData['ma_phong'], $checkin, $checkout)) {
                     redirect('/admin/hoa-don/edit?id=' . $id . '&error=room_conflict');
                 }
@@ -390,7 +411,7 @@ class AdminHoaDonController
             }
         }
 
-        // Handle existing services
+        // Handle existing services - update without conflict checking
         $existingServices = post('existing_services', []);
         foreach ($existingServices as $serviceData) {
             if (isNotEmpty($serviceData['ma_hd_dich_vu'])) {
@@ -409,7 +430,7 @@ class AdminHoaDonController
             }
         }
 
-        // Handle new services
+        // Handle new services - add new services
         $newServices = post('new_services', []);
         foreach ($newServices as $serviceData) {
             if (isNotEmpty($serviceData['ma_dich_vu']) && isNotEmpty($serviceData['so_luong'])) {
@@ -427,16 +448,18 @@ class AdminHoaDonController
             }
         }
 
-        // Recalculate total using optimized method
-        $totals = HoaDon::calculateTotalWithHours($id);
+        // Recalculate total if there were room/service changes
+        if ($hasRoomServiceChanges) {
+            $totals = HoaDon::calculateTotalWithHours($id);
 
-        // Update total
-        $hoaDon = HoaDon::find($id);
-        if ($hoaDon) {
-            $hoaDon->update(['tong_tien' => $totals['tong_tien']]);
+            // Update total
+            $hoaDon = HoaDon::find($id);
+            if ($hoaDon) {
+                $hoaDon->update(['tong_tien' => $totals['tong_tien']]);
+            }
         }
 
-        redirect('/admin/hoa-don/edit?id=' . $id . '&success=updated');
+        redirect('/admin/hoa-don/show?id=' . $id . '&success=updated');
     }
 }
 

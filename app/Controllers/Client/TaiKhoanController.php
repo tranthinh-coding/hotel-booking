@@ -372,4 +372,86 @@ class TaiKhoanController
 
         return $errors;
     }
+
+    /**
+     * Lấy chi tiết đặt phòng (API endpoint)
+     */
+    public function getBookingDetails()
+    {
+        if (!$this->checkAuth()) {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'Unauthorized']);
+            return;
+        }
+
+        $maHoaDon = get('id');
+        if (!$maHoaDon) {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'Missing invoice ID']);
+            return;
+        }
+
+        // Lấy chi tiết hóa đơn từ Model
+        $hoaDonDetails = HoaDon::getInvoiceDetails($maHoaDon);
+        
+        if (!$hoaDonDetails) {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'Invoice not found']);
+            return;
+        }
+
+        // Kiểm tra quyền truy cập - chỉ chủ hóa đơn mới được xem
+        if ($hoaDonDetails['ma_khach_hang'] != $_SESSION['user_id']) {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'Access denied']);
+            return;
+        }
+
+        // Tính toán thêm thông tin cần thiết
+        $tongTienPhong = 0;
+        if (isNotEmpty($hoaDonDetails['rooms_data'])) {
+            foreach ($hoaDonDetails['rooms_data'] as &$room) {
+                $checkInTime = strtotime($room['check_in']);
+                $checkOutTime = strtotime($room['check_out']);
+                $timeDiffSeconds = $checkOutTime - $checkInTime;
+                $soGioChinhXac = max(1, $timeDiffSeconds / 3600);
+                $room['so_gio'] = round($soGioChinhXac, 1);
+                $room['tien_phong'] = round($room['gia_hien_tai'] * $soGioChinhXac);
+                $tongTienPhong += $room['tien_phong'];
+                
+                // Format dates for display
+                $room['check_in_formatted'] = date('d/m/Y H:i', strtotime($room['check_in']));
+                $room['check_out_formatted'] = date('d/m/Y H:i', strtotime($room['check_out']));
+            }
+        }
+
+        $tongTienDichVu = 0;
+        if (isNotEmpty($hoaDonDetails['services_data'])) {
+            foreach ($hoaDonDetails['services_data'] as &$service) {
+                $service['thanh_tien'] = $service['gia_hien_tai'] * ($service['so_luong'] ?? 1);
+                $tongTienDichVu += $service['thanh_tien'];
+            }
+        }
+
+        $result = [
+            'success' => true,
+            'data' => [
+                'ma_hoa_don' => $hoaDonDetails['ma_hoa_don'],
+                'thoi_gian_dat' => $hoaDonDetails['thoi_gian_dat'],
+                'trang_thai' => $hoaDonDetails['trang_thai'],
+                'tong_tien' => $hoaDonDetails['tong_tien'],
+                'ghi_chu' => $hoaDonDetails['ghi_chu'],
+                'ten_khach_hang' => $hoaDonDetails['ten_khach_hang'],
+                'email_khach_hang' => $hoaDonDetails['email_khach_hang'],
+                'sdt_khach_hang' => $hoaDonDetails['sdt_khach_hang'],
+                'rooms_data' => $hoaDonDetails['rooms_data'],
+                'services_data' => $hoaDonDetails['services_data'],
+                'tong_tien_phong' => $tongTienPhong,
+                'tong_tien_dich_vu' => $tongTienDichVu
+            ]
+        ];
+
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    }
 }

@@ -160,6 +160,10 @@ ob_start();
         <!-- Total Preview -->
         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">Tổng kết</h3>
+            <div class="text-sm text-gray-600 mb-4">
+                <i class="fas fa-info-circle mr-2"></i>
+                Tiền phòng được tính theo giờ thập phân (ví dụ: 2.5 giờ = 2 giờ 30 phút)
+            </div>
             <div class="space-y-2">
                 <div class="flex justify-between">
                     <span>Tiền phòng:</span>
@@ -361,9 +365,16 @@ function updateTotal() {
         
         if (select.value && checkin.value && checkout.value) {
             const price = parseFloat(select.options[select.selectedIndex].dataset.price || 0);
-            const hours = Math.ceil((new Date(checkout.value) - new Date(checkin.value)) / (1000 * 60 * 60)); // Calculate hours and round up
-            if (hours > 0) {
-                roomTotal += price * hours;
+            const checkinDate = new Date(checkin.value);
+            const checkoutDate = new Date(checkout.value);
+            
+            if (checkinDate < checkoutDate) {
+                // Calculate exact hours (decimal) like backend
+                const timeDiffMs = checkoutDate.getTime() - checkinDate.getTime();
+                const hoursExact = Math.max(1, timeDiffMs / (1000 * 60 * 60));
+                
+                // Round the total amount (like backend does)
+                roomTotal += Math.round(price * hoursExact);
             }
         }
         
