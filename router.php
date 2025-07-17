@@ -82,6 +82,7 @@ Route::post('/tai-khoan/huy-dat-phong', 'HotelBooking\Controllers\Client\TaiKhoa
 // Dashboard
 Route::get('/admin', 'HotelBooking\Controllers\Admin\AdminController', 'dashboard');
 Route::get('/admin/dashboard', 'HotelBooking\Controllers\Admin\AdminController', 'dashboard');
+Route::get('/admin/thong-ke', 'HotelBooking\Controllers\Admin\AdminController', 'thongKe');
 
 // Admin - Quản lý loại phòng
 Route::get('/admin/loai-phong', 'HotelBooking\Controllers\Admin\AdminLoaiPhongController', 'index');

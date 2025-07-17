@@ -354,14 +354,7 @@ class AdminHoaDonController
                     
                     if ($roomChanged || $timeChanged) {
                         // Check for conflicts (excluding current booking)
-                        $conflictingBookings = HoaDonPhong::query()
-                            ->where('ma_phong', '=', $roomData['ma_phong'])
-                            ->where('check_in', '<', $checkout)
-                            ->where('check_out', '>', $checkin)
-                            ->where('ma_hd_phong', '!=', $hdPhong->ma_hd_phong)
-                            ->count();
-
-                        if ($conflictingBookings > 0) {
+                        if (HoaDonPhong::hasConflictForRoom($roomData['ma_phong'], $checkin, $checkout, $hdPhong->ma_hd_phong)) {
                             redirect('/admin/hoa-don/edit?id=' . $id . '&error=room_conflict');
                         }
                     }

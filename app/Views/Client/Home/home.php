@@ -10,13 +10,8 @@ ob_start();
 
 <style>
     .ocean-hero-bg {
-        background: linear-gradient(135deg, 
-            rgba(56, 189, 248, 0.95) 0%, 
-            rgba(14, 165, 233, 0.95) 25%, 
-            rgba(6, 182, 212, 0.95) 50%, 
-            rgba(20, 184, 166, 0.95) 75%, 
-            rgba(16, 185, 129, 0.95) 100%),
-            url('https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+        background: 
+            url('https://5.imimg.com/data5/SELLER/Default/2023/8/336872951/UC/XC/VH/150189352/hotel-exterior-designing-service-1000x1000.jpeg');
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
@@ -94,10 +89,10 @@ ob_start();
                     </span>
                 </h1>
                 
-                <p class="text-2xl text-white/90 max-w-4xl mx-auto mb-12 leading-relaxed">
+                <!-- <p class="text-2xl text-white/90 max-w-4xl mx-auto mb-12 leading-relaxed">
                     Nơi biển xanh ngọc bích hòa quyện cùng dịch vụ đẳng cấp quốc tế, 
                     tạo nên những khoảnh khắc nghỉ dưỡng không thể nào quên
-                </p>
+                </p> -->
                 
                 <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">
                     <a href="/phong" class="group bg-white text-blue-600 px-10 py-4 rounded-2xl font-bold text-lg hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl inline-flex items-center">

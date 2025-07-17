@@ -360,7 +360,7 @@ ob_start();
                     </div>
 
                     <!-- General Services -->
-                    <div class="section-card p-8">
+                    <!-- <div class="section-card p-8">
                         <div class="flex justify-between items-center mb-6">
                             <h3 class="text-2xl font-bold text-slate-800 flex items-center">
                                 <i class="fas fa-concierge-bell icon-gradient mr-3 text-xl"></i>
@@ -375,7 +375,7 @@ ob_start();
                         <div id="generalServicesContainer">
                             <p class="text-slate-600 text-center py-8">Chưa có dịch vụ chung nào được chọn</p>
                         </div>
-                    </div>
+                    </div> -->
 
                     <!-- Special Requests -->
                     <div class="section-card p-8">

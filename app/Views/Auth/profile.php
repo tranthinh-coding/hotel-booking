@@ -3,7 +3,7 @@ $title = 'Thông tin cá nhân - Hotel Ocean';
 ob_start();
 ?>
 
-<div class="min-h-screen bg-gray-50 pt-12">
+<div class="bg-gray-50 py-12">
     <div class="max-w-4xl mx-auto">
         <!-- Header -->
         <div class="bg-white rounded-2xl shadow-xs border border-gray-100 p-8 mb-8" style="margin-top: 20px;">

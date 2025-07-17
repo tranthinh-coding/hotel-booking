@@ -2,6 +2,8 @@
 
 namespace HotelBooking\Models;
 
+use HotelBooking\Enums\TrangThaiHoaDon;
+
 /**
  * @property int $ma_hd_phong
  * @property string $check_in
@@ -59,16 +61,18 @@ class HoaDonPhong extends Model
     {
         $sql = "
             SELECT COUNT(*) as conflicts
-            FROM hoa_don_phong 
-            WHERE ma_phong = ? 
-            AND check_in < ? 
-            AND check_out > ?
+            FROM hoa_don_phong hdp
+            JOIN hoa_don_tong hdt ON hdp.ma_hoa_don = hdt.ma_hoa_don
+            WHERE hdp.ma_phong = ? 
+            AND hdp.check_in < ? 
+            AND hdp.check_out > ?
+            AND hdt.trang_thai != ?
         ";
         
-        $params = [$maPhong, $checkout, $checkin];
+        $params = [$maPhong, $checkout, $checkin, TrangThaiHoaDon::DA_HUY];
         
         if ($excludeId) {
-            $sql .= " AND ma_hd_phong != ?";
+            $sql .= " AND hdp.ma_hd_phong != ?";
             $params[] = $excludeId;
         }
         

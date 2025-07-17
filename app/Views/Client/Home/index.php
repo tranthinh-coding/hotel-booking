@@ -16,7 +16,7 @@ ob_start();
             rgba(6, 182, 212, 0.95) 50%, 
             rgba(20, 184, 166, 0.95) 75%, 
             rgba(16, 185, 129, 0.95) 100%),
-            url('https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+            url('https://5.imimg.com/data5/SELLER/Default/2023/8/336872951/UC/XC/VH/150189352/hotel-exterior-designing-service-1000x1000.jpeg');
         background-size: cover;
         background-position: center;
         background-attachment: fixed;

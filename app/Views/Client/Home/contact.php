@@ -289,7 +289,7 @@ ob_start();
                     </p>
                 </div>
                 <div class="h-96 bg-gradient-to-br from-cyan-100 to-blue-100 flex items-center justify-center relative overflow-hidden">
-                   <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2757.3035413869093!2d109.20266030684559!3d12.220083192456686!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31706700768e164d%3A0x87faf37222cf7d07!2zMDMgSG_DoG5nIERp4buHdQ!5e0!3m2!1svi!2s!4v1752672587228!5m2!1svi!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                   <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2757.3035413869093!2d109.20266030684559!3d12.220083192456686!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31706700768e164d%3A0x87faf37222cf7d07!2zMDMgSG_DoG5nIERp4buHdQ!5e0!3m2!1svi!2s!4v1752672587228!5m2!1svi!2s" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
             </div>
         </div>
@@ -1190,25 +1190,37 @@ function submitForm(form) {
     btnText.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i>Đang gửi...';
     submitBtn.style.background = 'linear-gradient(to right, #6b7280, #9ca3af)';
     
-    // Simulate form submission (replace with actual submission)
-    setTimeout(() => {
-        // Reset button state
+    // Gửi dữ liệu qua AJAX
+    const formData = new FormData(form);
+    fetch('/contact', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
         submitBtn.disabled = false;
         btnText.textContent = originalText;
         submitBtn.style.background = '';
-        
-        // Show success message
-        showNotification('Tin nhắn đã được gửi thành công! Chúng tôi sẽ phản hồi trong vòng 24h.', 'success');
-        
-        // Reset form
-        form.reset();
-        
-        // Reset all field styles
-        form.querySelectorAll('.modern-input').forEach(input => {
-            input.style.borderColor = '';
-            input.style.boxShadow = '';
-        });
-    }, 2000);
+        if (data.success) {
+            showNotification(data.message || 'Tin nhắn đã được gửi thành công! Chúng tôi sẽ phản hồi trong vòng 24h.', 'success');
+            form.reset();
+            form.querySelectorAll('.modern-input').forEach(input => {
+                input.style.borderColor = '';
+                input.style.boxShadow = '';
+            });
+        } else {
+            showNotification(data.message || 'Gửi liên hệ thất bại!', 'error');
+        }
+    })
+    .catch(() => {
+        submitBtn.disabled = false;
+        btnText.textContent = originalText;
+        submitBtn.style.background = '';
+        showNotification('Có lỗi xảy ra, vui lòng thử lại!', 'error');
+    });
 }
 
 function showTooltip(element, message) {
