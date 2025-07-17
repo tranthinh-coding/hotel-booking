@@ -105,6 +105,17 @@ class BookingController
      */
     public function processCheckout()
     {
+        // Debug mode để xem dữ liệu được gửi
+        if (isset($_GET['debug'])) {
+            echo "<pre style='background:#000;color:#0f0;padding:20px;'>";
+            echo "=== FORM DATA DEBUG ===\n";
+            echo "POST Data:\n";
+            print_r($_POST);
+            echo "\nDịch vụ chung:\n";
+            print_r(post('dich_vu_chung', []));
+            echo "</pre>";
+        }
+
         // Kiểm tra đăng nhập
         if (!isset($_SESSION['user_id'])) {
             flash_error('Vui lòng đăng nhập để đặt phòng');
@@ -154,13 +165,12 @@ class BookingController
         try {
             // Tạo hóa đơn
             $hoaDon = new HoaDon();
-            $hoaDon->ma_tai_khoan = $_SESSION['user_id'];
-            $hoaDon->ngay_tao = date('Y-m-d H:i:s');
+            $hoaDon->ma_khach_hang = $_SESSION['user_id'];
+            $hoaDon->thoi_gian_dat = date('Y-m-d H:i:s');
             $hoaDon->trang_thai = TrangThaiHoaDon::CHO_XAC_NHAN;
             $hoaDon->ghi_chu = $customerData['ghi_chu'];
-            $hoaDon->ho_ten = $customerData['ho_ten'];
-            $hoaDon->so_dien_thoai = $customerData['so_dien_thoai'];
-            $hoaDon->email = $customerData['email'];
+            // Note: ho_ten, so_dien_thoai, email không có trong schema của hoa_don_tong
+            // Có thể cần lưu trong bảng khác hoặc thêm vào schema
             
             if (!$hoaDon->save()) {
                 throw new Exception('Không thể tạo hóa đơn');
@@ -245,16 +255,22 @@ class BookingController
                     $soLuong = max(1, intval($dichVuData['so_luong'] ?? 1));
                     $thanhTien = $dichVu->gia * $soLuong;
 
-                    $hoaDonDichVu = new HoaDonDichVu();
-                    $hoaDonDichVu->ma_hoa_don = $hoaDon->ma_hoa_don;
-                    $hoaDonDichVu->ma_dich_vu = $dichVuData['ma_dich_vu'];
-                    $hoaDonDichVu->ma_hd_phong = null; // Dịch vụ chung không gắn với phòng cụ thể
-                    $hoaDonDichVu->so_luong = $soLuong;
-                    $hoaDonDichVu->gia = $dichVu->gia;
-                    $hoaDonDichVu->thoi_gian = date('Y-m-d H:i:s');
+                    try {
+                        $hoaDonDichVu = new HoaDonDichVu();
+                        $hoaDonDichVu->ma_hoa_don = $hoaDon->ma_hoa_don;
+                        $hoaDonDichVu->ma_dich_vu = $dichVuData['ma_dich_vu'];
+                        // Không set ma_hd_phong để để nó NULL (dịch vụ chung)
+                        $hoaDonDichVu->so_luong = $soLuong;
+                        $hoaDonDichVu->gia = $dichVu->gia;
+                        $hoaDonDichVu->thoi_gian = date('Y-m-d H:i:s');
 
-                    if ($hoaDonDichVu->save()) {
-                        $tongTien += $thanhTien;
+                        if ($hoaDonDichVu->save()) {
+                            $tongTien += $thanhTien;
+                        } else {
+                            throw new Exception('Không thể lưu dịch vụ chung: ' . $dichVu->ten_dich_vu);
+                        }
+                    } catch (Exception $e) {
+                        throw new Exception('Lỗi khi lưu dịch vụ chung "' . $dichVu->ten_dich_vu . '": ' . $e->getMessage());
                     }
                 }
             }
@@ -267,6 +283,10 @@ class BookingController
             redirect('/booking/success?invoice=' . $hoaDon->ma_hoa_don);
 
         } catch (Exception $e) {
+            // Log lỗi chi tiết để debug
+            error_log('Booking Error: ' . $e->getMessage());
+            error_log('Booking Error Trace: ' . $e->getTraceAsString());
+            
             flash_error('Có lỗi xảy ra: ' . $e->getMessage());
             set_old_input();
             back();
