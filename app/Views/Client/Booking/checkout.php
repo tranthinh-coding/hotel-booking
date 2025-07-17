@@ -246,7 +246,7 @@ ob_start();
                                     Họ và tên <span class="text-red-500">*</span>
                                 </label>
                                 <input type="text" id="name" name="name" class="form-input w-full px-4 py-3" required
-                                    value="<?= isset($user) ? htmlspecialchars($user->ho_ten ?? '') : '' ?>">
+                                    value="<?= htmlspecialchars(old('name') ?: ($user->ho_ten ?? '')) ?>">
                             </div>
 
                             <div>
@@ -254,15 +254,24 @@ ob_start();
                                     Số điện thoại <span class="text-red-500">*</span>
                                 </label>
                                 <input type="tel" id="phone" name="phone" class="form-input w-full px-4 py-3" required
-                                    value="<?= isset($user) ? htmlspecialchars($user->sdt ?? '') : '' ?>">
+                                    value="<?= htmlspecialchars(old('phone') ?: ($user->sdt ?? '')) ?>">
                             </div>
 
-                            <div class="md:col-span-2">
+                            <div>
+                                <label for="so_cccd" class="block text-sm font-semibold text-slate-700 mb-3">
+                                    Số CCCD <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="so_cccd" name="so_cccd" required
+                                    class="form-input w-full px-4 py-3"
+                                    value="<?= htmlspecialchars(old('so_cccd') ?: ($user->so_cccd ?? '')) ?>">
+                            </div>
+
+                            <div>
                                 <label for="email" class="block text-sm font-semibold text-slate-700 mb-3">
                                     Email <span class="text-red-500">*</span>
                                 </label>
                                 <input type="email" id="email" name="email" required class="form-input w-full px-4 py-3"
-                                    value="<?= isset($user) ? htmlspecialchars($user->email ?? '') : '' ?>">
+                                    value="<?= htmlspecialchars(old('email') ?: ($user->email ?? '')) ?>">
                             </div>
                         </div>
                     </div>
@@ -297,22 +306,14 @@ ob_start();
                                         </label>
                                         <select name="phongs[0][ma_phong]" required onchange="updateRoomPrice(this)"
                                             class="form-input w-full px-4 py-3">
-                                            <option value="">-- Chọn phòng --</option>
-                                            <?php if ($phong): ?>
-                                                <option value="<?= $phong->ma_phong ?>" data-price="<?= $phong->gia ?>"
-                                                    selected>
-                                                    <?= htmlspecialchars($phong->ten_phong) ?> -
-                                                    <?= number_format($phong->gia) ?>₫/giờ
-                                                </option>
-                                            <?php endif; ?>
+                                            <option value="" selected disabled>-- Chọn phòng --</option>
                                             <?php if (isset($phongs) && $phongs): ?>
                                                 <?php foreach ($phongs as $room): ?>
-                                                    <?php if (!$phong || $room->ma_phong != $phong->ma_phong): ?>
-                                                        <option value="<?= $room->ma_phong ?>" data-price="<?= $room->gia ?>">
-                                                            <?= htmlspecialchars($room->ten_phong) ?> -
-                                                            <?= number_format($room->gia) ?>₫/giờ
-                                                        </option>
-                                                    <?php endif; ?>
+                                                    <option value="<?= $room->ma_phong ?>" data-price="<?= $room->gia ?>"
+                                                        <?= (isset($phong) && $phong->ma_phong == $room->ma_phong) ? 'selected' : '' ?>>
+                                                        <?= htmlspecialchars($room->ten_phong) ?> -
+                                                        <?= number_format($room->gia) ?>₫/giờ
+                                                    </option>
                                                 <?php endforeach; ?>
                                             <?php endif; ?>
                                         </select>
