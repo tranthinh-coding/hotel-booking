@@ -242,21 +242,19 @@ ob_start();
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label for="ho_ten" class="block text-sm font-semibold text-slate-700 mb-3">
+                                <label for="name" class="block text-sm font-semibold text-slate-700 mb-3">
                                     Họ và tên <span class="text-red-500">*</span>
                                 </label>
-                                <input type="text" id="ho_ten" name="ho_ten" required
-                                    class="form-input w-full px-4 py-3" placeholder="Nhập họ và tên"
-                                    value="<?= htmlspecialchars(old('ho_ten') ?? '') ?>">
+                                <input type="text" id="name" name="name" class="form-input w-full px-4 py-3" required
+                                    value="<?= isset($user) ? htmlspecialchars($user->ho_ten ?? '') : '' ?>">
                             </div>
 
                             <div>
-                                <label for="so_dien_thoai" class="block text-sm font-semibold text-slate-700 mb-3">
+                                <label for="phone" class="block text-sm font-semibold text-slate-700 mb-3">
                                     Số điện thoại <span class="text-red-500">*</span>
                                 </label>
-                                <input type="tel" id="so_dien_thoai" name="so_dien_thoai" required
-                                    class="form-input w-full px-4 py-3" placeholder="Nhập số điện thoại"
-                                    value="<?= htmlspecialchars(old('so_dien_thoai') ?? '') ?>">
+                                <input type="tel" id="phone" name="phone" class="form-input w-full px-4 py-3" required
+                                    value="<?= isset($user) ? htmlspecialchars($user->sdt ?? '') : '' ?>">
                             </div>
 
                             <div class="md:col-span-2">
@@ -264,8 +262,7 @@ ob_start();
                                     Email <span class="text-red-500">*</span>
                                 </label>
                                 <input type="email" id="email" name="email" required class="form-input w-full px-4 py-3"
-                                    placeholder="Nhập địa chỉ email"
-                                    value="<?= htmlspecialchars(old('email') ?? '') ?>">
+                                    value="<?= isset($user) ? htmlspecialchars($user->email ?? '') : '' ?>">
                             </div>
                         </div>
                     </div>

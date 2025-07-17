@@ -59,7 +59,10 @@ class HomeController
 
     public function contact()
     {
-        view('Client.Home.contact');
+        $user = user();
+        view('Client.Home.contact', [
+            'user' => $user
+        ]);
     }
 
     public function sendContact()

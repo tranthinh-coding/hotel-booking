@@ -54,19 +54,20 @@ ob_start();
                                 <label for="so_dien_thoai" class="block text-sm font-medium text-gray-700 mb-2">
                                     <i class="fas fa-phone mr-1"></i> Số điện thoại
                                 </label>
-                                <input type="tel" id="so_dien_thoai" name="so_dien_thoai"
-                                    value="<?= htmlspecialchars(old('so_dien_thoai') ?: ($user->so_dien_thoai ?? '')) ?>"
+                                <input type="tel" id="so_dien_thoai" name="sdt"
+                                    value="<?= htmlspecialchars(old('sdt') ?: ($user->sdt ?? '')) ?>"
                                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:border-transparent transition-all">
                             </div>
 
                             <div>
-                                <label for="dia_chi" class="block text-sm font-medium text-gray-700 mb-2">
-                                    <i class="fas fa-map-marker-alt mr-1"></i> Địa chỉ
+                                <label for="so_cccd" class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-id-card mr-1"></i> Số CCCD
                                 </label>
-                                <input type="text" id="dia_chi" name="dia_chi"
-                                    value="<?= htmlspecialchars(old('dia_chi') ?: ($user->dia_chi ?? '')) ?>"
+                                <input type="text" id="so_cccd" name="so_cccd"
+                                    value="<?= htmlspecialchars(old('so_cccd') ?: ($user->so_cccd ?? '')) ?>"
                                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:border-transparent transition-all">
                             </div>
+
                         </div>
 
                         <div class="flex items-center justify-between pt-6">
@@ -81,6 +82,34 @@ ob_start();
                                 Cập nhật thông tin
                             </button>
                         </div>
+                        <div id="profile-error"
+                            style="color: #e53e3e; font-weight: 500; margin-top: 10px; display: none;"></div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                const form = document.querySelector('form');
+                                if (form) {
+                                    form.addEventListener('submit', function (e) {
+                                        const soDienThoai = form.querySelector('input[name="so_dien_thoai"]');
+                                        const soCCCD = form.querySelector('input[name="so_cccd"]');
+                                        let error = '';
+                                        if (soDienThoai && soDienThoai.value.trim() !== '' && soDienThoai.value.trim().length === 0) {
+                                            error = 'Số điện thoại không được để trống';
+                                        }
+                                        if (soCCCD && soCCCD.value.trim() !== '' && soCCCD.value.trim().length === 0) {
+                                            error = 'Số CCCD không được để trống';
+                                        }
+                                        if (error) {
+                                            e.preventDefault();
+                                            const errorBox = document.getElementById('profile-error');
+                                            if (errorBox) {
+                                                errorBox.textContent = error;
+                                                errorBox.style.display = 'block';
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        </script>
                     </form>
                 </div>
             </div>

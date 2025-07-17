@@ -79,7 +79,7 @@ ob_start();
                                 <input type="text" 
                                        id="ho_ten" 
                                        name="ho_ten" 
-                                       value="<?= htmlspecialchars(old('ho_ten') ?? '') ?>"
+                                       value="<?= htmlspecialchars(old('ho_ten') ?: ($user->ho_ten ?? '')) ?>"
                                        class="modern-input w-full px-6 py-4 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-150 bg-gray-50/50 hover:bg-white"
                                        required
                                        placeholder="Nhập họ và tên của bạn">
@@ -92,7 +92,7 @@ ob_start();
                                 <input type="email" 
                                        id="email" 
                                        name="email" 
-                                       value="<?= htmlspecialchars(old('email') ?? '') ?>"
+                                       value="<?= htmlspecialchars(old('email') ?: ($user->email ?? '')) ?>"
                                        class="modern-input w-full px-6 py-4 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-100 transition-all duration-150 bg-gray-50/50 hover:bg-white"
                                        required
                                        placeholder="Nhập địa chỉ email">
@@ -107,7 +107,7 @@ ob_start();
                                 <input type="tel" 
                                        id="so_dien_thoai" 
                                        name="so_dien_thoai" 
-                                       value="<?= htmlspecialchars(old('so_dien_thoai') ?? '') ?>"
+                                       value="<?= htmlspecialchars(old('so_dien_thoai') ?: ($user->sdt ?? '')) ?>"
                                        class="modern-input w-full px-6 py-4 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-100 transition-all duration-150 bg-gray-50/50 hover:bg-white"
                                        placeholder="Nhập số điện thoại">
                             </div>

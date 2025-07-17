@@ -20,6 +20,7 @@ class BookingController
      */
     public function checkout()
     {
+        $user = user();
         $phongId = get('room_id') ?? get('phong_id');
         $phong = null;
         
@@ -96,7 +97,8 @@ class BookingController
             'dichVus' => $dichVus,
             'phongsArray' => $phongsArray,
             'dichVusArray' => $dichVusArray,
-            'bookingData' => $bookingData
+            'bookingData' => $bookingData,
+            'user' => $user
         ]);
     }
 

@@ -23,7 +23,7 @@ ob_start();
 
     .main-container {
         max-width: 1200px;
-        margin: 0 auto;
+        margin: 30px auto;
     }
 
     .content-container {
@@ -302,10 +302,27 @@ ob_start();
     }
 
     .search-form {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        display: flex;
+        /* flex-wrap: wrap; */
         gap: 20px;
         margin-bottom: 24px;
+        justify-content: space-between;
+    }
+
+    .search-form .form-group {
+        flex: 1 1 0;
+        min-width: 250px;
+        margin-bottom: 0;
+        max-width: none;
+        /* Đảm bảo các item rộng đều, không bị co lại */
+        display: flex;
+        flex-direction: column;
+        justify-content: stretch;
+    }
+
+    .search-form .search-button {
+        flex: 1 1 100%;
+        margin-top: auto;
     }
 
     .form-group {
@@ -330,6 +347,7 @@ ob_start();
         transition: all 0.3s ease;
         background: white;
         color: #1f2937;
+        height: 100%;
     }
 
     .form-input:focus {
@@ -353,6 +371,7 @@ ob_start();
         display: flex;
         align-items: center;
         justify-content: center;
+        height: 54px;
         gap: 8px;
         box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
     }
@@ -868,7 +887,7 @@ ob_start();
                 <p class="search-description">Chọn ngày và loại phòng phù hợp với nhu cầu của bạn</p>
             </div>
 
-            <form method="GET" action="/phong" class="search-form">
+            <form method="GET" action="/phong" id="search-form" class="search-form">
                 <div class="form-group">
                     <label class="form-label">
                         <i class="fas fa-calendar-check"></i>
@@ -895,13 +914,12 @@ ob_start();
                     </label>
                     <select name="room_type" class="form-input">
                         <option value="">Tất cả loại phòng</option>
-                        <option value="Standard" <?= ($_GET['room_type'] ?? '') == 'Standard' ? 'selected' : '' ?>>Standard
-                        </option>
-                        <option value="Deluxe" <?= ($_GET['room_type'] ?? '') == 'Deluxe' ? 'selected' : '' ?>>Deluxe
-                        </option>
-                        <option value="Suite" <?= ($_GET['room_type'] ?? '') == 'Suite' ? 'selected' : '' ?>>Suite</option>
-                        <option value="Presidential" <?= ($_GET['room_type'] ?? '') == 'Presidential' ? 'selected' : '' ?>>
-                            Presidential</option>
+                        <?php if (isset($loaiPhongs) && is_array($loaiPhongs)): ?>
+                            <?php foreach ($loaiPhongs as $loaiPhong): ?>
+                                <option value="<?= htmlspecialchars($loaiPhong->ma_loai_phong) ?>" <?= ($_GET['room_type'] ?? '') == $loaiPhong->ma_loai_phong ? 'selected' : '' ?>><?= htmlspecialchars($loaiPhong->ten) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </select>
                 </div>
 
@@ -948,7 +966,7 @@ ob_start();
         </div>
 
         <!-- Section 4: Rooms Results -->
-        <div class="rooms-section">
+        <div class="rooms-section" id="search-results">
             <div class="section-header">
                 <h2 class="section-title">Phòng Nghỉ Dành Cho Bạn</h2>
                 <p class="section-subtitle">
@@ -1052,14 +1070,14 @@ ob_start();
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Hero section parallax effect
-        const heroSection = document.querySelector('.hero-section');
-        if (heroSection) {
-            window.addEventListener('scroll', function () {
-                const scrolled = window.pageYOffset;
-                const rate = scrolled * -0.5;
-                heroSection.style.transform = `translateY(${rate}px)`;
-            });
+        // Auto scroll to results if hash present
+        if (window.location.hash === '#search-results') {
+            const resultBox = document.getElementById('search-results');
+            if (resultBox) {
+                setTimeout(() => {
+                    resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 300);
+            }
         }
 
         // Typing effect for hero title
@@ -1143,18 +1161,25 @@ ob_start();
             });
         }
 
-        // Form validation
-        const searchForm = document.querySelector('form');
+        // Form validation & add #search-results to URL
+        const searchForm = document.getElementById('search-form');
         if (searchForm) {
             searchForm.addEventListener('submit', function (e) {
                 const checkin = checkinInput?.value;
                 const checkout = checkoutInput?.value;
-
                 if (checkin && checkout && checkin >= checkout) {
                     e.preventDefault();
                     alert('Ngày trả phòng phải sau ngày nhận phòng!');
                     return false;
                 }
+                // Thêm #search-results vào url khi submit
+                const action = searchForm.getAttribute('action') || window.location.pathname;
+                const params = new URLSearchParams(new FormData(searchForm)).toString();
+                let url = action + (params ? '?' + params : '');
+                url = url.replace(/#.*$/, ''); // Xóa hash cũ nếu có
+                url += '#search-results';
+                window.location.href = url;
+                e.preventDefault();
             });
         }
 
