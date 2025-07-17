@@ -126,13 +126,6 @@ class BookingController
             return;
         }
 
-        $customerData = [
-            'ho_ten' => post('ho_ten'),
-            'so_dien_thoai' => post('so_dien_thoai'),
-            'email' => post('email'),
-            'ghi_chu' => post('ghi_chu', ''),
-        ];
-
         // Xử lý dữ liệu phòng - hỗ trợ cả form đơn và form array
         $phongs = post('phongs', []);
         
@@ -157,10 +150,14 @@ class BookingController
         $dichVuChung = post('dich_vu_chung', []);
 
         // Validation
-        $errors = $this->validateNewCheckoutData($customerData, $phongs);
+        $errors = $this->validateNewCheckoutData($phongs);
         if (isNotEmpty($errors)) {
-            flash_error(implode('<br>', $errors));
+            // Lưu lại thông tin phòng để điền lại khi reload form
             set_old_input();
+            if (!empty($phongs) && is_array($phongs)) {
+                $_SESSION['old_phongs'] = $phongs;
+            }
+            flash_error(implode('<br>', $errors));
             back();
             return;
         }
@@ -171,7 +168,7 @@ class BookingController
             $hoaDon->ma_khach_hang = $_SESSION['user_id'];
             $hoaDon->thoi_gian_dat = date('Y-m-d H:i:s');
             $hoaDon->trang_thai = TrangThaiHoaDon::CHO_XAC_NHAN;
-            $hoaDon->ghi_chu = $customerData['ghi_chu'];
+            $hoaDon->ghi_chu = post('ghi_chu', '');
             // Note: ho_ten, so_dien_thoai, email không có trong schema của hoa_don_tong
             // Có thể cần lưu trong bảng khác hoặc thêm vào schema
             
@@ -287,29 +284,13 @@ class BookingController
             redirect('/booking/success?invoice=' . $hoaDon->ma_hoa_don);
 
         } catch (Exception $e) {
-            // Log lỗi chi tiết để debug
-            error_log('=== BOOKING ERROR DEBUG ===');
-            error_log('Error Message: ' . $e->getMessage());
-            error_log('Error File: ' . $e->getFile());
-            error_log('Error Line: ' . $e->getLine());
-            error_log('Error Trace: ' . $e->getTraceAsString());
-            error_log('POST Data: ' . print_r($_POST, true));
-            error_log('Session User ID: ' . ($_SESSION['user_id'] ?? 'null'));
-            error_log('============================');
-            
-            // Hiển thị lỗi chi tiết cho user (chỉ trong development)
-            $errorMessage = 'Có lỗi xảy ra khi đặt phòng: ' . $e->getMessage();
-            
-            // Thêm thông tin debug nếu có tham số debug
-            if (isset($_GET['debug']) || isset($_POST['debug'])) {
-                $errorMessage .= "\n\nDebug Info:";
-                $errorMessage .= "\nFile: " . $e->getFile();
-                $errorMessage .= "\nLine: " . $e->getLine();
-                $errorMessage .= "\nTrace: " . $e->getTraceAsString();
-            }
-            
-            flash_error($errorMessage);
+            // Hiển thị lỗi rõ ràng cho user
+            $errorMessage = $e->getMessage();
             set_old_input();
+            if (!empty($phongs) && is_array($phongs)) {
+                $_SESSION['old_phongs'] = $phongs;
+            }
+            flash_error($errorMessage);
             back();
         }
     }
@@ -317,26 +298,9 @@ class BookingController
     /**
      * Validate dữ liệu checkout mới
      */
-    private function validateNewCheckoutData($customerData, $phongs)
+    private function validateNewCheckoutData($phongs)
     {
         $errors = [];
-
-        // Validate customer data
-        if (isEmpty($customerData['ho_ten'])) {
-            $errors[] = 'Vui lòng nhập họ tên';
-        }
-
-        if (isEmpty($customerData['so_dien_thoai'])) {
-            $errors[] = 'Vui lòng nhập số điện thoại';
-        } elseif (!preg_match('/^[0-9]{10,11}$/', $customerData['so_dien_thoai'])) {
-            $errors[] = 'Số điện thoại không hợp lệ';
-        }
-
-        if (isEmpty($customerData['email'])) {
-            $errors[] = 'Vui lòng nhập email';
-        } elseif (!filter_var($customerData['email'], FILTER_VALIDATE_EMAIL)) {
-            $errors[] = 'Email không hợp lệ';
-        }
 
         // Validate rooms
         if (isEmpty($phongs) || !is_array($phongs)) {
@@ -372,59 +336,6 @@ class BookingController
         }
 
         return $errors;
-    }
-
-    /**
-     * Debug method để kiểm tra dữ liệu form
-     */
-    public function debugCheckout()
-    {
-        echo "<h2>Debug Checkout Form</h2>";
-        echo "<h3>POST Data:</h3>";
-        echo "<pre>";
-        print_r($_POST);
-        echo "</pre>";
-        
-        echo "<h3>SESSION Data:</h3>";
-        echo "<pre>";
-        print_r($_SESSION);
-        echo "</pre>";
-        
-        echo "<h3>Processed Data:</h3>";
-        $customerData = [
-            'ho_ten' => post('ho_ten'),
-            'so_dien_thoai' => post('so_dien_thoai'),
-            'email' => post('email'),
-            'ghi_chu' => post('ghi_chu', ''),
-        ];
-        echo "Customer Data: ";
-        print_r($customerData);
-        
-        $phongs = post('phongs', []);
-        if (isEmpty($phongs)) {
-            $maPhong = post('ma_phong');
-            $ngayNhanPhong = post('ngay_nhan_phong');
-            $ngayTraPhong = post('ngay_tra_phong');
-            
-            if ($maPhong && $ngayNhanPhong && $ngayTraPhong) {
-                $phongs = [
-                    [
-                        'ma_phong' => $maPhong,
-                        'check_in' => $ngayNhanPhong,
-                        'check_out' => $ngayTraPhong,
-                        'dich_vu' => []
-                    ]
-                ];
-            }
-        }
-        echo "Phongs Data: ";
-        print_r($phongs);
-        
-        $errors = $this->validateNewCheckoutData($customerData, $phongs);
-        echo "Validation Errors: ";
-        print_r($errors);
-        
-        die();
     }
 
     /**

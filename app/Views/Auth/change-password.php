@@ -45,32 +45,6 @@ ob_start();
                         required placeholder="Nhập lại mật khẩu mới">
                 </div>
 
-                <!-- Password Requirements -->
-                <div class="bg-gray-50 rounded-xl p-4">
-                    <h4 class="text-sm font-medium text-gray-700 mb-2">
-                        <i class="fas fa-info-circle text-blue-500 mr-1"></i>
-                        Yêu cầu mật khẩu:
-                    </h4>
-                    <ul class="text-sm text-gray-600 space-y-1">
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2 text-xs"></i>
-                            Tối thiểu 6 ký tự
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2 text-xs"></i>
-                            Nên chứa ít nhất một chữ cái viết hoa
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2 text-xs"></i>
-                            Nên chứa ít nhất một số
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2 text-xs"></i>
-                            Nên chứa ký tự đặc biệt
-                        </li>
-                    </ul>
-                </div>
-
                 <div class="flex items-center justify-between pt-6">
                     <a href="/profile" class="text-gray-600 hover:text-gray-800 font-medium transition-colors">
                         <i class="fas fa-arrow-left mr-2"></i>

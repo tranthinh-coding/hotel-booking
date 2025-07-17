@@ -215,14 +215,14 @@ ob_start();
 <div class="py-20 bg-gradient-to-br from-slate-50 to-blue-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Flash Messages -->
-        <?php if (flash_get('success')): ?>
+        <?php if (flash_has('success')): ?>
             <div class="glass-effect border-green-200 text-green-800 px-6 py-4 rounded-xl mb-8 flex items-center">
                 <i class="fas fa-check-circle text-green-600 mr-3 text-lg"></i>
                 <div><?= flash_get('success') ?></div>
             </div>
         <?php endif; ?>
 
-        <?php if (flash_get('error')): ?>
+        <?php if (flash_has('error')): ?>
             <div class="glass-effect border-red-200 text-red-800 px-6 py-4 rounded-xl mb-8 flex items-center">
                 <i class="fas fa-exclamation-circle text-red-600 mr-3 text-lg"></i>
                 <div><?= flash_get('error') ?></div>
@@ -246,7 +246,9 @@ ob_start();
                                     Họ và tên <span class="text-red-500">*</span>
                                 </label>
                                 <input type="text" id="name" name="name" class="form-input w-full px-4 py-3" required
-                                    value="<?= htmlspecialchars(old('name') ?: ($user->ho_ten ?? '')) ?>">
+                                    name="ho_ten"
+                                    value="<?= htmlspecialchars(old('ho_ten') ?: ($user->ho_ten ?? '')) ?>"
+                                    <?= isset($user) && $user ? 'readonly disabled' : '' ?> >
                             </div>
 
                             <div>
@@ -254,7 +256,9 @@ ob_start();
                                     Số điện thoại <span class="text-red-500">*</span>
                                 </label>
                                 <input type="tel" id="phone" name="phone" class="form-input w-full px-4 py-3" required
-                                    value="<?= htmlspecialchars(old('phone') ?: ($user->sdt ?? '')) ?>">
+                                    name="so_dien_thoai"
+                                    value="<?= htmlspecialchars(old('so_dien_thoai') ?: ($user->sdt ?? '')) ?>"
+                                    <?= isset($user) && $user ? 'readonly disabled' : '' ?> >
                             </div>
 
                             <div>
@@ -263,7 +267,9 @@ ob_start();
                                 </label>
                                 <input type="text" id="so_cccd" name="so_cccd" required
                                     class="form-input w-full px-4 py-3"
-                                    value="<?= htmlspecialchars(old('so_cccd') ?: ($user->so_cccd ?? '')) ?>">
+                                    name="so_cccd"
+                                    value="<?= htmlspecialchars(old('so_cccd') ?: ($user->so_cccd ?? '')) ?>"
+                                    <?= isset($user) && $user ? 'readonly disabled' : '' ?> >
                             </div>
 
                             <div>
@@ -271,7 +277,9 @@ ob_start();
                                     Email <span class="text-red-500">*</span>
                                 </label>
                                 <input type="email" id="email" name="email" required class="form-input w-full px-4 py-3"
-                                    value="<?= htmlspecialchars(old('email') ?: ($user->email ?? '')) ?>">
+                                    name="email"
+                                    value="<?= htmlspecialchars(old('email') ?: ($user->email ?? '')) ?>"
+                                    <?= isset($user) && $user ? 'readonly disabled' : '' ?> >
                             </div>
                         </div>
                     </div>
