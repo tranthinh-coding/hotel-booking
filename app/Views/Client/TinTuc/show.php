@@ -223,7 +223,7 @@ ob_start();
                             </div>
                         </div>
                         <div class="mt-6">
-                            <a href="/dat-phong"
+                            <a href="/booking/checkout"
                                 class="inline-flex items-center bg-white text-ocean-600 px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors">
                                 <i class="fas fa-calendar-check mr-2"></i>
                                 Đặt phòng ngay

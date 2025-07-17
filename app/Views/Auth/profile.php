@@ -133,12 +133,12 @@ ob_start();
                         <i class="fas fa-key mr-3"></i>
                         Đổi mật khẩu
                     </a>
-                    <a href="/my-bookings" 
+                    <a href="/tai-khoan/lich-su-dat-phong" 
                        class="flex items-center w-full p-3 text-gray-700 bg-gray-50 rounded-xl hover:bg-ocean-50 hover:text-ocean-600 transition-colors">
                         <i class="fas fa-calendar-alt mr-3"></i>
                         Lịch sử đặt phòng
                     </a>
-                    <a href="/my-reviews" 
+                    <a href="/tai-khoan/lich-su-danh-gia"
                        class="flex items-center w-full p-3 text-gray-700 bg-gray-50 rounded-xl hover:bg-ocean-50 hover:text-ocean-600 transition-colors">
                         <i class="fas fa-star mr-3"></i>
                         Đánh giá của tôi

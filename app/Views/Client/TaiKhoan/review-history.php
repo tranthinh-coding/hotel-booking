@@ -42,7 +42,7 @@ ob_start();
                 <h3 class="text-xl font-semibold text-gray-700 mb-4">Chưa có đánh giá nào</h3>
                 <p class="text-gray-500 mb-6">Bạn chưa đưa ra đánh giá nào. Hãy đặt phòng và trải nghiệm dịch vụ để có thể
                     đánh giá!</p>
-                <a href="/dat-phong"
+                <a href="/booking/checkout"
                     class="inline-flex items-center bg-gradient-to-r from-blue-600 to-teal-600 text-white px-6 py-3 rounded-lg font-medium hover:from-blue-700 hover:to-teal-700 transition-all">
                     <i class="fas fa-plus mr-2"></i>
                     Đặt phòng ngay

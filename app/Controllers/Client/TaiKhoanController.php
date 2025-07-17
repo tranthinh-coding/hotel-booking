@@ -57,19 +57,19 @@ class TaiKhoanController
 
         $sql = "
             SELECT 
-                hd.*,
+                hdt.*,
                 hdp.check_in,
                 hdp.check_out,
                 hdp.gia as gia_phong,
                 p.ten_phong,
                 p.ma_phong,
-                lp.ten_loai as loai_phong
-            FROM hoa_don hd
-            LEFT JOIN hoa_don_phong hdp ON hd.ma_hoa_don = hdp.ma_hoa_don
+                lp.ten as loai_phong
+            FROM hoa_don_tong hdt
+            LEFT JOIN hoa_don_phong hdp ON hdt.ma_hoa_don = hdp.ma_hoa_don
             LEFT JOIN phong p ON hdp.ma_phong = p.ma_phong
             LEFT JOIN loai_phong lp ON p.ma_loai_phong = lp.ma_loai_phong
-            WHERE hd.ma_tai_khoan = ?
-            ORDER BY hd.ngay_tao DESC
+            WHERE hdt.ma_khach_hang = ?
+            ORDER BY hdt.thoi_gian_dat DESC
         ";
 
         $bookings = \HotelBooking\Facades\DB::query($sql, [$_SESSION['user_id']]);
@@ -90,7 +90,7 @@ class TaiKhoanController
             SELECT 
                 dg.*,
                 p.ten_phong,
-                lp.ten_loai as loai_phong
+                lp.ten as loai_phong
             FROM danh_gia dg
             LEFT JOIN phong p ON dg.ma_phong = p.ma_phong
             LEFT JOIN loai_phong lp ON p.ma_loai_phong = lp.ma_loai_phong
@@ -129,11 +129,9 @@ class TaiKhoanController
 
         try {
             // Kiểm tra đã đánh giá chưa
-            $existingReview = DanhGia::findByCondition([
-                'ma_tai_khoan' => $_SESSION['user_id'],
-                'ma_phong' => $data['ma_phong'],
-                'ma_hoa_don' => $data['ma_hoa_don']
-            ]);
+            $existingReview = DanhGia::where('ma_khach_hang', $_SESSION['user_id'])
+                ->where('ma_phong', $data['ma_phong'])
+                ->first();
 
             if ($existingReview) {
                 flash_error('Bạn đã đánh giá cho đặt phòng này rồi');
@@ -277,14 +275,14 @@ class TaiKhoanController
     {
         $sql = "
             SELECT 
-                COUNT(CASE WHEN hd.trang_thai = ? THEN 1 END) as cho_xac_nhan,
-                COUNT(CASE WHEN hd.trang_thai = ? THEN 1 END) as da_xac_nhan,
-                COUNT(CASE WHEN hd.trang_thai = ? THEN 1 END) as da_thanh_toan,
-                COUNT(CASE WHEN hd.trang_thai = ? THEN 1 END) as da_huy,
+                COUNT(CASE WHEN hdt.trang_thai = ? THEN 1 END) as cho_xac_nhan,
+                COUNT(CASE WHEN hdt.trang_thai = ? THEN 1 END) as da_xac_nhan,
+                COUNT(CASE WHEN hdt.trang_thai = ? THEN 1 END) as da_thanh_toan,
+                COUNT(CASE WHEN hdt.trang_thai = ? THEN 1 END) as da_huy,
                 COUNT(*) as tong_dat_phong,
-                COALESCE(SUM(CASE WHEN hd.trang_thai = ? THEN hd.tong_tien ELSE 0 END), 0) as tong_chi_tieu
-            FROM hoa_don hd
-            WHERE hd.ma_tai_khoan = ?
+                COALESCE(SUM(CASE WHEN hdt.trang_thai = ? THEN hdt.tong_tien ELSE 0 END), 0) as tong_chi_tieu
+            FROM hoa_don_tong hdt
+            WHERE hdt.ma_khach_hang = ?
         ";
 
         $result = \HotelBooking\Facades\DB::query($sql, [
@@ -296,7 +294,14 @@ class TaiKhoanController
             $userId
         ]);
 
-        return $result ? $result[0] : null;
+        return $result && count($result) > 0 ? $result[0] : (object)[
+            'cho_xac_nhan' => 0,
+            'da_xac_nhan' => 0, 
+            'da_thanh_toan' => 0,
+            'da_huy' => 0,
+            'tong_dat_phong' => 0,
+            'tong_chi_tieu' => 0
+        ];
     }
 
     /**
@@ -306,23 +311,36 @@ class TaiKhoanController
     {
         $sql = "
             SELECT COUNT(*) as count
-            FROM hoa_don hd
-            JOIN hoa_don_phong hdp ON hd.ma_hoa_don = hdp.ma_hoa_don
-            WHERE hd.ma_tai_khoan = ?
-            AND hd.ma_hoa_don = ?
+            FROM hoa_don_tong hdt
+            JOIN hoa_don_phong hdp ON hdt.ma_hoa_don = hdp.ma_hoa_don
+            WHERE hdt.ma_khach_hang = ?
+            AND hdt.ma_hoa_don = ?
             AND hdp.ma_phong = ?
-            AND hd.trang_thai = ?
+            AND hdt.trang_thai = ?
             AND hdp.check_out < NOW()
         ";
 
-        $result = \HotelBooking\Facades\DB::query($sql, [
-            $userId, 
-            $maHoaDon, 
-            $maPhong, 
-            TrangThaiHoaDon::DA_THANH_TOAN
-        ]);
+        try {
+            $result = \HotelBooking\Facades\DB::query($sql, [
+                $userId, 
+                $maHoaDon, 
+                $maPhong, 
+                TrangThaiHoaDon::DA_THANH_TOAN
+            ]);
 
-        return $result && $result[0]->count > 0;
+            if (!$result || !is_array($result) || count($result) === 0) {
+                return false;
+            }
+
+            $row = $result[0];
+            if (!is_object($row)) {
+                return false;
+            }
+
+            return isset($row->count) && $row->count > 0;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
     /**

@@ -83,7 +83,8 @@ ob_start();
                     </div>
                     <div class="ml-4">
                         <p class="text-sm text-gray-500">Tổng chi tiêu</p>
-                        <p class="text-2xl font-bold text-gray-900"><?= number_format($stats->tong_chi_tieu ?? 0) ?>đ</p>
+                        <p class="text-2xl font-bold text-gray-900"><?= number_format($stats->tong_chi_tieu ?? 0) ?>đ
+                        </p>
                     </div>
                 </div>
             </div>
@@ -95,7 +96,8 @@ ob_start();
             <div class="bg-white rounded-xl shadow-lg p-6">
                 <h3 class="text-xl font-bold text-gray-900 mb-6">Thao tác nhanh</h3>
                 <div class="space-y-4">
-                    <a href="/dat-phong" class="flex items-center p-4 bg-gradient-to-r from-blue-50 to-teal-50 rounded-lg hover:from-blue-100 hover:to-teal-100 transition-colors">
+                    <a href="/dat-phong"
+                        class="flex items-center p-4 bg-gradient-to-r from-blue-50 to-teal-50 rounded-lg hover:from-blue-100 hover:to-teal-100 transition-colors">
                         <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
                             <i class="fas fa-plus text-white"></i>
                         </div>
@@ -105,7 +107,8 @@ ob_start();
                         </div>
                     </a>
 
-                    <a href="/phong" class="flex items-center p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg hover:from-green-100 hover:to-emerald-100 transition-colors">
+                    <a href="/phong"
+                        class="flex items-center p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg hover:from-green-100 hover:to-emerald-100 transition-colors">
                         <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
                             <i class="fas fa-bed text-white"></i>
                         </div>
@@ -115,7 +118,8 @@ ob_start();
                         </div>
                     </a>
 
-                    <a href="/dich-vu" class="flex items-center p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg hover:from-purple-100 hover:to-pink-100 transition-colors">
+                    <a href="/dich-vu"
+                        class="flex items-center p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg hover:from-purple-100 hover:to-pink-100 transition-colors">
                         <div class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center">
                             <i class="fas fa-concierge-bell text-white"></i>
                         </div>
@@ -135,24 +139,27 @@ ob_start();
                         <span class="text-gray-600">Họ tên:</span>
                         <span class="font-medium"><?= safe_htmlspecialchars($taiKhoan->ho_ten) ?></span>
                     </div>
-                    
+
                     <div class="flex justify-between items-center py-3 border-b border-gray-100">
                         <span class="text-gray-600">Email:</span>
                         <span class="font-medium"><?= safe_htmlspecialchars($taiKhoan->email) ?></span>
                     </div>
-                    
+
                     <div class="flex justify-between items-center py-3 border-b border-gray-100">
                         <span class="text-gray-600">Số điện thoại:</span>
-                        <span class="font-medium"><?= safe_htmlspecialchars($taiKhoan->so_dien_thoai ?? 'Chưa cập nhật') ?></span>
+                        <span
+                            class="font-medium"><?= safe_htmlspecialchars($taiKhoan->so_dien_thoai ?? 'Chưa cập nhật') ?></span>
                     </div>
-                    
+
                     <div class="flex justify-between items-center py-3 border-b border-gray-100">
                         <span class="text-gray-600">Ngày tham gia:</span>
-                        <span class="font-medium"><?= date('d/m/Y', strtotime($taiKhoan->ngay_tao ?? date('Y-m-d'))) ?></span>
+                        <span
+                            class="font-medium"><?= date('d/m/Y', strtotime($taiKhoan->ngay_tao ?? date('Y-m-d'))) ?></span>
                     </div>
 
                     <div class="pt-4">
-                        <a href="/profile" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium">
+                        <a href="/profile"
+                            class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium">
                             <i class="fas fa-edit mr-2"></i>
                             Chỉnh sửa thông tin
                         </a>
@@ -170,31 +177,17 @@ ob_start();
                     <i class="fas fa-arrow-right ml-1"></i>
                 </a>
             </div>
-            
+
             <div class="text-center py-8">
                 <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-calendar-alt text-gray-400 text-2xl"></i>
                 </div>
                 <p class="text-gray-500">Bạn chưa có đặt phòng nào</p>
-                <a href="/dat-phong" class="inline-flex items-center mt-4 text-blue-600 hover:text-blue-800 font-medium">
+                <a href="/booking/checkout"
+                    class="inline-flex items-center mt-4 text-blue-600 hover:text-blue-800 font-medium">
                     <i class="fas fa-plus mr-2"></i>
                     Đặt phòng ngay
                 </a>
-            </div>
-        </div>
-    </div>
-</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-slate-600 mb-1">Số lần đăng nhập thất bại</label>
-                                <span class="text-slate-800">0</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
