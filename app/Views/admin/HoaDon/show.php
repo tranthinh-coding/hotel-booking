@@ -161,11 +161,20 @@ ob_start();
                                     </div>
                                 </div>
                                 <?php
-                                $soGio = ceil((strtotime($room['check_out']) - strtotime($room['check_in'])) / 3600);
-                                $tongTienPhong = $room['gia_hien_tai'] * $soGio;
+                                $checkInTime = strtotime($room['check_in']);
+                                $checkOutTime = strtotime($room['check_out']);
+                                $timeDiffSeconds = $checkOutTime - $checkInTime;
+                                $soGioChinhXac = max(1, $timeDiffSeconds / 3600); // Giờ thập phân chính xác
+                                $soGioDisplay = max(1, ceil($timeDiffSeconds / 3600)); // Giờ hiển thị (làm tròn lên)
+                                $tongTienPhong = round($room['gia_hien_tai'] * $soGioChinhXac); // Tính theo giờ chính xác và làm tròn
                                 ?>
                                 <div class="mt-3 pt-3 border-t flex justify-between">
-                                    <span class="text-gray-600"><?= number_format($soGio, 0) ?> giờ</span>
+                                    <div class="text-gray-600">
+                                        <div><?= number_format($soGioDisplay, 0) ?> giờ</div>
+                                        <?php if ($soGioDisplay != round($soGioChinhXac, 1)): ?>
+                                            <small class="text-xs text-gray-500">(Chính xác: <?= number_format($soGioChinhXac, 1) ?> giờ)</small>
+                                        <?php endif; ?>
+                                    </div>
                                     <span class="font-semibold"><?= number_format($tongTienPhong, 0, ',', '.') ?>₫</span>
                                 </div>
                             </div>
@@ -227,8 +236,11 @@ ob_start();
             $tongTienPhong = 0;
             if (isNotEmpty($hoaDon['rooms_data'])) {
                 foreach ($hoaDon['rooms_data'] as $hdPhong) {
-                    $soGio = ceil((strtotime($hdPhong['check_out']) - strtotime($hdPhong['check_in'])) / 3600);
-                    $tongTienPhong += $hdPhong['gia_hien_tai'] * $soGio;
+                    $checkInTime = strtotime($hdPhong['check_in']);
+                    $checkOutTime = strtotime($hdPhong['check_out']);
+                    $timeDiffSeconds = $checkOutTime - $checkInTime;
+                    $soGioChinhXac = max(1, $timeDiffSeconds / 3600); // Tính theo giờ thập phân chính xác
+                    $tongTienPhong += round($hdPhong['gia_hien_tai'] * $soGioChinhXac); // Làm tròn để khớp với backend
                 }
             }
 
@@ -238,6 +250,9 @@ ob_start();
                     $tongTienDichVu += $hdDichVu['gia_hien_tai'] * ($hdDichVu['so_luong'] ?? 1);
                 }
             }
+
+            $tongTienTinhToan = $tongTienPhong + $tongTienDichVu;
+            $chenhLech = abs($tongTienTinhToan - $hoaDon['tong_tien']);
             ?>
             <div class="flex justify-between">
                 <span>Tiền phòng:</span>
@@ -247,9 +262,19 @@ ob_start();
                 <span>Tiền dịch vụ:</span>
                 <span><?= number_format($tongTienDichVu, 0, ',', '.') ?>₫</span>
             </div>
+            <div class="flex justify-between">
+                <span>Tổng tính toán:</span>
+                <span><?= number_format($tongTienTinhToan, 0, ',', '.') ?>₫</span>
+            </div>
+            <?php if ($chenhLech > 1): // Chỉ hiển thị nếu chênh lệch lớn hơn 1đ ?>
+                <div class="flex justify-between text-sm text-orange-600">
+                    <span>Chênh lệch:</span>
+                    <span><?= number_format($chenhLech, 0, ',', '.') ?>₫</span>
+                </div>
+            <?php endif; ?>
             <hr class="my-2">
             <div class="flex justify-between text-lg font-semibold">
-                <span>Tổng cộng:</span>
+                <span>Tổng cộng (DB):</span>
                 <span class="text-blue-600"><?= number_format($hoaDon['tong_tien'], 0, ',', '.') ?>₫</span>
             </div>
         </div>

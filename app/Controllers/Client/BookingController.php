@@ -198,11 +198,12 @@ class BookingController
                     throw new Exception('Phòng ' . $phong->ten_phong . ' đã được đặt trong thời gian này');
                 }
 
-                // Tính tiền phòng
+                // Tính tiền phòng theo giờ thập phân chính xác
                 $checkin = new DateTime($phongData['check_in']);
                 $checkout = new DateTime($phongData['check_out']);
-                $hours = max(1, ceil(($checkout->getTimestamp() - $checkin->getTimestamp()) / 3600));
-                $tienPhong = $phong->gia * $hours;
+                $timeDiffSeconds = $checkout->getTimestamp() - $checkin->getTimestamp();
+                $hoursExact = max(1, $timeDiffSeconds / 3600); // Giờ chính xác (thập phân)
+                $tienPhong = round($phong->gia * $hoursExact); // Làm tròn số tiền
 
                 // Tạo record hóa đơn phòng
                 $hoaDonPhong = new HoaDonPhong();

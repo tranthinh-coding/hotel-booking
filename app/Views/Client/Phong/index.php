@@ -1039,7 +1039,8 @@ ob_start();
                                             <i class="fas fa-eye"></i>
                                             Chi tiết
                                         </a>
-                                        <a href="/booking/checkout?room_id=<?= $phong->ma_phong ?>" class="room-btn btn-primary">
+                                        <a href="/booking/checkout?room_id=<?= $phong->ma_phong ?>"
+                                            class="room-btn btn-primary">
                                             <i class="fas fa-calendar-plus"></i>
                                             Đặt ngay
                                         </a>

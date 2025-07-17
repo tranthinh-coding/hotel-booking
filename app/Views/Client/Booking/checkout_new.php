@@ -755,10 +755,11 @@ ob_start();
 
                     if (checkin && checkout && !isNaN(checkin.getTime()) && !isNaN(checkout.getTime())) {
                         const timeDiff = checkout.getTime() - checkin.getTime();
-                        const hours = Math.max(1, Math.ceil(timeDiff / (1000 * 60 * 60)));
+                        const hoursExact = Math.max(1, timeDiff / (1000 * 60 * 60)); // Giờ chính xác thập phân
+                        const hours = Math.max(1, Math.ceil(timeDiff / (1000 * 60 * 60))); // Giờ hiển thị
 
-                        if (!isNaN(hours) && hours > 0) {
-                            roomTotal += price * hours;
+                        if (!isNaN(hoursExact) && hoursExact > 0) {
+                            roomTotal += Math.round(price * hoursExact); // Tính theo giờ chính xác và làm tròn
                         }
                     }
                 }
