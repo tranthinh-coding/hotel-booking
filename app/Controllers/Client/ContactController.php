@@ -43,10 +43,21 @@ class ContactController
             return;
         }
 
-        // Xử lý lưu thông tin liên hệ (ví dụ: lưu vào DB hoặc gửi email)
-        // ...
-        // Ví dụ: chỉ hiển thị thông báo thành công
-        flash_success('Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm nhất có thể.');
+        // Lưu thông tin liên hệ vào DB
+        $lienHe = new \HotelBooking\Models\LienHe();
+        $lienHe->ho_ten = $hoTen;
+        $lienHe->email = $email;
+        $lienHe->so_dien_thoai = $soDienThoai;
+        $lienHe->chu_de = $chuDe;
+        $lienHe->noi_dung = $noiDung;
+        $lienHe->trang_thai = \HotelBooking\Models\LienHe::TRANG_THAI_MOI;
+        $lienHe->ngay_gui = date('Y-m-d H:i:s');
+
+        if ($lienHe->save()) {
+            flash_success('Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm nhất có thể.');
+        } else {
+            flash_error('Có lỗi xảy ra, vui lòng thử lại sau.');
+        }
         redirect('/contact');
     }
 }
