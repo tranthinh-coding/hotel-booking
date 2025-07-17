@@ -269,6 +269,102 @@ class TaiKhoanController
     }
 
     /**
+     * Hủy đặt phòng
+     */
+    public function cancelBooking()
+    {
+        if (!$this->checkAuth()) return;
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            flash_error('Yêu cầu không hợp lệ');
+            redirect('/tai-khoan/lich-su-dat-phong');
+            return;
+        }
+
+        $maHoaDon = post('ma_hoa_don');
+        if (!$maHoaDon) {
+            flash_error('Thiếu thông tin hóa đơn');
+            redirect('/tai-khoan/lich-su-dat-phong');
+            return;
+        }
+
+        try {
+            // Lấy thông tin hóa đơn từ bảng hoa_don_tong
+            $sql = "SELECT * FROM hoa_don_tong WHERE ma_hoa_don = ? AND ma_khach_hang = ?";
+            $result = \HotelBooking\Facades\DB::query($sql, [$maHoaDon, $_SESSION['user_id']]);
+            
+            if (!$result || count($result) === 0) {
+                flash_error('Không tìm thấy đơn đặt phòng');
+                redirect('/tai-khoan/lich-su-dat-phong');
+                return;
+            }
+
+            $hoaDon = (object) $result[0];
+
+            // Kiểm tra trạng thái có thể hủy (chỉ cho phép hủy khi đang chờ xác nhận)
+            if ($hoaDon->trang_thai !== TrangThaiHoaDon::CHO_XAC_NHAN) {
+                flash_error('Chỉ có thể hủy đơn đặt phòng đang chờ xác nhận (Hiện tại: ' . $hoaDon->trang_thai . ')');
+                redirect('/tai-khoan/lich-su-dat-phong');
+                return;
+            }
+
+            // Kiểm tra thời gian hủy (không cho phép hủy quá gần giờ check-in)
+            $sqlCheckIn = "SELECT MIN(check_in) as earliest_checkin FROM hoa_don_phong WHERE ma_hoa_don = ?";
+            $checkInResult = \HotelBooking\Facades\DB::query($sqlCheckIn, [$maHoaDon]);
+            
+            if ($checkInResult && count($checkInResult) > 0) {
+                $earliestCheckIn = $checkInResult[0]->earliest_checkin;
+                
+                if ($earliestCheckIn) {
+                    // Đảm bảo timezone đúng
+                    date_default_timezone_set('Asia/Ho_Chi_Minh');
+                    
+                    $checkInTime = strtotime($earliestCheckIn);
+                    $currentTime = time();
+                    $timeDiff = $checkInTime - $currentTime;
+                    $hoursDiff = $timeDiff / 3600;
+                    
+                    // Debug: Log thông tin thời gian
+                    error_log("=== CANCEL BOOKING DEBUG ===");
+                    error_log("Database check-in: " . $earliestCheckIn);
+                    error_log("Current time: " . date('Y-m-d H:i:s', $currentTime));
+                    error_log("Check-in time: " . date('Y-m-d H:i:s', $checkInTime));
+                    error_log("Time difference: " . $timeDiff . " seconds");
+                    error_log("Hours difference: " . round($hoursDiff, 2) . " hours");
+                    error_log("============================");
+                    
+                    // Không cho phép hủy nếu còn ít hơn 2 giờ
+                    if ($timeDiff < 2 * 3600) {
+                        $hoursLeft = max(0, round($hoursDiff, 1));
+                        flash_error("Không thể hủy đặt phòng khi còn ít hơn 2 giờ trước giờ nhận phòng (còn lại: {$hoursLeft} giờ)");
+                        redirect('/tai-khoan/lich-su-dat-phong');
+                        return;
+                    }
+                }
+            }
+
+            // Cập nhật trạng thái hóa đơn thành đã hủy
+            $updateSql = "UPDATE hoa_don_tong SET trang_thai = ?, ghi_chu = CONCAT(COALESCE(ghi_chu, ''), '\nHủy bởi khách hàng lúc: ', ?) WHERE ma_hoa_don = ?";
+            $updateResult = \HotelBooking\Facades\DB::query($updateSql, [
+                'da_huy',
+                date('d/m/Y H:i:s'),
+                $maHoaDon
+            ]);
+
+            if ($updateResult) {
+                flash_success('Hủy đặt phòng thành công');
+            } else {
+                flash_error('Có lỗi xảy ra khi hủy đặt phòng');
+            }
+
+        } catch (Exception $e) {
+            flash_error('Có lỗi xảy ra: ' . $e->getMessage());
+        }
+
+        redirect('/tai-khoan/lich-su-dat-phong');
+    }
+
+    /**
      * Lấy thống kê người dùng
      */
     private function getUserStats($userId)

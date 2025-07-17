@@ -235,15 +235,30 @@ ob_start();
 
                                     <!-- Action Buttons -->
                                     <div class="flex flex-col space-y-2 pt-2">
-                                        <?php if ($trangThai === 'cho_xac_nhan'): ?>
-                                            <form action="/huy-dat-phong/<?= $maHoaDon ?>" method="POST"
-                                                onsubmit="return confirm('Bạn có chắc chắn muốn hủy đặt phòng này?')">
-                                                <button type="submit"
-                                                    class="w-full bg-red-500 text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-red-600 transition-colors">
-                                                    <i class="fas fa-times mr-1"></i>
-                                                    Hủy đặt phòng
-                                                </button>
-                                            </form>
+                                        <?php 
+                                        // Kiểm tra có thể hủy không (chỉ khi còn ít nhất 2 giờ)
+                                        $canCancel = false;
+                                        if ($trangThai === 'cho_xac_nhan' && $checkIn) {
+                                            $checkInTime = strtotime($checkIn);
+                                            $currentTime = time();
+                                            $timeDiff = $checkInTime - $currentTime;
+                                            $canCancel = $timeDiff >= 2 * 3600; // 2 hours
+                                        }
+                                        ?>
+                                        
+                                        <?php if ($canCancel): ?>
+                                            <button onclick="showCancelModal(<?= $maHoaDon ?>, '<?= htmlspecialchars($tenPhong) ?>')"
+                                                class="w-full bg-red-500 text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-red-600 transition-colors">
+                                                <i class="fas fa-times mr-1"></i>
+                                                Hủy đặt phòng
+                                            </button>
+                                        <?php elseif ($trangThai === 'cho_xac_nhan'): ?>
+                                            <button disabled
+                                                class="w-full bg-gray-300 text-gray-500 py-2 px-4 rounded-lg text-sm font-medium cursor-not-allowed"
+                                                title="Không thể hủy khi còn ít hơn 2 giờ">
+                                                <i class="fas fa-ban mr-1"></i>
+                                                Không thể hủy
+                                            </button>
                                         <?php endif; ?>
 
                                         <?php if ($trangThai === 'da_thanh_toan' && $checkOut && new DateTime($checkOut) < new DateTime()): ?>
@@ -336,6 +351,67 @@ ob_start();
     </div>
 </div>
 
+<!-- Cancel Booking Modal -->
+<div id="cancelModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-xl shadow-xs max-w-md w-full">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-red-600">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                        Xác nhận hủy đặt phòng
+                    </h3>
+                    <button onclick="closeCancelModal()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="mb-6">
+                    <p class="text-gray-700 mb-2">Bạn có chắc chắn muốn hủy đặt phòng?</p>
+                    <p class="text-sm text-gray-600">
+                        <strong>Phòng:</strong> <span id="cancel_room_name"></span><br>
+                        <strong>Mã đặt:</strong> #<span id="cancel_booking_id"></span>
+                    </p>
+                    <div class="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <p class="text-sm text-yellow-800">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            <strong>Lưu ý:</strong> Chỉ có thể hủy đặt phòng khi còn ít nhất 2 giờ trước giờ nhận phòng.
+                        </p>
+                    </div>
+                    <div class="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                        <p class="text-sm text-red-800">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>
+                            <strong>Cảnh báo:</strong> Hành động này không thể hoàn tác.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex space-x-3">
+                    <button onclick="closeCancelModal()" 
+                        class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg font-medium hover:bg-gray-400 transition-colors">
+                        <i class="fas fa-arrow-left mr-1"></i>
+                        Quay lại
+                    </button>
+                    <form id="cancelForm" method="POST" action="/tai-khoan/huy-dat-phong" class="flex-1" onsubmit="showCancelLoading()">
+                        <input type="hidden" id="cancel_ma_hoa_don" name="ma_hoa_don" value="">
+                        <button type="submit" id="cancelButton"
+                            class="w-full bg-red-500 text-white py-2 px-4 rounded-lg font-medium hover:bg-red-600 transition-colors">
+                            <span id="cancelButtonText">
+                                <i class="fas fa-times mr-1"></i>
+                                Xác nhận hủy
+                            </span>
+                            <span id="cancelButtonLoading" class="hidden">
+                                <i class="fas fa-spinner fa-spin mr-1"></i>
+                                Đang xử lý...
+                            </span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Booking Details Modal -->
 <div id="bookingDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
     <div class="flex items-center justify-center min-h-screen p-4">
@@ -408,6 +484,35 @@ ob_start();
             closeBookingDetailsModal();
         }
     });
+
+    document.getElementById('cancelModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeCancelModal();
+        }
+    });
+
+    function showCancelModal(maHoaDon, tenPhong) {
+        document.getElementById('cancel_booking_id').textContent = maHoaDon;
+        document.getElementById('cancel_room_name').textContent = tenPhong;
+        document.getElementById('cancel_ma_hoa_don').value = maHoaDon;
+        document.getElementById('cancelModal').classList.remove('hidden');
+    }
+
+    function closeCancelModal() {
+        document.getElementById('cancelModal').classList.add('hidden');
+        // Reset button state
+        document.getElementById('cancelButton').disabled = false;
+        document.getElementById('cancelButtonText').classList.remove('hidden');
+        document.getElementById('cancelButtonLoading').classList.add('hidden');
+        // Reset form
+        document.getElementById('cancel_ma_hoa_don').value = '';
+    }
+
+    function showCancelLoading() {
+        document.getElementById('cancelButton').disabled = true;
+        document.getElementById('cancelButtonText').classList.add('hidden');
+        document.getElementById('cancelButtonLoading').classList.remove('hidden');
+    }
 
     function showBookingDetails(maHoaDon) {
         // Hiển thị modal và loading

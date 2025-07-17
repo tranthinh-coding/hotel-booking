@@ -75,6 +75,7 @@ Route::get('/tai-khoan/lich-su-danh-gia', 'HotelBooking\Controllers\Client\TaiKh
 Route::post('/tai-khoan/gui-danh-gia', 'HotelBooking\Controllers\Client\TaiKhoanController', 'submitReview');
 Route::post('/tai-khoan/cap-nhat-danh-gia', 'HotelBooking\Controllers\Client\TaiKhoanController', 'updateReview');
 Route::post('/tai-khoan/xoa-danh-gia', 'HotelBooking\Controllers\Client\TaiKhoanController', 'deleteReview');
+Route::post('/tai-khoan/huy-dat-phong', 'HotelBooking\Controllers\Client\TaiKhoanController', 'cancelBooking');
 
 // ===== ADMIN ROUTES =====
 

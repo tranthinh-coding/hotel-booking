@@ -1,5 +1,5 @@
 <?php
-
+date_default_timezone_set('Asia/Ho_Chi_Minh');
 // PSR-4 Autoloader
 spl_autoload_register(function(string $class) {
     $prefix = 'HotelBooking\\';

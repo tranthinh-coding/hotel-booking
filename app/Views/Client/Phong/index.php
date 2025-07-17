@@ -895,20 +895,6 @@ ob_start();
 
                 <div class="form-group">
                     <label class="form-label">
-                        <i class="fas fa-users"></i>
-                        Số khách
-                    </label>
-                    <select name="guests" class="form-input">
-                        <?php for ($i = 1; $i <= 8; $i++): ?>
-                            <option value="<?= $i ?>" <?= ($_GET['guests'] ?? 1) == $i ? 'selected' : '' ?>>
-                                <?= $i ?> khách
-                            </option>
-                        <?php endfor; ?>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">
                         <i class="fas fa-bed"></i>
                         Loại phòng
                     </label>
