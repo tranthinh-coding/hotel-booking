@@ -12,52 +12,52 @@ ob_start();
         box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    
+
     .room-card:hover {
         box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
         transform: translateY(-2px);
     }
-    
+
     .glass-effect {
         backdrop-filter: blur(12px);
         background: rgba(255, 255, 255, 0.9);
         border: 1px solid rgba(255, 255, 255, 0.3);
     }
-    
+
     .gradient-bg {
-        background: linear-gradient(135deg, 
-            rgba(56, 189, 248, 0.05) 0%, 
-            rgba(14, 165, 233, 0.05) 50%, 
-            rgba(6, 182, 212, 0.05) 100%);
+        background: linear-gradient(135deg,
+                rgba(56, 189, 248, 0.05) 0%,
+                rgba(14, 165, 233, 0.05) 50%,
+                rgba(6, 182, 212, 0.05) 100%);
     }
-    
+
     .btn-primary {
         background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
         border: none;
         box-shadow: 0 4px 14px rgba(14, 165, 233, 0.2);
         transition: all 0.3s ease;
     }
-    
+
     .btn-primary:hover {
         transform: translateY(-1px);
         box-shadow: 0 6px 20px rgba(14, 165, 233, 0.3);
         background: linear-gradient(135deg, #0284c7 0%, #0891b2 100%);
     }
-    
+
     .form-input {
         border: 1px solid #e2e8f0;
         border-radius: 12px;
         transition: all 0.2s ease;
         background: rgba(255, 255, 255, 0.8);
     }
-    
+
     .form-input:focus {
         border-color: #0ea5e9;
         box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
         outline: none;
         background: rgba(255, 255, 255, 1);
     }
-    
+
     .amenity-icon {
         width: 40px;
         height: 40px;
@@ -70,14 +70,14 @@ ob_start();
         font-size: 16px;
         margin-right: 12px;
     }
-    
+
     .price-card {
         background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
         border: 1px solid #e2e8f0;
         border-radius: 16px;
         padding: 20px;
     }
-    
+
     .stat-card {
         background: rgba(255, 255, 255, 0.8);
         border: 1px solid rgba(226, 232, 240, 0.5);
@@ -86,7 +86,7 @@ ob_start();
         text-align: center;
         transition: all 0.3s ease;
     }
-    
+
     .stat-card:hover {
         background: rgba(255, 255, 255, 1);
         transform: translateY(-2px);
@@ -105,7 +105,8 @@ ob_start();
             <i class="fas fa-chevron-right text-xs text-slate-400"></i>
             <a href="/phong" class="hover:text-blue-600 transition-colors text-sm">Phòng</a>
             <i class="fas fa-chevron-right text-xs text-slate-400"></i>
-            <span class="text-slate-800 font-medium text-sm"><?= htmlspecialchars($phong->ten_phong ?? 'Chi tiết phòng') ?></span>
+            <span
+                class="text-slate-800 font-medium text-sm"><?= htmlspecialchars($phong->ten_phong ?? 'Chi tiết phòng') ?></span>
         </nav>
 
         <!-- Page Header -->
@@ -114,7 +115,8 @@ ob_start();
                 <?= htmlspecialchars($phong->ten_phong ?? '') ?>
             </h1>
             <div class="flex items-center justify-center space-x-4 text-slate-600">
-                <span class="px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full text-sm font-medium border border-slate-200">
+                <span
+                    class="px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full text-sm font-medium border border-slate-200">
                     <i class="fas fa-tag mr-2 text-blue-500"></i>
                     <?= htmlspecialchars($loaiPhong->ten_loai_phong ?? 'Loại phòng') ?>
                 </span>
@@ -137,12 +139,12 @@ ob_start();
                     <?php if (!empty($hinhAnhPhong) && count($hinhAnhPhong) > 0): ?>
                         <!-- Main Image -->
                         <div class="relative">
-                            <img id="main-image" 
-                                 src="<?= $hinhAnhPhong[0]->getImageUrl() ?>" 
-                                 alt="<?= htmlspecialchars($phong->ten_phong ?? '') ?>"
-                                 class="w-full h-96 object-cover transition-all duration-300">
+                            <img id="main-image" src="<?= $hinhAnhPhong[0]->getImageUrl() ?>"
+                                alt="<?= htmlspecialchars($phong->ten_phong ?? '') ?>"
+                                class="w-full h-96 object-cover transition-all duration-300">
                             <div class="absolute top-6 left-6">
-                                <span class="px-4 py-2 bg-green-500 text-white text-sm font-semibold rounded-full shadow-lg">
+                                <span
+                                    class="px-4 py-2 bg-green-500 text-white text-sm font-semibold rounded-full shadow-lg">
                                     <?= htmlspecialchars($phong->trang_thai ?? 'available') === 'available' ? 'Còn trống' : 'Đã đặt' ?>
                                 </span>
                             </div>
@@ -153,19 +155,21 @@ ob_start();
                                 <p class="text-white/90">Phòng cao cấp với đầy đủ tiện nghi hiện đại</p>
                             </div>
                         </div>
-                        
+
                         <!-- Thumbnail Gallery -->
                         <?php if (count($hinhAnhPhong) > 1): ?>
                             <div class="p-6 bg-slate-50">
-                                <h4 class="font-semibold text-slate-800 mb-4">Hình ảnh phòng (<?= count($hinhAnhPhong) ?> ảnh)</h4>
+                                <h4 class="font-semibold text-slate-800 mb-4">Hình ảnh phòng (<?= count($hinhAnhPhong) ?> ảnh)
+                                </h4>
                                 <div class="grid grid-cols-4 md:grid-cols-6 gap-3">
                                     <?php foreach ($hinhAnhPhong as $index => $hinhAnh): ?>
                                         <div class="relative cursor-pointer group">
-                                            <img src="<?= $hinhAnh->getImageUrl() ?>" 
-                                                 alt="Hình ảnh phòng <?= $index + 1 ?>"
-                                                 class="thumbnail w-full h-20 object-cover rounded-lg border-2 border-transparent group-hover:border-blue-500 transition-all duration-200 <?= $index === 0 ? 'border-blue-500' : '' ?>"
-                                                 onclick="changeMainImage('<?= $hinhAnh->getImageUrl() ?>', this)">
-                                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-200 rounded-lg"></div>
+                                            <img src="<?= $hinhAnh->getImageUrl() ?>" alt="Hình ảnh phòng <?= $index + 1 ?>"
+                                                class="thumbnail w-full h-20 object-cover rounded-lg border-2 border-transparent group-hover:border-blue-500 transition-all duration-200 <?= $index === 0 ? 'border-blue-500' : '' ?>"
+                                                onclick="changeMainImage('<?= $hinhAnh->getImageUrl() ?>', this)">
+                                            <div
+                                                class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-200 rounded-lg">
+                                            </div>
                                         </div>
                                     <?php endforeach; ?>
                                 </div>
@@ -174,11 +178,11 @@ ob_start();
                     <?php else: ?>
                         <!-- Default Image -->
                         <div class="relative">
-                            <img src="/assets/images/default-room.jpg" 
-                                 alt="<?= htmlspecialchars($phong->ten_phong ?? '') ?>"
-                                 class="w-full h-96 object-cover">
+                            <img src="/assets/images/default-room.jpg"
+                                alt="<?= htmlspecialchars($phong->ten_phong ?? '') ?>" class="w-full h-96 object-cover">
                             <div class="absolute top-6 left-6">
-                                <span class="px-4 py-2 bg-green-500 text-white text-sm font-semibold rounded-full shadow-lg">
+                                <span
+                                    class="px-4 py-2 bg-green-500 text-white text-sm font-semibold rounded-full shadow-lg">
                                     <?= htmlspecialchars($phong->trang_thai ?? 'available') === 'available' ? 'Còn trống' : 'Đã đặt' ?>
                                 </span>
                             </div>
@@ -199,7 +203,8 @@ ob_start();
                             <i class="fas fa-bed"></i>
                         </div>
                         <div class="text-sm text-slate-600 mb-1">Loại phòng</div>
-                        <div class="font-semibold text-slate-800"><?= htmlspecialchars($loaiPhong->ten_loai_phong ?? 'Standard') ?></div>
+                        <div class="font-semibold text-slate-800">
+                            <?= htmlspecialchars($loaiPhong->ten_loai_phong ?? 'Standard') ?></div>
                     </div>
 
                     <div class="stat-card">
@@ -207,7 +212,8 @@ ob_start();
                             <i class="fas fa-users"></i>
                         </div>
                         <div class="text-sm text-slate-600 mb-1">Sức chứa</div>
-                        <div class="font-semibold text-slate-800"><?= $loaiPhong->suc_chua ?? $phong->suc_chua ?? 2 ?> người</div>
+                        <div class="font-semibold text-slate-800"><?= $loaiPhong->suc_chua ?? $phong->suc_chua ?? 2 ?>
+                            người</div>
                     </div>
 
                     <div class="stat-card">
@@ -215,7 +221,8 @@ ob_start();
                             <i class="fas fa-ruler-combined"></i>
                         </div>
                         <div class="text-sm text-slate-600 mb-1">Diện tích</div>
-                        <div class="font-semibold text-slate-800"><?= $loaiPhong->dien_tich ?? $phong->dien_tich ?? 25 ?>m²</div>
+                        <div class="font-semibold text-slate-800">
+                            <?= $loaiPhong->dien_tich ?? $phong->dien_tich ?? 25 ?>m²</div>
                     </div>
 
                     <div class="stat-card">
@@ -230,14 +237,15 @@ ob_start();
                 <!-- Room Description -->
                 <div class="room-card rounded-3xl p-8">
                     <h3 class="text-2xl font-bold text-slate-800 mb-6">Mô tả phòng</h3>
-                    
+
                     <?php if (isNotEmpty($phong->mo_ta)): ?>
                         <p class="text-slate-600 leading-relaxed mb-6">
                             <?= nl2br(htmlspecialchars($phong->mo_ta)) ?>
                         </p>
                     <?php else: ?>
                         <p class="text-slate-600 leading-relaxed mb-6">
-                            Phòng được thiết kế hiện đại với đầy đủ tiện nghi cao cấp, mang đến trải nghiệm nghỉ dưỡng tuyệt vời cho quý khách. 
+                            Phòng được thiết kế hiện đại với đầy đủ tiện nghi cao cấp, mang đến trải nghiệm nghỉ dưỡng tuyệt
+                            vời cho quý khách.
                             Không gian rộng rãi, thoáng mát với view đẹp, đảm bảo sự thoải mái và riêng tư tuyệt đối.
                         </p>
                     <?php endif; ?>
@@ -307,22 +315,18 @@ ob_start();
                         <h3 class="text-2xl font-bold text-slate-800 mb-2">Đặt phòng ngay</h3>
                         <p class="text-slate-600">Hoàn tất đặt phòng chỉ trong vài phút</p>
                     </div>
-                    
+
                     <form action="/booking/checkout" method="GET" class="space-y-6">
-                        <input type="hidden" name="phong_id" value="<?= $phong->id ?? '' ?>">
-                        
+                        <input type="hidden" name="phong_id" value="<?= $phong->ma_phong ?? '' ?>">
+
                         <!-- Check-in -->
                         <div>
                             <label for="ngay_nhan_phong" class="block text-sm font-semibold text-slate-700 mb-3">
                                 <i class="fas fa-calendar-plus mr-2 text-blue-500"></i>
                                 Thời gian nhận phòng
                             </label>
-                            <input type="datetime-local" 
-                                   id="ngay_nhan_phong" 
-                                   name="ngay_nhan_phong" 
-                                   class="form-input w-full px-4 py-3"
-                                   required
-                                   min="<?= date('Y-m-d\TH:i') ?>">
+                            <input type="datetime-local" id="ngay_nhan_phong" name="ngay_nhan_phong"
+                                class="form-input w-full px-4 py-3" required min="<?= date('Y-m-d\TH:i') ?>">
                         </div>
 
                         <!-- Check-out -->
@@ -331,11 +335,8 @@ ob_start();
                                 <i class="fas fa-calendar-minus mr-2 text-blue-500"></i>
                                 Thời gian trả phòng
                             </label>
-                            <input type="datetime-local" 
-                                   id="ngay_tra_phong" 
-                                   name="ngay_tra_phong" 
-                                   class="form-input w-full px-4 py-3"
-                                   required>
+                            <input type="datetime-local" id="ngay_tra_phong" name="ngay_tra_phong"
+                                class="form-input w-full px-4 py-3" required>
                         </div>
 
                         <!-- Number of guests -->
@@ -343,17 +344,14 @@ ob_start();
                             <label for="so_nguoi" class="block text-sm font-semibold text-slate-700 mb-3">
                                 <i class="fas fa-users mr-2 text-blue-500"></i>
                                 Số khách
-                            </label>                                <select id="so_nguoi" 
-                                        name="so_nguoi" 
-                                        class="form-input w-full px-4 py-3"
-                                        required>
-                                    <?php 
-                                    $maxGuests = $loaiPhong->suc_chua ?? $phong->suc_chua ?? 4;
-                                    for ($i = 1; $i <= $maxGuests; $i++): 
+                            </label> <select id="so_nguoi" name="so_nguoi" class="form-input w-full px-4 py-3" required>
+                                <?php
+                                $maxGuests = $loaiPhong->suc_chua ?? $phong->suc_chua ?? 4;
+                                for ($i = 1; $i <= $maxGuests; $i++):
                                     ?>
-                                        <option value="<?= $i ?>"><?= $i ?> <?= $i == 1 ? 'khách' : 'khách' ?></option>
-                                    <?php endfor; ?>
-                                </select>
+                                    <option value="<?= $i ?>"><?= $i ?>     <?= $i == 1 ? 'khách' : 'khách' ?></option>
+                                <?php endfor; ?>
+                            </select>
                         </div>
 
                         <!-- Price Breakdown -->
@@ -362,7 +360,8 @@ ob_start();
                             <div class="space-y-3">
                                 <div class="flex justify-between items-center">
                                     <span class="text-slate-600">Giá phòng/giờ:</span>
-                                    <span class="font-semibold text-slate-800"><?= number_format($phong->gia ?? 0) ?>₫</span>
+                                    <span
+                                        class="font-semibold text-slate-800"><?= number_format($phong->gia ?? 0) ?>₫</span>
                                 </div>
                                 <div class="flex justify-between items-center">
                                     <span class="text-slate-600">Thời gian thuê:</span>
@@ -379,14 +378,14 @@ ob_start();
 
                         <!-- Book Button -->
                         <?php if (auth_check()): ?>
-                            <button type="submit" 
-                                    class="btn-primary w-full text-white py-4 rounded-xl font-semibold text-lg transition-all transform hover:scale-105">
+                            <button type="submit"
+                                class="btn-primary w-full text-white py-4 rounded-xl font-semibold text-lg transition-all transform hover:scale-105">
                                 <i class="fas fa-credit-card mr-2"></i>
                                 Tiến hành đặt phòng
                             </button>
                         <?php else: ?>
-                            <a href="/login" 
-                               class="btn-primary block w-full text-white py-4 rounded-xl font-semibold text-lg transition-all transform hover:scale-105 text-center">
+                            <a href="/login"
+                                class="btn-primary block w-full text-white py-4 rounded-xl font-semibold text-lg transition-all transform hover:scale-105 text-center">
                                 <i class="fas fa-sign-in-alt mr-2"></i>
                                 Đăng nhập để đặt phòng
                             </a>
@@ -413,139 +412,139 @@ ob_start();
 
 <!-- Enhanced JavaScript -->
 <script>
-// Function to change main image
-function changeMainImage(imageUrl, thumbnailElement) {
-    const mainImage = document.getElementById('main-image');
-    const thumbnails = document.querySelectorAll('.thumbnail');
-    
-    // Update main image
-    mainImage.src = imageUrl;
-    
-    // Update thumbnail active state
-    thumbnails.forEach(thumb => {
-        thumb.classList.remove('border-blue-500');
-        thumb.classList.add('border-transparent');
-    });
-    
-    thumbnailElement.classList.remove('border-transparent');
-    thumbnailElement.classList.add('border-blue-500');
-}
+    // Function to change main image
+    function changeMainImage(imageUrl, thumbnailElement) {
+        const mainImage = document.getElementById('main-image');
+        const thumbnails = document.querySelectorAll('.thumbnail');
 
-document.addEventListener('DOMContentLoaded', function() {
-    const checkinInput = document.getElementById('ngay_nhan_phong');
-    const checkoutInput = document.getElementById('ngay_tra_phong');
-    const hourlyRate = <?= $phong->gia ?? 0 ?>;
-    const rentalHoursEl = document.getElementById('rental-hours');
-    const totalPriceEl = document.getElementById('total-price');
-    
-    // Set minimum time to current time
-    const now = new Date();
-    const currentDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-    checkinInput.min = currentDateTime;
-    
-    function formatCurrency(amount) {
-        return new Intl.NumberFormat('vi-VN').format(amount) + '₫';
+        // Update main image
+        mainImage.src = imageUrl;
+
+        // Update thumbnail active state
+        thumbnails.forEach(thumb => {
+            thumb.classList.remove('border-blue-500');
+            thumb.classList.add('border-transparent');
+        });
+
+        thumbnailElement.classList.remove('border-transparent');
+        thumbnailElement.classList.add('border-blue-500');
     }
-    
-    function calculatePrice() {
-        const checkin = new Date(checkinInput.value);
-        const checkout = new Date(checkoutInput.value);
-        
-        if (checkinInput.value && checkoutInput.value && checkout > checkin) {
-            const diffMs = checkout - checkin;
-            const hours = Math.ceil(diffMs / (1000 * 60 * 60));
-            const minHours = Math.max(hours, 2); // Minimum 2 hours
-            
-            rentalHoursEl.textContent = minHours + ' giờ';
-            
-            const total = minHours * hourlyRate;
-            totalPriceEl.textContent = formatCurrency(total);
-            
-            return true;
-        } else {
-            rentalHoursEl.textContent = '-';
-            totalPriceEl.textContent = '0₫';
-            return false;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkinInput = document.getElementById('ngay_nhan_phong');
+        const checkoutInput = document.getElementById('ngay_tra_phong');
+        const hourlyRate = <?= $phong->gia ?? 0 ?>;
+        const rentalHoursEl = document.getElementById('rental-hours');
+        const totalPriceEl = document.getElementById('total-price');
+
+        // Set minimum time to current time
+        const now = new Date();
+        const currentDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+        checkinInput.min = currentDateTime;
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN').format(amount) + '₫';
         }
-    }
-    
-    // Update minimum checkout time when checkin changes
-    checkinInput.addEventListener('change', function() {
-        if (this.value) {
-            const minCheckout = new Date(this.value);
-            minCheckout.setHours(minCheckout.getHours() + 2);
-            const minCheckoutStr = new Date(minCheckout.getTime() - minCheckout.getTimezoneOffset() * 60000)
-                                   .toISOString().slice(0, 16);
-            checkoutInput.min = minCheckoutStr;
-            
-            // Auto-set checkout if not set
-            if (!checkoutInput.value) {
-                checkoutInput.value = minCheckoutStr;
-            }
-        }
-        calculatePrice();
-    });
-    
-    checkoutInput.addEventListener('change', calculatePrice);
-    
-    // Form validation
-    const form = document.querySelector('form');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            if (!calculatePrice()) {
-                e.preventDefault();
-                alert('Vui lòng chọn thời gian nhận và trả phòng hợp lệ!');
-                return false;
-            }
-            
+
+        function calculatePrice() {
             const checkin = new Date(checkinInput.value);
             const checkout = new Date(checkoutInput.value);
-            const now = new Date();
-            
-            if (checkin < now) {
-                e.preventDefault();
-                alert('Thời gian nhận phòng phải sau thời điểm hiện tại!');
+
+            if (checkinInput.value && checkoutInput.value && checkout > checkin) {
+                const diffMs = checkout - checkin;
+                const hours = Math.ceil(diffMs / (1000 * 60 * 60));
+                const minHours = Math.max(hours, 2); // Minimum 2 hours
+
+                rentalHoursEl.textContent = minHours + ' giờ';
+
+                const total = minHours * hourlyRate;
+                totalPriceEl.textContent = formatCurrency(total);
+
+                return true;
+            } else {
+                rentalHoursEl.textContent = '-';
+                totalPriceEl.textContent = '0₫';
                 return false;
             }
-            
-            if (checkout <= checkin) {
-                e.preventDefault();
-                alert('Thời gian trả phòng phải sau thời gian nhận phòng!');
-                return false;
+        }
+
+        // Update minimum checkout time when checkin changes
+        checkinInput.addEventListener('change', function () {
+            if (this.value) {
+                const minCheckout = new Date(this.value);
+                minCheckout.setHours(minCheckout.getHours() + 2);
+                const minCheckoutStr = new Date(minCheckout.getTime() - minCheckout.getTimezoneOffset() * 60000)
+                    .toISOString().slice(0, 16);
+                checkoutInput.min = minCheckoutStr;
+
+                // Auto-set checkout if not set
+                if (!checkoutInput.value) {
+                    checkoutInput.value = minCheckoutStr;
+                }
             }
-            
-            // Show loading
-            const submitBtn = form.querySelector('button[type="submit"]');
-            if (submitBtn) {
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Đang xử lý...';
-                submitBtn.disabled = true;
-            }
+            calculatePrice();
         });
-    }
-    
-    // Smooth scroll animations
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-    
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
+
+        checkoutInput.addEventListener('change', calculatePrice);
+
+        // Form validation
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                if (!calculatePrice()) {
+                    e.preventDefault();
+                    alert('Vui lòng chọn thời gian nhận và trả phòng hợp lệ!');
+                    return false;
+                }
+
+                const checkin = new Date(checkinInput.value);
+                const checkout = new Date(checkoutInput.value);
+                const now = new Date();
+
+                if (checkin < now) {
+                    e.preventDefault();
+                    alert('Thời gian nhận phòng phải sau thời điểm hiện tại!');
+                    return false;
+                }
+
+                if (checkout <= checkin) {
+                    e.preventDefault();
+                    alert('Thời gian trả phòng phải sau thời gian nhận phòng!');
+                    return false;
+                }
+
+                // Show loading
+                const submitBtn = form.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Đang xử lý...';
+                    submitBtn.disabled = true;
+                }
+            });
+        }
+
+        // Smooth scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function (entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all cards for animation
+        document.querySelectorAll('.room-card, .stat-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.6s ease-out';
+            observer.observe(card);
         });
-    }, observerOptions);
-    
-    // Observe all cards for animation
-    document.querySelectorAll('.room-card, .stat-card').forEach(card => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(30px)';
-        card.style.transition = 'all 0.6s ease-out';
-        observer.observe(card);
     });
-});
 </script>
 
 <?php
