@@ -58,7 +58,7 @@ ob_start();
 }
 </style>
 
-<div class="min-h-screen bg-gray-50">
+<div class="bg-gray-50">
     <!-- Header -->
     <div class="bg-gradient-to-r from-blue-600 to-teal-600 py-12">
         <div class="max-w-7xl mx-auto px-4">

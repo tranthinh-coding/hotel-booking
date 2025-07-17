@@ -160,10 +160,11 @@ class AdminController
                 ];
 
                 foreach ($activitiesResult as $activity) {
+                    $timeString = !empty($activity['thoi_gian_dat']) ? date('d/m/Y H:i', strtotime($activity['thoi_gian_dat'])) : '';
                     $recentActivities[] = [
                         'title' => 'Đơn đặt phòng #' . $activity['ma_hoa_don'] . ' - ' . ($statusLabels[$activity['trang_thai']] ?? 'Không xác định'),
                         'subtitle' => 'Khách hàng: ' . ($activity['khach_hang'] ?? 'N/A') . ' - ' . number_format($activity['tong_tien']) . '₫',
-                        'time' => date('d/m/Y H:i', strtotime($activity['thoi_gian_dat'])),
+                        'time' => $timeString,
                         'icon' => 'calendar-check',
                         'color' => $statusColors[$activity['trang_thai']] ?? 'gray'
                     ];
@@ -171,6 +172,34 @@ class AdminController
             }
         } catch (Exception $e) {
             $recentActivities = [];
+        }
+
+        // Doanh thu 7 ngày qua
+        $revenue7DaysLabels = [];
+        $revenue7DaysData = [];
+        try {
+            $result = \HotelBooking\Facades\DB::query(
+                "SELECT DATE(thoi_gian_dat) as ngay, COALESCE(SUM(tong_tien),0) as revenue
+                 FROM hoa_don_tong
+                 WHERE thoi_gian_dat >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+                   AND trang_thai IN (?, ?)
+                 GROUP BY DATE(thoi_gian_dat)
+                 ORDER BY ngay ASC",
+                [TrangThaiHoaDon::DA_THANH_TOAN, TrangThaiHoaDon::DA_XAC_NHAN]
+            );
+            // Tạo mảng đủ 7 ngày liên tục
+            $map = [];
+            foreach ($result as $row) {
+                $map[$row['ngay']] = (int)$row['revenue'];
+            }
+            for ($i = 6; $i >= 0; $i--) {
+                $date = date('Y-m-d', strtotime("-{$i} days"));
+                $revenue7DaysLabels[] = date('d/m', strtotime($date));
+                $revenue7DaysData[] = $map[$date] ?? 0;
+            }
+        } catch (Exception $e) {
+            $revenue7DaysLabels = [];
+            $revenue7DaysData = [];
         }
 
         view('Admin.Dashboard.index', [
@@ -182,7 +211,9 @@ class AdminController
             'bookedRooms' => $bookedRooms,
             'maintenanceRooms' => $maintenanceRooms,
             'recentActivities' => $recentActivities,
-            'user' => $user
+            'user' => $user,
+            'revenue7DaysLabels' => $revenue7DaysLabels,
+            'revenue7DaysData' => $revenue7DaysData
         ]);
     }
 

@@ -4,7 +4,7 @@ use HotelBooking\Enums\TrangThaiHoaDon;
 
 $title = 'Chi tiết Hóa đơn #' . $hoaDon['ma_hoa_don'] . ' - Ocean Pearl Hotel Admin';
 $pageTitle = 'Chi tiết Hóa đơn #' . $hoaDon['ma_hoa_don'];
-
+$isDisabled = $hoaDon['trang_thai'] == 'da_huy';
 // Data is already optimized and included in $hoaDon array from getInvoiceDetails()
 // No need to call separate methods since everything is in the array
 ob_start();
@@ -24,10 +24,12 @@ ob_start();
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-bold text-gray-900">Chi tiết Hóa đơn #<?= $hoaDon['ma_hoa_don'] ?></h1>
         <div class="flex space-x-3">
+            <?php if (!$isDisabled): ?>
             <a href="/admin/hoa-don/edit?id=<?= $hoaDon['ma_hoa_don'] ?>"
                 class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
                 <i class="fas fa-edit mr-2"></i>Chỉnh sửa
             </a>
+            <?php endif; ?>
             <a href="/admin/hoa-don"
                 class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">
                 <i class="fas fa-arrow-left mr-2"></i>Quay lại

@@ -1,6 +1,8 @@
 <?php
+// Chặn cập nhật nếu hóa đơn đã hủy
 $title = 'Chỉnh sửa Hóa đơn #' . $hoaDon->ma_hoa_don . ' - Ocean Pearl Hotel Admin';
 $pageTitle = 'Chỉnh sửa Hóa đơn #' . $hoaDon->ma_hoa_don;
+$isDisabled = $hoaDon->trang_thai == 'da_huy';
 
 // Lấy thông tin liên quan
 $khachHang = $hoaDon->getKhachHang();
@@ -70,6 +72,14 @@ ob_start();
     <!-- Main Form -->
     <form method="POST" action="/admin/hoa-don/update?id=<?= $hoaDon->ma_hoa_don ?>" class="space-y-6">
         <input type="hidden" name="id" value="<?= $hoaDon->ma_hoa_don ?>">
+        <?php if ($isDisabled): ?>
+        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
+            <div class="flex items-center">
+                <i class="fas fa-ban mr-2"></i>
+                <span>Hóa đơn này đã bị hủy. Bạn không thể chỉnh sửa thông tin!</span>
+            </div>
+        </div>
+        <?php endif; ?>
         <!-- Basic Information -->
         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">Thông tin cơ bản</h3>
@@ -79,7 +89,7 @@ ob_start();
                         Khách hàng <span class="text-red-500">*</span>
                     </label>
                     <select id="ma_khach_hang" name="ma_khach_hang" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" <?= $isDisabled ? 'disabled' : '' ?>>
                         <?php foreach($khachHangs as $kh): ?>
                             <option value="<?= $kh->ma_tai_khoan ?>" <?= $kh->ma_tai_khoan == $hoaDon->ma_khach_hang ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($kh->ho_ten) ?> - <?= htmlspecialchars($kh->mail) ?>
@@ -92,7 +102,7 @@ ob_start();
                         Nhân viên xử lý <span class="text-red-500">*</span>
                     </label>
                     <select id="ma_nhan_vien" name="ma_nhan_vien" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" <?= $isDisabled ? 'disabled' : '' ?>>
                         <?php foreach($nhanViens as $nv): ?>
                             <option value="<?= $nv->ma_tai_khoan ?>" <?= $nv->ma_tai_khoan == $hoaDon->ma_nhan_vien ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($nv->ho_ten) ?> - <?= htmlspecialchars($nv->mail) ?>
@@ -105,7 +115,7 @@ ob_start();
                         Trạng thái <span class="text-red-500">*</span>
                     </label>
                     <select id="trang_thai" name="trang_thai" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" <?= $isDisabled ? 'disabled' : '' ?>>
                         <option value="cho_xu_ly" <?= $hoaDon->trang_thai == 'cho_xu_ly' ? 'selected' : '' ?>>Chờ xử lý</option>
                         <option value="da_xac_nhan" <?= $hoaDon->trang_thai == 'da_xac_nhan' ? 'selected' : '' ?>>Đã xác nhận</option>
                         <option value="da_thanh_toan" <?= $hoaDon->trang_thai == 'da_thanh_toan' ? 'selected' : '' ?>>Đã thanh toán</option>
@@ -117,7 +127,7 @@ ob_start();
                 <label for="ghi_chu" class="block text-sm font-medium text-gray-700 mb-2">Ghi chú</label>
                 <textarea id="ghi_chu" name="ghi_chu" rows="3"
                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          placeholder="Ghi chú thêm về hóa đơn..."><?= htmlspecialchars($hoaDon->ghi_chu ?? '') ?></textarea>
+                          placeholder="Ghi chú thêm về hóa đơn..." <?= $isDisabled ? 'disabled' : '' ?>><?= htmlspecialchars($hoaDon->ghi_chu ?? '') ?></textarea>
             </div>
         </div>
 
@@ -148,7 +158,7 @@ ob_start();
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Phòng <span class="text-red-500">*</span></label>
                                     <select name="existing_rooms[<?= $index ?>][ma_phong]" required
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" <?= $isDisabled ? 'disabled' : '' ?>>
                                         <?php foreach($allPhongs as $p): ?>
                                             <option value="<?= $p->ma_phong ?>" <?= $p->ma_phong == $hdPhong->ma_phong ? 'selected' : '' ?> data-price="<?= $p->gia ?>">
                                                 <?= htmlspecialchars($p->ten_phong) ?> - <?= number_format($p->gia, 0, ',', '.') ?>₫/giờ
@@ -160,13 +170,13 @@ ob_start();
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Check-in <span class="text-red-500">*</span></label>
                                     <input type="datetime-local" name="existing_rooms[<?= $index ?>][check_in]" 
                                            value="<?= date('Y-m-d\TH:i', strtotime($hdPhong->check_in)) ?>" required
-                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" <?= $isDisabled ? 'disabled' : '' ?>>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Check-out <span class="text-red-500">*</span></label>
                                     <input type="datetime-local" name="existing_rooms[<?= $index ?>][check_out]" 
                                            value="<?= date('Y-m-d\TH:i', strtotime($hdPhong->check_out)) ?>" required
-                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" <?= $isDisabled ? 'disabled' : '' ?>>
                                 </div>
                             </div>
                         </div>
@@ -202,7 +212,7 @@ ob_start();
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Dịch vụ</label>
                                     <select name="existing_services[<?= $index ?>][ma_dich_vu]"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" <?= $isDisabled ? 'disabled' : '' ?>
                                             onchange="updateTotal()">
                                         <?php foreach($allDichVus as $dv): ?>
                                             <option value="<?= $dv->ma_dich_vu ?>" <?= $dv->ma_dich_vu == $hdDichVu->ma_dich_vu ? 'selected' : '' ?> data-price="<?= $dv->gia ?>">
@@ -215,7 +225,7 @@ ob_start();
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Số lượng</label>
                                     <input type="number" name="existing_services[<?= $index ?>][so_luong]" min="1" 
                                            value="<?= $hdDichVu->so_luong ?? 1 ?>"
-                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" <?= $isDisabled ? 'disabled' : '' ?>
                                            onchange="updateTotal()">
                                 </div>
                             </div>
@@ -255,9 +265,11 @@ ob_start();
                class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
                 Hủy
             </a>
+            <?php if (!$isDisabled): ?>
             <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                 <i class="fas fa-save mr-2"></i>Cập nhật hóa đơn
             </button>
+            <?php endif; ?>
         </div>
     </form>
 </div>

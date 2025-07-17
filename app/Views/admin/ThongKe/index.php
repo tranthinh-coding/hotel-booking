@@ -20,7 +20,7 @@ ob_start();
     </div>
 
     <!-- Monthly Revenue Chart -->
-    <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
+    <div class="bg-white rounded-xl p-6 shadow-xs border border-gray-100">
         <h3 class="text-lg font-semibold text-gray-800 mb-4">
             <i class="fas fa-chart-line text-green-600 mr-2"></i>
             Doanh thu 12 tháng gần nhất
@@ -31,7 +31,7 @@ ob_start();
     </div>
 
     <!-- Monthly Bookings Chart -->
-    <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
+    <div class="bg-white rounded-xl p-6 shadow-xs border border-gray-100">
         <h3 class="text-lg font-semibold text-gray-800 mb-4">
             <i class="fas fa-chart-bar text-blue-600 mr-2"></i>
             Số lượng đặt phòng 12 tháng gần nhất
@@ -44,7 +44,7 @@ ob_start();
     <!-- Stats Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Order Status Stats -->
-        <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
+        <div class="bg-white rounded-xl p-6 shadow-xs border border-gray-100">
             <h3 class="text-lg font-semibold text-gray-800 mb-4">
                 <i class="fas fa-chart-pie text-purple-600 mr-2"></i>
                 Thống kê theo trạng thái đơn hàng
@@ -63,7 +63,7 @@ ob_start();
         </div>
 
         <!-- Top Room Types -->
-        <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
+        <div class="bg-white rounded-xl p-6 shadow-xs border border-gray-100">
             <h3 class="text-lg font-semibold text-gray-800 mb-4">
                 <i class="fas fa-bed text-orange-600 mr-2"></i>
                 Top loại phòng được đặt nhiều nhất
@@ -95,7 +95,7 @@ ob_start();
     </div>
 
     <!-- Top Services -->
-    <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
+    <div class="bg-white rounded-xl p-6 shadow-xs border border-gray-100">
         <h3 class="text-lg font-semibold text-gray-800 mb-4">
             <i class="fas fa-concierge-bell text-indigo-600 mr-2"></i>
             Top dịch vụ được sử dụng nhiều nhất
@@ -122,7 +122,7 @@ ob_start();
     </div>
 
     <!-- Top Customers -->
-    <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
+    <div class="bg-white rounded-xl p-6 shadow-xs border border-gray-100">
         <h3 class="text-lg font-semibold text-gray-800 mb-4">
             <i class="fas fa-users text-green-600 mr-2"></i>
             Top khách hàng thân thiết

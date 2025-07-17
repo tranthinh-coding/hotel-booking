@@ -133,7 +133,6 @@ ob_start();
                         <div>
                             <h4 id="preview-ten" class="text-lg font-semibold text-gray-900">Tên dịch vụ</h4>
                         </div>
-                        
                         <div class="flex items-center justify-between">
                             <div class="flex items-center space-x-2">
                                 <span class="text-2xl font-bold text-blue-600" id="preview-gia">0</span>
@@ -143,14 +142,16 @@ ob_start();
                                 Hoạt động
                             </span>
                         </div>
-                        
+                        <!-- Ảnh xem trước -->
+                        <div id="preview-img-box-wrap" class="w-full flex justify-center py-2">
+                            <img id="preview-img-box" src="" alt="Preview" class="max-h-40 rounded-lg hidden object-contain border border-gray-200 bg-white">
+                        </div>
                         <div class="p-4 bg-gray-50 rounded-lg">
                             <div class="flex items-center space-x-2 text-sm text-gray-600">
                                 <i class="fas fa-info-circle"></i>
                                 <span>Dịch vụ sẽ hiển thị trong danh sách dịch vụ của khách sạn</span>
                             </div>
                         </div>
-                        
                         <div class="text-xs text-gray-500 pt-2 border-t">
                             <p><i class="fas fa-info-circle mr-1"></i>Preview sẽ cập nhật khi bạn nhập thông tin</p>
                         </div>
@@ -245,6 +246,33 @@ document.querySelector('form').addEventListener('submit', function(e) {
 
 // Initialize preview
 updatePreview();
+
+// Preview image when file selected
+function previewImage(input) {
+    const previewDiv = document.getElementById('image-preview');
+    const previewImg = document.getElementById('preview-img');
+    const placeholder = document.getElementById('upload-placeholder');
+    const previewImgBox = document.getElementById('preview-img-box');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            previewDiv.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+            // Hiển thị ảnh ở box preview
+            previewImgBox.src = e.target.result;
+            previewImgBox.classList.remove('hidden');
+        }
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        previewDiv.classList.add('hidden');
+        placeholder.classList.remove('hidden');
+        previewImg.src = '';
+        // Ẩn ảnh ở box preview
+        previewImgBox.src = '';
+        previewImgBox.classList.add('hidden');
+    }
+}
 </script>
 
 <?php
