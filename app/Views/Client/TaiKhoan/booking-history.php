@@ -280,7 +280,7 @@ ob_start();
                             </div>
 
                             <!-- Notes -->
-                            <?php if (!empty($ghiChu)): ?>
+                            <?php if (isNotEmpty($ghiChu)): ?>
                                 <div class="mt-6 pt-6 border-t border-gray-100">
                                     <h4 class="text-sm font-medium text-gray-700 mb-2">Ghi chú:</h4>
                                     <p class="text-sm text-gray-600"><?= htmlspecialchars($ghiChu) ?></p>

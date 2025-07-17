@@ -114,6 +114,7 @@ class BookingController
             echo "\nDịch vụ chung:\n";
             print_r(post('dich_vu_chung', []));
             echo "</pre>";
+            die();
         }
 
         // Kiểm tra đăng nhập
@@ -285,10 +286,27 @@ class BookingController
 
         } catch (Exception $e) {
             // Log lỗi chi tiết để debug
-            error_log('Booking Error: ' . $e->getMessage());
-            error_log('Booking Error Trace: ' . $e->getTraceAsString());
+            error_log('=== BOOKING ERROR DEBUG ===');
+            error_log('Error Message: ' . $e->getMessage());
+            error_log('Error File: ' . $e->getFile());
+            error_log('Error Line: ' . $e->getLine());
+            error_log('Error Trace: ' . $e->getTraceAsString());
+            error_log('POST Data: ' . print_r($_POST, true));
+            error_log('Session User ID: ' . ($_SESSION['user_id'] ?? 'null'));
+            error_log('============================');
             
-            flash_error('Có lỗi xảy ra: ' . $e->getMessage());
+            // Hiển thị lỗi chi tiết cho user (chỉ trong development)
+            $errorMessage = 'Có lỗi xảy ra khi đặt phòng: ' . $e->getMessage();
+            
+            // Thêm thông tin debug nếu có tham số debug
+            if (isset($_GET['debug']) || isset($_POST['debug'])) {
+                $errorMessage .= "\n\nDebug Info:";
+                $errorMessage .= "\nFile: " . $e->getFile();
+                $errorMessage .= "\nLine: " . $e->getLine();
+                $errorMessage .= "\nTrace: " . $e->getTraceAsString();
+            }
+            
+            flash_error($errorMessage);
             set_old_input();
             back();
         }
