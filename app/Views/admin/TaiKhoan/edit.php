@@ -89,13 +89,16 @@ ob_start();
                     <label for="phan_quyen" class="block text-sm font-medium text-gray-700 mb-2">
                         Phân quyền <span class="text-red-500">*</span>
                     </label>
+                    <?php $currentUser = auth_check() ? user() : null; ?>
                     <select id="phan_quyen" 
                             name="phan_quyen" 
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             required>
                         <option value="Khách hàng" <?= ($taiKhoan->phan_quyen ?? '') === 'Khách hàng' ? 'selected' : '' ?>>Khách hàng</option>
+                        <?php if ($currentUser && $currentUser->phan_quyen === 'Quản lý'): ?>
                         <option value="Lễ tân" <?= ($taiKhoan->phan_quyen ?? '') === 'Lễ tân' ? 'selected' : '' ?>>Lễ tân</option>
                         <option value="Quản lý" <?= ($taiKhoan->phan_quyen ?? '') === 'Quản lý' ? 'selected' : '' ?>>Quản lý</option>
+                        <?php endif; ?>
                     </select>
                 </div>
 
