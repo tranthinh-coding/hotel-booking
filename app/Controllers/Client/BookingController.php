@@ -158,7 +158,7 @@ class BookingController
         if (isNotEmpty($errors)) {
             // Lưu lại thông tin phòng để điền lại khi reload form
             set_old_input();
-            if (!empty($phongs) && is_array($phongs)) {
+            if (!isEmpty($phongs) && is_array($phongs)) {
                 $_SESSION['old_phongs'] = $phongs;
             }
             flash_error(implode('<br>', $errors));
@@ -291,7 +291,7 @@ class BookingController
             // Hiển thị lỗi rõ ràng cho user
             $errorMessage = $e->getMessage();
             set_old_input();
-            if (!empty($phongs) && is_array($phongs)) {
+            if (!isEmpty($phongs) && is_array($phongs)) {
                 $_SESSION['old_phongs'] = $phongs;
             }
             flash_error($errorMessage);

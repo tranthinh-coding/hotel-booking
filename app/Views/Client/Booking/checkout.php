@@ -298,7 +298,7 @@ ob_start();
                         <div id="roomsContainer">
                             <?php
                             // Nếu có oldPhongs thì render lại toàn bộ danh sách phòng đã chọn
-                            if (!empty($oldPhongs) && is_array($oldPhongs)) {
+                            if (!isEmpty($oldPhongs) && is_array($oldPhongs)) {
                                 foreach ($oldPhongs as $i => $oldPhong) {
                             ?>
                             <div class="room-item p-6 mb-6" data-room-index="<?= $i ?>">
