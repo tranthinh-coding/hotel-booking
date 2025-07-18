@@ -146,15 +146,6 @@ ob_start();
                         <p class="text-red-500 text-sm mt-1"><?= get_error('phan_quyen') ?></p>
                     <?php endif; ?>
                 </div>
-                
-                <div class="mt-4 p-4 bg-blue-50 rounded-lg">
-                    <h4 class="font-medium text-blue-800 mb-2">Quyền hạn từng vai trò:</h4>
-                    <ul class="text-sm text-blue-700 space-y-1">
-                        <li><strong>Khách hàng:</strong> Đặt phòng, xem lịch sử, đánh giá</li>
-                        <li><strong>Lễ tân:</strong> Quản lý đặt phòng, check-in/out, xem báo cáo</li>
-                        <li><strong>Quản lý:</strong> Toàn quyền quản trị hệ thống</li>
-                    </ul>
-                </div>
             </div>
 
             <!-- Buttons -->
