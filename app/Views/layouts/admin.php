@@ -22,7 +22,7 @@
         }
 
         .sidebar-link {
-            transition: all 0.3s ease;
+            transition: all 0.12s ease;
         }
 
         .sidebar-link:hover {
@@ -40,7 +40,7 @@
             transform: translateY(-10px);
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s ease;
+            transition: all 0.12s ease;
         }
 
         .dropdown:hover .dropdown-menu {
@@ -59,7 +59,7 @@
 
         .image-upload-zone {
             border: 2px dashed #d1d5db;
-            transition: all 0.3s ease;
+            transition: all 0.12s ease;
         }
 
         .image-upload-zone:hover {
@@ -73,7 +73,7 @@
         }
 
         .room-card {
-            transition: all 0.3s ease;
+            transition: all 0.12s ease;
         }
 
         .room-card:hover {
@@ -368,7 +368,7 @@
 
         // Auto-hide alerts after 5 seconds
         setTimeout(() => {
-            const alerts = document.querySelectorAll('.bg-green-50, .bg-red-50, .bg-yellow-50, .bg-blue-50');
+            const alerts = document.querySelectorAll('.alert');
             alerts.forEach(alert => {
                 alert.style.transition = 'opacity 0.5s ease-out';
                 alert.style.opacity = '0';

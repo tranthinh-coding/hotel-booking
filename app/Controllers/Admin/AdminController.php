@@ -166,7 +166,8 @@ class AdminController
                         'subtitle' => 'Khách hàng: ' . ($activity['khach_hang'] ?? 'N/A') . ' - ' . number_format($activity['tong_tien']) . '₫',
                         'time' => $timeString,
                         'icon' => 'calendar-check',
-                        'color' => $statusColors[$activity['trang_thai']] ?? 'gray'
+                        'color' => $statusColors[$activity['trang_thai']] ?? 'gray',
+                        'url' => '/admin/hoa-don/show?id=' . $activity['ma_hoa_don']
                     ];
                 }
             }

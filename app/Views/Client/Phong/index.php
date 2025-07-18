@@ -131,7 +131,7 @@ ob_start();
         font-weight: 600;
         margin-bottom: 32px;
         border: 1px solid rgba(255, 255, 255, 0.3);
-        transition: all 0.3s ease;
+        transition: all 0.12s ease;
     }
 
     .hero-badge:hover {
@@ -191,7 +191,7 @@ ob_start();
         text-decoration: none;
         font-weight: 700;
         font-size: 1.125rem;
-        transition: all 0.3s ease;
+        transition: all 0.12s ease;
         box-shadow: 0 8px 32px rgba(255, 255, 255, 0.3);
         backdrop-filter: blur(12px);
         border: 1px solid rgba(255, 255, 255, 0.2);
@@ -344,7 +344,7 @@ ob_start();
         border: 2px solid #e5e7eb;
         border-radius: 12px;
         font-size: 1rem;
-        transition: all 0.3s ease;
+        transition: all 0.12s ease;
         background: white;
         color: #1f2937;
         height: 100%;
@@ -367,7 +367,7 @@ ob_start();
         font-weight: 600;
         font-size: 1rem;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.12s ease;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -399,7 +399,7 @@ ob_start();
         text-align: center;
         border: 1px solid #e2e8f0;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-        transition: all 0.3s ease;
+        transition: all 0.12s ease;
         position: relative;
         overflow: hidden;
     }
@@ -629,7 +629,7 @@ ob_start();
         font-size: 0.875rem;
         text-decoration: none;
         text-align: center;
-        transition: all 0.3s ease;
+        transition: all 0.12s ease;
         display: flex;
         align-items: center;
         gap: 6px;
@@ -701,7 +701,7 @@ ob_start();
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        transition: all 0.3s ease;
+        transition: all 0.12s ease;
         box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
     }
 

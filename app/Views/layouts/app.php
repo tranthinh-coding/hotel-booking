@@ -110,7 +110,7 @@
 
         .nav-link {
             position: relative;
-            transition: all 0.3s ease;
+            transition: all 0.12s ease;
         }
 
         .nav-link::after {
@@ -121,7 +121,7 @@
             bottom: -4px;
             left: 50%;
             background: linear-gradient(90deg, #0d9488, #14b8a6);
-            transition: all 0.3s ease;
+            transition: all 0.12s ease;
             transform: translateX(-50%);
         }
 
