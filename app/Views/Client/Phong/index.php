@@ -993,7 +993,7 @@ ob_start();
                                 ?>
                                 <img src="<?= $roomImage ?>" alt="<?= htmlspecialchars($phong->ten_phong ?? 'Phòng nghỉ') ?>"
                                     class="room-image">
-                                <div class="room-badge">Có sẵn</div>
+                                <!-- <div class="room-badge">Có sẵn</div> -->
                                 <div class="room-price"><?= number_format($phong->gia, 0, ',', '.') ?>đ</div>
                             </div>
 
