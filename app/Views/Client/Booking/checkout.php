@@ -189,14 +189,6 @@ ob_start();
             <div class="progress-step">
                 <i class="fas fa-bed text-lg"></i>
             </div>
-            <div class="progress-line"></div>
-            <div class="progress-step">
-                <i class="fas fa-concierge-bell text-lg"></i>
-            </div>
-            <div class="progress-line"></div>
-            <div class="progress-step">
-                <i class="fas fa-credit-card text-lg"></i>
-            </div>
         </div>
 
         <!-- Page Title -->
