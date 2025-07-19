@@ -121,6 +121,12 @@ ob_start();
         <div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
             <!-- Thông tin chi tiết -->
             <div class="space-y-6">
+                <!-- Ảnh bìa -->
+                <div>
+                    <img src="<?= getFileUrl($phong->anh_bia) ?>" alt="Ảnh bìa phòng"
+                        class="w-full h-48 object-cover rounded-lg" />
+                </div>
+
                 <div>
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Thông tin chi tiết</h3>
                     <div class="space-y-4">
@@ -149,11 +155,6 @@ ob_start();
                             </span>
                         </div>
                     </div>
-                </div>
-
-                <div>
-                    <img src="<?= htmlspecialchars($phong->anh_bia) ?>" alt="Ảnh bìa phòng"
-                        class="w-full h-48 object-cover" />
                 </div>
 
                 <!-- Mô tả -->

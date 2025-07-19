@@ -223,13 +223,16 @@ class AdminPhongController
         if (!$phong) {
             redirect('/admin/phong?error=notfound');
         }
+        // Lưu ảnh bìa và lấy file
+        $anhBiaUrl = saveFile($_FILES['anh_bia'] ?? null);
 
         $data = [
             'ten_phong' => post('ten_phong', $phong->ten_phong),
             'mo_ta' => post('mo_ta', $phong->mo_ta),
             'gia' => post('gia', $phong->gia),
             'ma_loai_phong' => post('ma_loai_phong', $phong->ma_loai_phong),
-            'trang_thai' => post('trang_thai', $phong->trang_thai)
+            'trang_thai' => post('trang_thai', $phong->trang_thai),
+            'anh_bia' => $anhBiaUrl ?: $phong->anh_bia // Giữ nguyên nếu không có ảnh mới
         ];
 
         $phong->update($data);

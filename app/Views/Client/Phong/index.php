@@ -979,21 +979,8 @@ ob_start();
                     <?php foreach ($phongs as $index => $phong): ?>
                         <div class="room-card" style="animation-delay: <?= $index * 0.1 ?>s;">
                             <div class="room-image-container">
-                                <?php
-                                // Default room images based on room type
-                                $roomImages = [
-                                    'Standard' => 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-                                    'Deluxe' => 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-                                    'Suite' => 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-                                    'Presidential' => 'https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
-                                ];
-
-                                $roomType = $phong->loai_phong ?? 'Standard';
-                                $roomImage = $roomImages[$roomType] ?? $roomImages['Standard'];
-                                ?>
-                                <img src="<?= $roomImage ?>" alt="<?= htmlspecialchars($phong->ten_phong ?? 'Phòng nghỉ') ?>"
-                                    class="room-image">
-                                <!-- <div class="room-badge">Có sẵn</div> -->
+                                <img src="<?= getFileUrl($phong->anh_bia) ?>"
+                                    alt="<?= htmlspecialchars($phong->ten_phong ?? 'Phòng nghỉ') ?>" class="room-image">
                                 <div class="room-price"><?= number_format($phong->gia, 0, ',', '.') ?>đ</div>
                             </div>
 
@@ -1001,7 +988,13 @@ ob_start();
                                 <div class="room-header">
                                     <div>
                                         <h3 class="room-title"><?= htmlspecialchars($phong->ten_phong ?? 'Phòng nghỉ') ?></h3>
-                                        <div class="room-type"><?= htmlspecialchars($roomType) ?></div>
+                                        <div class="room-type">
+                                        <?= 
+                                            array_find($loaiPhongs, function ($loaiPhong) use ($phong) {
+                                                return $loaiPhong->ma_loai_phong === $phong->ma_loai_phong;
+                                            })?->ten 
+                                        ?>
+                                        </div>
                                     </div>
                                 </div>
 

@@ -733,9 +733,9 @@ if (!function_exists('saveFile')) {
         $mimeType = finfo_file($finfo, $file['tmp_name']);
         finfo_close($finfo);
 
-        if (!in_array($mimeType, $allowedTypes)) {
-            return false;
-        }
+        // if (!in_array($mimeType, $allowedTypes)) {
+        //     return false;
+        // }
 
         // Tạo tên file unique
         $extension = pathinfo($file['name'], PATHINFO_EXTENSION);

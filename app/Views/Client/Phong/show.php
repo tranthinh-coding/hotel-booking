@@ -112,14 +112,14 @@ ob_start();
 <div class="py-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Left Column - Room Details -->
+            <!-- Left Column - Thông tin phòng chính -->
             <div class="lg:col-span-2 space-y-8">
-                <!-- Room Images Gallery -->
+                <!-- Hình ảnh -->
                 <div class="room-card rounded-3xl overflow-hidden">
                     <?php if (isNotEmpty($hinhAnhPhong) && count($hinhAnhPhong) > 0): ?>
-                        <!-- Main Image -->
+                        <!-- Ảnh bìa -->
                         <div class="relative">
-                            <img id="main-image" src="<?= $hinhAnhPhong[0]->getImageUrl() ?>"
+                            <img id="main-image" src="<?= getFileUrl($phong->anh_bia) ?>"
                                 alt="<?= htmlspecialchars($phong->ten_phong ?? '') ?>"
                                 class="w-full h-96 object-cover transition-all duration-300">
 
@@ -131,7 +131,7 @@ ob_start();
                             </div>
                         </div>
 
-                        <!-- Thumbnail Gallery -->
+                        <!-- Ảnh phòng -->
                         <?php if (count($hinhAnhPhong) > 1): ?>
                             <div class="p-6 bg-slate-50">
                                 <h4 class="font-semibold text-slate-800 mb-4">Hình ảnh phòng (<?= count($hinhAnhPhong) ?> ảnh)
@@ -142,9 +142,6 @@ ob_start();
                                             <img src="<?= $hinhAnh->getImageUrl() ?>" alt="Hình ảnh phòng <?= $index + 1 ?>"
                                                 class="thumbnail w-full h-20 object-cover rounded-lg border-2 border-transparent group-hover:border-blue-500 transition-all duration-200 <?= $index === 0 ? 'border-blue-500' : '' ?>"
                                                 onclick="changeMainImage('<?= $hinhAnh->getImageUrl() ?>', this)">
-                                            <div
-                                                class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-200 rounded-lg">
-                                            </div>
                                         </div>
                                     <?php endforeach; ?>
                                 </div>
@@ -390,6 +387,7 @@ ob_start();
 
         // Update main image
         mainImage.src = imageUrl;
+        console.log('Main image changed to:', imageUrl);
 
         // Update thumbnail active state
         thumbnails.forEach(thumb => {

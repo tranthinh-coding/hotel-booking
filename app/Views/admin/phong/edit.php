@@ -28,7 +28,7 @@ ob_start();
             </h2>
         </div>
 
-        <form method="POST" action="/admin/phong/update" class="p-6 space-y-6">
+        <form method="POST" action="/admin/phong/update" class="p-6 space-y-6" enctype="multipart/form-data">
             <!-- Hidden ID field -->
             <input type="hidden" name="id" value="<?= $phong->ma_phong ?>">
 
