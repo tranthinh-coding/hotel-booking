@@ -105,32 +105,32 @@ if (!function_exists('isEmpty')) {
         if (is_null($value)) {
             return true;
         }
-        
+
         // String handling: empty string or whitespace-only strings are empty
         if (is_string($value)) {
             return trim($value) === '';
         }
-        
+
         // Array handling: empty arrays are empty
         if (is_array($value)) {
             return count($value) === 0;
         }
-        
+
         // Numeric handling: 0 and 0.0 are NOT empty (different from PHP's empty)
         if (is_numeric($value)) {
             return false;
         }
-        
+
         // Boolean handling: false is empty, true is not
         if (is_bool($value)) {
             return $value === false;
         }
-        
+
         // Object handling: check if object has properties
         if (is_object($value)) {
             return count(get_object_vars($value)) === 0;
         }
-        
+
         // Default fallback to PHP's empty for other types
         return isEmpty($value);
     }
@@ -855,7 +855,7 @@ if (!function_exists('validateImageFile')) {
         // Kiểm tra loại file (chỉ cho phép ảnh)
         $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
         $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-        
+
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mimeType = finfo_file($finfo, $file['tmp_name']);
         finfo_close($finfo);
@@ -915,7 +915,7 @@ if (!function_exists('truncate_text')) {
         if (safe_strlen($text) <= $length) {
             return $text;
         }
-        
+
         return safe_substr($text, 0, $length) . $suffix;
     }
 }
@@ -930,5 +930,23 @@ if (!function_exists('safe_htmlspecialchars')) {
     function safe_htmlspecialchars(string $text): string
     {
         return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+    }
+}
+
+if (!function_exists('array_find')) {
+    /**
+     * Find an item in an array by key-value pair.
+     * @param array $array
+     * @param $callback
+     * @return mixed|null
+     * */
+    function array_find(array $array, $callback)
+    {
+        foreach ($array as $item) {
+            if ($callback($item)) {
+                return $item;
+            }
+        }
+        return null;
     }
 }
