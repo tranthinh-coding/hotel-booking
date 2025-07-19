@@ -9,6 +9,7 @@ use HotelBooking\Models\DanhGia;
 use HotelBooking\Models\Phong;
 use HotelBooking\Enums\TrangThaiHoaDon;
 use Exception;
+use HotelBooking\Facades\DB;
 
 class TaiKhoanController
 {
@@ -326,15 +327,6 @@ class TaiKhoanController
                     $timeDiff = $checkInTime - $currentTime;
                     $hoursDiff = $timeDiff / 3600;
 
-                    // Debug: Log thông tin thời gian
-                    error_log("=== CANCEL BOOKING DEBUG ===");
-                    error_log("Database check-in: " . $earliestCheckIn);
-                    error_log("Current time: " . date('Y-m-d H:i:s', $currentTime));
-                    error_log("Check-in time: " . date('Y-m-d H:i:s', $checkInTime));
-                    error_log("Time difference: " . $timeDiff . " seconds");
-                    error_log("Hours difference: " . round($hoursDiff, 2) . " hours");
-                    error_log("============================");
-
                     // Không cho phép hủy nếu còn ít hơn 2 giờ
                     if ($timeDiff < 2 * 3600) {
                         $hoursLeft = max(0, round($hoursDiff, 1));
@@ -345,20 +337,18 @@ class TaiKhoanController
                 }
             }
 
-            // Cập nhật trạng thái hóa đơn thành đã hủy
-            $updateSql = "UPDATE hoa_don_tong SET trang_thai = ?, ghi_chu = CONCAT(COALESCE(ghi_chu, ''), '\nHủy bởi khách hàng lúc: ', ?) WHERE ma_hoa_don = ?";
-            $updateResult = \HotelBooking\Facades\DB::query($updateSql, [
-                'da_huy',
-                date('d/m/Y H:i:s'),
-                $maHoaDon
-            ]);
-
-            if ($updateResult) {
+            $update = DB::table('hoa_don_tong')
+                ->where('ma_hoa_don', '=', $maHoaDon)
+                ->where('ma_khach_hang', '=', $_SESSION['user_id'])
+                ->update([
+                    'trang_thai' => TrangThaiHoaDon::DA_HUY,
+                    'ghi_chu' => "Hủy bởi khách hàng lúc: " . date('d/m/Y H:i:s')
+                ]);
+            if ($update) {
                 flash_success('Hủy đặt phòng thành công');
             } else {
                 flash_error('Có lỗi xảy ra khi hủy đặt phòng');
             }
-
         } catch (Exception $e) {
             flash_error('Có lỗi xảy ra: ' . $e->getMessage());
         }
