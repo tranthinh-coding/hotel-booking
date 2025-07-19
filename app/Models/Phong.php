@@ -10,6 +10,9 @@ use HotelBooking\Models\HinhAnh;
  * @property string $ten_phong
  * @property string $loai_phong
  * @property float $gia_phong
+ * @property string $mo_ta
+ * @property string $trang_thai
+ * @property string $anh_bia
  */
 class Phong extends Model
 {
@@ -23,7 +26,8 @@ class Phong extends Model
         'mo_ta',
         'gia',
         'ma_loai_phong',
-        'trang_thai'
+        'trang_thai',
+        'anh_bia'
     ];
 
     /**

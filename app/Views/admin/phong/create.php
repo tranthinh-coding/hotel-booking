@@ -100,6 +100,14 @@ ob_start();
                                     id="gia" 
                                     name="gia" 
                                     min="0"
+                        <!-- Ảnh bìa phòng -->
+                        <div>
+                            <label for="anh_bia" class="block text-sm font-medium text-gray-700 mb-2">
+                                Ảnh bìa phòng (cover image)
+                            </label>
+                            <input type="file" id="anh_bia" name="anh_bia" accept="image/*" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <p class="mt-1 text-sm text-gray-500">Chọn ảnh bìa nổi bật cho phòng này. PNG, JPG, GIF tối đa 10MB.</p>
+                        </div>
                                     required
                                     value="<?= htmlspecialchars(get('gia', '')) ?>"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"

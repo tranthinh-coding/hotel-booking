@@ -16,12 +16,12 @@ ob_start();
         </nav>
         <div class="flex space-x-3">
             <a href="/admin/phong/edit?id=<?= $phong->ma_phong ?>"
-               class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
+                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
                 <i class="fas fa-edit mr-2"></i>
                 Chỉnh sửa
             </a>
             <a href="/admin/phong"
-               class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors inline-flex items-center">
+                class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors inline-flex items-center">
                 <i class="fas fa-arrow-left mr-2"></i>
                 Quay lại
             </a>
@@ -95,6 +95,7 @@ ob_start();
 
     <!-- Thông tin cơ bản -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+
         <div class="px-6 py-4 border-b border-gray-100">
             <div class="flex justify-between items-center">
                 <h2 class="text-xl font-semibold text-gray-900"><?= htmlspecialchars($phong->ten_phong) ?></h2>
@@ -150,6 +151,11 @@ ob_start();
                     </div>
                 </div>
 
+                <div>
+                    <img src="<?= htmlspecialchars($phong->anh_bia) ?>" alt="Ảnh bìa phòng"
+                        class="w-full h-48 object-cover" />
+                </div>
+
                 <!-- Mô tả -->
                 <div>
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Mô tả phòng</h3>
@@ -199,22 +205,24 @@ ob_start();
                     <div class="grid grid-cols-2 gap-4">
                         <?php foreach ($hinhAnhs as $index => $hinhAnh): ?>
                             <div class="relative group">
-                                <img src="<?= htmlspecialchars($hinhAnh->getImageUrl()) ?>" 
-                                     alt="Hình ảnh phòng" 
-                                     class="w-full h-32 object-cover rounded-lg"
-                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <div class="w-full h-32 bg-gray-200 rounded-lg flex items-center justify-center" style="display: none;">
+                                <img src="<?= htmlspecialchars($hinhAnh->getImageUrl()) ?>" alt="Hình ảnh phòng"
+                                    class="w-full h-32 object-cover rounded-lg"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="w-full h-32 bg-gray-200 rounded-lg flex items-center justify-center"
+                                    style="display: none;">
                                     <i class="fas fa-image text-gray-400 text-2xl"></i>
                                 </div>
                                 <!-- Overlay with actions -->
-                                <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                                <div
+                                    class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
                                     <div class="flex space-x-2">
-                                        <button onclick="viewImage('<?= htmlspecialchars($hinhAnh->getImageUrl()) ?>')" 
-                                                class="text-white hover:text-blue-300 p-2 bg-blue-600 rounded-lg">
+                                        <button onclick="viewImage('<?= htmlspecialchars($hinhAnh->getImageUrl()) ?>')"
+                                            class="text-white hover:text-blue-300 p-2 bg-blue-600 rounded-lg">
                                             <i class="fas fa-expand"></i>
                                         </button>
-                                        <button onclick="confirmDeleteImage(<?= $hinhAnh->ma_hinh_anh ?>, '<?= htmlspecialchars($hinhAnh->anh) ?>')" 
-                                                class="text-white hover:text-red-300 p-2 bg-red-600 rounded-lg">
+                                        <button
+                                            onclick="confirmDeleteImage(<?= $hinhAnh->ma_hinh_anh ?>, '<?= htmlspecialchars($hinhAnh->anh) ?>')"
+                                            class="text-white hover:text-red-300 p-2 bg-red-600 rounded-lg">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
@@ -228,11 +236,11 @@ ob_start();
                         <p>Chưa có hình ảnh cho phòng này</p>
                     </div>
                 <?php endif; ?>
-                
+
                 <!-- Nút thêm ảnh -->
                 <div class="mt-4">
                     <button onclick="openAddImageModal()"
-                            class="w-full border-2 border-dashed border-gray-300 rounded-lg p-4 text-gray-500 hover:border-blue-500 hover:text-blue-500 transition-colors">
+                        class="w-full border-2 border-dashed border-gray-300 rounded-lg p-4 text-gray-500 hover:border-blue-500 hover:text-blue-500 transition-colors">
                         <i class="fas fa-plus text-2xl mb-2"></i>
                         <p>Thêm hình ảnh</p>
                     </button>
@@ -246,24 +254,24 @@ ob_start();
         <h3 class="text-lg font-semibold text-gray-900 mb-4">Thao tác nhanh</h3>
         <div class="flex flex-wrap gap-3">
             <button onclick="changeRoomStatus(<?= $phong->ma_phong ?>)"
-                    class="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors inline-flex items-center">
+                class="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors inline-flex items-center">
                 <i class="fas fa-sync mr-2"></i>
                 Đổi trạng thái
             </button>
             <a href="/admin/phong/edit?id=<?= $phong->ma_phong ?>"
-               class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors inline-flex items-center">
+                class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors inline-flex items-center">
                 <i class="fas fa-edit mr-2"></i>
                 Chỉnh sửa thông tin
             </a>
             <?php if ($phong->trang_thai === \HotelBooking\Enums\TrangThaiPhong::NGUNG_HOAT_DONG): ?>
                 <button onclick="confirmReactivate(<?= $phong->ma_phong ?>)"
-                        class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors inline-flex items-center">
+                    class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors inline-flex items-center">
                     <i class="fas fa-power-off mr-2"></i>
                     Kích hoạt lại
                 </button>
             <?php else: ?>
                 <button onclick="confirmDeactivate(<?= $phong->ma_phong ?>)"
-                        class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors inline-flex items-center">
+                    class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors inline-flex items-center">
                     <i class="fas fa-power-off mr-2"></i>
                     Ngừng hoạt động
                 </button>
@@ -276,8 +284,7 @@ ob_start();
 <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-75 hidden z-50 flex items-center justify-center">
     <div class="relative max-w-4xl max-h-full p-4">
         <img id="modalImage" src="" alt="" class="max-w-full max-h-full object-contain">
-        <button onclick="closeImageModal()" 
-                class="absolute top-4 right-4 text-white text-2xl hover:text-gray-300">
+        <button onclick="closeImageModal()" class="absolute top-4 right-4 text-white text-2xl hover:text-gray-300">
             <i class="fas fa-times"></i>
         </button>
     </div>
@@ -290,12 +297,13 @@ ob_start();
             <h3 class="text-lg font-semibold mb-4">Thêm hình ảnh phòng</h3>
             <form id="addImageForm" method="POST" action="/admin/phong/add-image" enctype="multipart/form-data">
                 <input type="hidden" name="ma_phong" value="<?= $phong->ma_phong ?>">
-                
+
                 <!-- Upload Area -->
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Chọn hình ảnh</label>
                     <div class="flex items-center justify-center w-full">
-                        <label for="images" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+                        <label for="images"
+                            class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
                             <div class="flex flex-col items-center justify-center pt-5 pb-6" id="upload-placeholder">
                                 <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
                                 <p class="mb-2 text-sm text-gray-500">
@@ -313,12 +321,14 @@ ob_start();
                                     <p class="text-sm text-gray-600">
                                         <span id="image-count">0</span> ảnh đã chọn
                                     </p>
-                                    <button type="button" onclick="clearAllImages()" class="text-sm text-red-600 hover:text-red-800">
+                                    <button type="button" onclick="clearAllImages()"
+                                        class="text-sm text-red-600 hover:text-red-800">
                                         <i class="fas fa-trash mr-1"></i>Xóa tất cả
                                     </button>
                                 </div>
                             </div>
-                            <input type="file" id="images" name="images[]" accept="image/*" multiple class="hidden" onchange="previewImages(this)">
+                            <input type="file" id="images" name="images[]" accept="image/*" multiple class="hidden"
+                                onchange="previewImages(this)">
                         </label>
                     </div>
                     <p class="text-sm text-gray-500 mt-2">
@@ -326,10 +336,10 @@ ob_start();
                         Chọn nhiều ảnh bằng cách giữ Ctrl (Windows) hoặc Cmd (Mac) khi click
                     </p>
                 </div>
-                
+
                 <div class="flex justify-end space-x-3">
                     <button type="button" onclick="closeAddImageModal()"
-                            class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
+                        class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
                         Hủy
                     </button>
                     <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
@@ -350,8 +360,8 @@ ob_start();
                 <input type="hidden" name="ma_phong" value="<?= $phong->ma_phong ?>">
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Trạng thái mới</label>
-                    <select name="trang_thai" 
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <select name="trang_thai"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <?php
                         $trangThaiList = \HotelBooking\Enums\TrangThaiPhong::all();
                         foreach ($trangThaiList as $status): ?>
@@ -363,7 +373,7 @@ ob_start();
                 </div>
                 <div class="flex justify-end space-x-3">
                     <button type="button" onclick="closeStatusModal()"
-                            class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
+                        class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
                         Hủy
                     </button>
                     <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
@@ -376,60 +386,57 @@ ob_start();
 </div>
 
 <script>
-function viewImage(src) {
-    document.getElementById('modalImage').src = src;
-    document.getElementById('imageModal').classList.remove('hidden');
-}
-
-function closeImageModal() {
-    document.getElementById('imageModal').classList.add('hidden');
-}
-
-function openAddImageModal() {
-    document.getElementById('addImageModal').classList.remove('hidden');
-    // Reset form
-    document.getElementById('addImageForm').reset();
-    clearImagePreview();
-}
-
-function closeAddImageModal() {
-    document.getElementById('addImageModal').classList.add('hidden');
-    // Reset form and preview
-    document.getElementById('addImageForm').reset();
-    clearImagePreview();
-}
-
-// Image preview functionality
-function previewImages(input) {
-    const files = input.files;
-    const previewDiv = document.getElementById('image-preview');
-    const placeholderDiv = document.getElementById('upload-placeholder');
-    const previewGrid = document.getElementById('preview-grid');
-    const imageCount = document.getElementById('image-count');
-    
-    if (files.length === 0) {
-        clearImagePreview();
-        return;
+    function viewImage(src) {
+        document.getElementById('modalImage').src = src;
+        document.getElementById('imageModal').classList.remove('hidden');
     }
-    
-    // Show preview area, hide placeholder
-    previewDiv.classList.remove('hidden');
-    placeholderDiv.classList.add('hidden');
-    
-    // Clear previous previews
-    previewGrid.innerHTML = '';
-    
-    // Update count
-    imageCount.textContent = files.length;
-    
-    // Show each selected image
-    Array.from(files).forEach((file, index) => {
-        if (file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const imageDiv = document.createElement('div');
-                imageDiv.className = 'relative group';
-                imageDiv.innerHTML = `
+
+    function closeImageModal() {
+        document.getElementById('imageModal').classList.add('hidden');
+    }
+
+    function openAddImageModal() {
+        document.getElementById('addImageModal').classList.remove('hidden');
+        // Reset form
+        document.getElementById('addImageForm').reset();
+        clearImagePreview();
+    }
+
+    function closeAddImageModal() {
+        document.getElementById('addImageModal').classList.add('hidden');
+
+        // reset form
+        document.getElementById('addImageForm').reset();
+        clearImagePreview();
+    }
+
+    // Xem trước hình ảnh
+    function previewImages(input) {
+        const files = input.files;
+        const previewDiv = document.getElementById('image-preview');
+        const placeholderDiv = document.getElementById('upload-placeholder');
+        const previewGrid = document.getElementById('preview-grid');
+        const imageCount = document.getElementById('image-count');
+
+        if (files.length === 0) {
+            clearImagePreview();
+            return;
+        }
+
+        previewDiv.classList.remove('hidden');
+        placeholderDiv.classList.add('hidden');
+
+        previewGrid.innerHTML = '';
+
+        imageCount.textContent = files.length;
+
+        Array.from(files).forEach((file, index) => {
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const imageDiv = document.createElement('div');
+                    imageDiv.className = 'relative group';
+                    imageDiv.innerHTML = `
                     <img src="${e.target.result}" alt="Preview ${index + 1}" 
                          class="w-full h-20 object-cover rounded border">
                     <button type="button" onclick="removeImagePreview(${index})" 
@@ -440,177 +447,169 @@ function previewImages(input) {
                         ${file.name.substring(0, 15)}${file.name.length > 15 ? '...' : ''}
                     </div>
                 `;
-                previewGrid.appendChild(imageDiv);
-            };
-            reader.readAsDataURL(file);
+                    previewGrid.appendChild(imageDiv);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    function clearImagePreview() {
+        const previewDiv = document.getElementById('image-preview');
+        const placeholderDiv = document.getElementById('upload-placeholder');
+        const previewGrid = document.getElementById('preview-grid');
+        const imageCount = document.getElementById('image-count');
+
+        previewDiv.classList.add('hidden');
+        placeholderDiv.classList.remove('hidden');
+        previewGrid.innerHTML = '';
+        imageCount.textContent = '0';
+    }
+
+    function clearAllImages() {
+        document.getElementById('images').value = '';
+        clearImagePreview();
+    }
+
+    function removeImagePreview(index) {
+        clearAllImages();
+    }
+
+    function confirmDeleteImage(imageId, filename) {
+        if (confirm('🗑️ Bạn có chắc chắn muốn xóa hình ảnh này?\n\nHành động này không thể hoàn tác!')) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/admin/phong/delete-image';
+
+            const idInput = document.createElement('input');
+            idInput.type = 'hidden';
+            idInput.name = 'image_id';
+            idInput.value = imageId;
+            form.appendChild(idInput);
+
+            const roomInput = document.createElement('input');
+            roomInput.type = 'hidden';
+            roomInput.name = 'ma_phong';
+            roomInput.value = <?= $phong->ma_phong ?>;
+            form.appendChild(roomInput);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+    function changeRoomStatus(roomId) {
+        document.getElementById('statusForm').action = '/admin/phong/update-status';
+        const idInput = document.getElementById('statusRoomId') || document.createElement('input');
+        idInput.type = 'hidden';
+        idInput.name = 'id';
+        idInput.id = 'statusRoomId';
+        idInput.value = roomId;
+        if (!document.getElementById('statusRoomId')) {
+            document.getElementById('statusForm').appendChild(idInput);
+        }
+        document.getElementById('statusModal').classList.remove('hidden');
+    }
+
+    function closeStatusModal() {
+        document.getElementById('statusModal').classList.add('hidden');
+    }
+
+    function confirmDeactivate(roomId) {
+        if (confirm('🔴 Bạn có chắc chắn muốn ngừng hoạt động phòng này?\n\nPhòng sẽ được đánh dấu là "Ngừng hoạt động" và:\n• Không thể đặt phòng mới\n• Vẫn giữ nguyên tất cả dữ liệu\n• Có thể kích hoạt lại bất cứ lúc nào')) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/admin/phong/deactivate';
+
+            const idInput = document.createElement('input');
+            idInput.type = 'hidden';
+            idInput.name = 'id';
+            idInput.value = roomId;
+            form.appendChild(idInput);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+    function confirmReactivate(roomId) {
+        if (confirm('🟢 Bạn có chắc chắn muốn kích hoạt lại phòng này?\n\nPhòng sẽ được đánh dấu là "Còn trống" và có thể được đặt phòng trở lại.')) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/admin/phong/reactivate';
+
+            const idInput = document.createElement('input');
+            idInput.type = 'hidden';
+            idInput.name = 'id';
+            idInput.value = roomId;
+            form.appendChild(idInput);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+    document.getElementById('imageModal').addEventListener('click', function (e) {
+        if (e.target === this) {
+            closeImageModal();
         }
     });
-}
 
-function clearImagePreview() {
-    const previewDiv = document.getElementById('image-preview');
-    const placeholderDiv = document.getElementById('upload-placeholder');
-    const previewGrid = document.getElementById('preview-grid');
-    const imageCount = document.getElementById('image-count');
-    
-    previewDiv.classList.add('hidden');
-    placeholderDiv.classList.remove('hidden');
-    previewGrid.innerHTML = '';
-    imageCount.textContent = '0';
-}
-
-function clearAllImages() {
-    document.getElementById('images').value = '';
-    clearImagePreview();
-}
-
-function removeImagePreview(index) {
-    // Note: Individual removal is complex with file inputs
-    // For now, clear all and let user reselect
-    clearAllImages();
-}
-
-function confirmDeleteImage(imageId, filename) {
-    if (confirm('🗑️ Bạn có chắc chắn muốn xóa hình ảnh này?\n\nHành động này không thể hoàn tác!')) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '/admin/phong/delete-image';
-        
-        // Add image ID as hidden input
-        const idInput = document.createElement('input');
-        idInput.type = 'hidden';
-        idInput.name = 'image_id';
-        idInput.value = imageId;
-        form.appendChild(idInput);
-        
-        // Add room ID for redirect
-        const roomInput = document.createElement('input');
-        roomInput.type = 'hidden';
-        roomInput.name = 'ma_phong';
-        roomInput.value = <?= $phong->ma_phong ?>;
-        form.appendChild(roomInput);
-        
-        document.body.appendChild(form);
-        form.submit();
-    }
-}
-
-function changeRoomStatus(roomId) {
-    document.getElementById('statusForm').action = '/admin/phong/update-status';
-    // Add hidden ID field to form
-    const idInput = document.getElementById('statusRoomId') || document.createElement('input');
-    idInput.type = 'hidden';
-    idInput.name = 'id';
-    idInput.id = 'statusRoomId';
-    idInput.value = roomId;
-    if (!document.getElementById('statusRoomId')) {
-        document.getElementById('statusForm').appendChild(idInput);
-    }
-    document.getElementById('statusModal').classList.remove('hidden');
-}
-
-function closeStatusModal() {
-    document.getElementById('statusModal').classList.add('hidden');
-}
-
-function confirmDeactivate(roomId) {
-    if (confirm('🔴 Bạn có chắc chắn muốn ngừng hoạt động phòng này?\n\nPhòng sẽ được đánh dấu là "Ngừng hoạt động" và:\n• Không thể đặt phòng mới\n• Vẫn giữ nguyên tất cả dữ liệu\n• Có thể kích hoạt lại bất cứ lúc nào')) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '/admin/phong/deactivate';
-        
-        // Add ID as hidden input
-        const idInput = document.createElement('input');
-        idInput.type = 'hidden';
-        idInput.name = 'id';
-        idInput.value = roomId;
-        form.appendChild(idInput);
-        
-        document.body.appendChild(form);
-        form.submit();
-    }
-}
-
-function confirmReactivate(roomId) {
-    if (confirm('🟢 Bạn có chắc chắn muốn kích hoạt lại phòng này?\n\nPhòng sẽ được đánh dấu là "Còn trống" và có thể được đặt phòng trở lại.')) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '/admin/phong/reactivate';
-        
-        // Add ID as hidden input
-        const idInput = document.createElement('input');
-        idInput.type = 'hidden';
-        idInput.name = 'id';
-        idInput.value = roomId;
-        form.appendChild(idInput);
-        
-        document.body.appendChild(form);
-        form.submit();
-    }
-}
-
-// Close modals when clicking outside
-document.getElementById('imageModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeImageModal();
-    }
-});
-
-document.getElementById('addImageModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeAddImageModal();
-    }
-});
-
-document.getElementById('statusModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeStatusModal();
-    }
-});
-
-// Drag and drop functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const uploadArea = document.querySelector('label[for="images"]');
-    const fileInput = document.getElementById('images');
-    
-    if (uploadArea && fileInput) {
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, preventDefaults, false);
-            document.body.addEventListener(eventName, preventDefaults, false);
-        });
-        
-        ['dragenter', 'dragover'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, highlight, false);
-        });
-        
-        ['dragleave', 'drop'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, unhighlight, false);
-        });
-        
-        uploadArea.addEventListener('drop', handleDrop, false);
-        
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
+    document.getElementById('addImageModal').addEventListener('click', function (e) {
+        if (e.target === this) {
+            closeAddImageModal();
         }
-        
-        function highlight(e) {
-            uploadArea.classList.add('bg-blue-50', 'border-blue-300');
+    });
+
+    document.getElementById('statusModal').addEventListener('click', function (e) {
+        if (e.target === this) {
+            closeStatusModal();
         }
-        
-        function unhighlight(e) {
-            uploadArea.classList.remove('bg-blue-50', 'border-blue-300');
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const uploadArea = document.querySelector('label[for="images"]');
+        const fileInput = document.getElementById('images');
+
+        // Xử lý kéo thả file vào khu vực upload ảnh
+        if (uploadArea && fileInput) {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, preventDefaults, false);
+                document.body.addEventListener(eventName, preventDefaults, false);
+            });
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, unhighlight, false);
+            });
+
+            uploadArea.addEventListener('drop', handleDrop, false);
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            function highlight(e) {
+                uploadArea.classList.add('bg-blue-50', 'border-blue-300');
+            }
+
+            function unhighlight(e) {
+                uploadArea.classList.remove('bg-blue-50', 'border-blue-300');
+            }
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+
+                fileInput.files = files;
+                previewImages(fileInput);
+            }
         }
-        
-        function handleDrop(e) {
-            const dt = e.dataTransfer;
-            const files = dt.files;
-            
-            fileInput.files = files;
-            previewImages(fileInput);
-        }
-    }
-});
+    });
 </script>
 
 <?php

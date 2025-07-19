@@ -119,6 +119,7 @@ ob_start();
                         <option value="cho_xu_ly" <?= $hoaDon->trang_thai == 'cho_xu_ly' ? 'selected' : '' ?>>Chờ xử lý</option>
                         <option value="da_xac_nhan" <?= $hoaDon->trang_thai == 'da_xac_nhan' ? 'selected' : '' ?>>Đã xác nhận</option>
                         <option value="da_thanh_toan" <?= $hoaDon->trang_thai == 'da_thanh_toan' ? 'selected' : '' ?>>Đã thanh toán</option>
+                        <option value="da_tra_phong" <?= $hoaDon->trang_thai == 'da_tra_phong' ? 'selected' : '' ?>>Đã trả phòng</option>
                         <option value="da_huy" <?= $hoaDon->trang_thai == 'da_huy' ? 'selected' : '' ?>>Đã hủy</option>
                     </select>
                 </div>

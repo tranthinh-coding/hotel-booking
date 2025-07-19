@@ -212,36 +212,23 @@ ob_start();
         <?php if (isNotEmpty($phongs)): ?>
             <?php foreach ($phongs as $phong): ?>
                 <?php
-                // Convert array to object-like access
                 $phong = (object) $phong;
-                
-                // Add opacity for deactivated rooms
+
                 $cardOpacity = $phong->trang_thai === \HotelBooking\Enums\TrangThaiPhong::NGUNG_HOAT_DONG ? 'opacity-60' : '';
                 ?>
                 <div
                     class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow <?= $cardOpacity ?>">
                     <!-- Hình ảnh phòng -->
                     <div class="relative h-48 bg-gray-200">
-                        <?php 
-                        // Since we're using optimized query, we need to get image differently
-                        $mainImage = null;
-                        if (isset($phong->so_hinh_anh) && $phong->so_hinh_anh > 0) {
-                            // Get main image from HinhAnh model
-                            $hinhAnh = \HotelBooking\Models\HinhAnh::getMainImage($phong->ma_phong);
-                            $mainImage = $hinhAnh ? $hinhAnh->getImageUrl() : null;
-                        }
+                        <?php
+                        $mainImage = getFileUrl($phong->anh_bia);
                         ?>
-                        <?php if ($mainImage): ?>
-                            <img src="<?= htmlspecialchars($mainImage) ?>" alt="<?= htmlspecialchars($phong->ten_phong) ?>"
-                                class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                            <div class="w-full h-full flex items-center justify-center" style="display: none;">
-                                <i class="fas fa-bed text-gray-400 text-4xl"></i>
-                            </div>
-                        <?php else: ?>
-                            <div class="w-full h-full flex items-center justify-center">
-                                <i class="fas fa-bed text-gray-400 text-4xl"></i>
-                            </div>
-                        <?php endif; ?>
+                        <img src="<?= htmlspecialchars($mainImage) ?>" alt="<?= htmlspecialchars($phong->ten_phong) ?>"
+                            class="w-full h-full object-cover"
+                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="w-full h-full flex items-center justify-center" style="display: none;">
+                            <i class="fas fa-bed text-gray-400 text-4xl"></i>
+                        </div>
 
                         <!-- Badge trạng thái -->
                         <?php

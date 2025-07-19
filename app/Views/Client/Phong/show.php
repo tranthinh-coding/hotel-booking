@@ -130,12 +130,7 @@ ob_start();
                             <img id="main-image" src="<?= $hinhAnhPhong[0]->getImageUrl() ?>"
                                 alt="<?= htmlspecialchars($phong->ten_phong ?? '') ?>"
                                 class="w-full h-96 object-cover transition-all duration-300">
-                            <div class="absolute top-6 left-6">
-                                <span
-                                    class="px-4 py-2 bg-green-500 text-white text-sm font-semibold rounded-full shadow-lg">
-                                    <?= htmlspecialchars($phong->trang_thai ?? 'available') === 'available' ? 'Còn trống' : 'Đã đặt' ?>
-                                </span>
-                            </div>
+
                             <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-6">
                                 <h2 class="text-2xl font-bold text-white mb-2">
                                     <?= htmlspecialchars($phong->ten_phong ?? '') ?>
@@ -185,9 +180,9 @@ ob_start();
                 </div>
 
                 <!-- Room Description -->
-                <div class="room-card rounded-3xl p-8">
-                    <h3 class="text-2xl font-bold text-slate-800 mb-6">Mô tả phòng</h3>
 
+                <div class="room-card rounded-3xl p-8 mb-8">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-6">Mô tả phòng</h3>
                     <?php if (isNotEmpty($phong->mo_ta)): ?>
                         <p class="text-slate-600 leading-relaxed mb-6">
                             <?= nl2br(htmlspecialchars($phong->mo_ta)) ?>
@@ -198,6 +193,40 @@ ob_start();
                             vời cho quý khách.
                             Không gian rộng rãi, thoáng mát với view đẹp, đảm bảo sự thoải mái và riêng tư tuyệt đối.
                         </p>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Room Reviews -->
+                <div class="room-card rounded-3xl p-8 mb-8">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-6">Đánh giá phòng</h3>
+                    <?php if (!empty($danhGias)): ?>
+                        <?php foreach ($danhGias as $danhGia): ?>
+                            <div class="border-b border-slate-200 py-4">
+                                <div class="flex items-center mb-2">
+                                    <span
+                                        class="font-bold text-blue-700 mr-2"><?= htmlspecialchars($danhGia->tai_khoan ?? 'Ẩn danh') ?></span>
+                                    <span class="text-yellow-500">
+                                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                                            <i
+                                                class="fas fa-star<?= $i <= ($danhGia->diem_danh_gia ?? $danhGia->diem ?? 0) ? '' : '-o' ?>"></i>
+                                        <?php endfor; ?>
+                                    </span>
+                                    <span class="ml-4 text-xs text-slate-500">
+                                        <?= !empty($danhGia->ngay_gui) ? date('d/m/Y H:i', strtotime($danhGia->ngay_gui)) : '' ?>
+                                    </span>
+                                </div>
+                                <div class="text-slate-700">
+                                    <?= nl2br(htmlspecialchars($danhGia->noi_dung ?? $danhGia->nhan_xet ?? '')) ?></div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="text-slate-500">Chưa có đánh giá nào cho phòng này.</div>
+                    <?php endif; ?>
+                    <?php if (isset($canReview) && $canReview): ?>
+                        <div class="mt-8">
+                            <a href="/phong/danhgia?phong_id=<?= $phong->ma_phong ?>"
+                                class="btn-primary px-6 py-3 rounded-lg text-white font-semibold">Viết đánh giá</a>
+                        </div>
                     <?php endif; ?>
                 </div>
 

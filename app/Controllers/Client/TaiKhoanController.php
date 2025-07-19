@@ -30,7 +30,8 @@ class TaiKhoanController
      */
     public function show()
     {
-        if (!$this->checkAuth()) return;
+        if (!$this->checkAuth())
+            return;
 
         $taiKhoan = TaiKhoan::find($_SESSION['user_id']);
         if (!$taiKhoan) {
@@ -53,7 +54,8 @@ class TaiKhoanController
      */
     public function bookingHistory()
     {
-        if (!$this->checkAuth()) return;
+        if (!$this->checkAuth())
+            return;
 
         $sql = "
             SELECT 
@@ -84,7 +86,8 @@ class TaiKhoanController
      */
     public function reviewHistory()
     {
-        if (!$this->checkAuth()) return;
+        if (!$this->checkAuth())
+            return;
 
         $sql = "
             SELECT 
@@ -99,7 +102,8 @@ class TaiKhoanController
         ";
 
         $reviews = \HotelBooking\Facades\DB::query($sql, [$_SESSION['user_id']]);
-
+        // Chuyển từng phần tử sang object để view dùng $review->ten_phong
+        $reviews = array_map(function($r) { return (object)$r; }, $reviews);
         view('Client.TaiKhoan.review-history', [
             'reviews' => $reviews
         ]);
@@ -110,12 +114,13 @@ class TaiKhoanController
      */
     public function submitReview()
     {
-        if (!$this->checkAuth()) return;
+        if (!$this->checkAuth())
+            return;
 
         $data = [
             'ma_phong' => post('ma_phong'),
             'ma_hoa_don' => post('ma_hoa_don'),
-            'diem_so' => (int)post('diem_so'),
+            'diem_danh_gia' => intval(post('diem_danh_gia')),
             'noi_dung' => post('noi_dung', ''),
         ];
 
@@ -131,15 +136,16 @@ class TaiKhoanController
             // Kiểm tra đã đánh giá chưa
             $existingReview = DanhGia::where('ma_khach_hang', $_SESSION['user_id'])
                 ->where('ma_phong', $data['ma_phong'])
+                ->where('ma_hoa_don', $data['ma_hoa_don'])
                 ->first();
 
             if ($existingReview) {
-                flash_error('Bạn đã đánh giá cho đặt phòng này rồi');
+                flash_error('Bạn đã đánh giá cho phòng này trong hóa đơn này rồi');
                 back();
                 return;
             }
 
-            // Kiểm tra quyền đánh giá (phải là khách đã ở)
+            // Kiểm tra quyền đánh giá (phải là khách đã ở và hóa đơn đã trả phòng)
             if (!$this->canReview($_SESSION['user_id'], $data['ma_hoa_don'], $data['ma_phong'])) {
                 flash_error('Bạn chỉ có thể đánh giá sau khi hoàn thành lưu trú');
                 back();
@@ -147,14 +153,7 @@ class TaiKhoanController
             }
 
             // Tạo đánh giá
-            $result = DanhGia::create([
-                'ma_khach_hang' => $_SESSION['user_id'],
-                'ma_phong' => $data['ma_phong'],
-                'ma_hoa_don' => $data['ma_hoa_don'],
-                'diem_danh_gia' => $data['diem_so'],
-                'noi_dung' => $data['noi_dung'],
-                'ngay_gui' => date('Y-m-d H:i:s')
-            ]);
+            $result = DanhGia::createReview($data['ma_hoa_don'], $data['ma_phong'], $_SESSION['user_id'], $data['diem_danh_gia'], $data['noi_dung']);
 
             if ($result) {
                 flash_success('Cảm ơn bạn đã đánh giá!');
@@ -175,7 +174,8 @@ class TaiKhoanController
      */
     public function updateReview()
     {
-        if (!$this->checkAuth()) return;
+        if (!$this->checkAuth())
+            return;
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             redirect('/tai-khoan/lich-su-danh-gia');
@@ -183,7 +183,7 @@ class TaiKhoanController
         }
 
         $maDanhGia = post('ma_danh_gia');
-        $diemSo = post('diem_so');
+        $diemSo = post('diem_danh_gia');
         $noiDung = post('noi_dung', '');
 
         // Validation
@@ -233,7 +233,8 @@ class TaiKhoanController
      */
     public function deleteReview()
     {
-        if (!$this->checkAuth()) return;
+        if (!$this->checkAuth())
+            return;
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             redirect('/tai-khoan/lich-su-danh-gia');
@@ -273,7 +274,8 @@ class TaiKhoanController
      */
     public function cancelBooking()
     {
-        if (!$this->checkAuth()) return;
+        if (!$this->checkAuth())
+            return;
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             flash_error('Yêu cầu không hợp lệ');
@@ -292,7 +294,7 @@ class TaiKhoanController
             // Lấy thông tin hóa đơn từ bảng hoa_don_tong
             $sql = "SELECT * FROM hoa_don_tong WHERE ma_hoa_don = ? AND ma_khach_hang = ?";
             $result = \HotelBooking\Facades\DB::query($sql, [$maHoaDon, $_SESSION['user_id']]);
-            
+
             if (!$result || count($result) === 0) {
                 flash_error('Không tìm thấy đơn đặt phòng');
                 redirect('/tai-khoan/lich-su-dat-phong');
@@ -311,19 +313,19 @@ class TaiKhoanController
             // Kiểm tra thời gian hủy (không cho phép hủy quá gần giờ check-in)
             $sqlCheckIn = "SELECT MIN(check_in) as earliest_checkin FROM hoa_don_phong WHERE ma_hoa_don = ?";
             $checkInResult = \HotelBooking\Facades\DB::query($sqlCheckIn, [$maHoaDon]);
-            
+
             if ($checkInResult && count($checkInResult) > 0) {
                 $earliestCheckIn = $checkInResult[0]->earliest_checkin ?? null;
-                
+
                 if ($earliestCheckIn) {
                     // Đảm bảo timezone đúng
                     date_default_timezone_set('Asia/Ho_Chi_Minh');
-                    
+
                     $checkInTime = strtotime($earliestCheckIn);
                     $currentTime = time();
                     $timeDiff = $checkInTime - $currentTime;
                     $hoursDiff = $timeDiff / 3600;
-                    
+
                     // Debug: Log thông tin thời gian
                     error_log("=== CANCEL BOOKING DEBUG ===");
                     error_log("Database check-in: " . $earliestCheckIn);
@@ -332,7 +334,7 @@ class TaiKhoanController
                     error_log("Time difference: " . $timeDiff . " seconds");
                     error_log("Hours difference: " . round($hoursDiff, 2) . " hours");
                     error_log("============================");
-                    
+
                     // Không cho phép hủy nếu còn ít hơn 2 giờ
                     if ($timeDiff < 2 * 3600) {
                         $hoursLeft = max(0, round($hoursDiff, 1));
@@ -390,9 +392,9 @@ class TaiKhoanController
             $userId
         ]);
 
-        return $result && count($result) > 0 ? $result[0] : (object)[
+        return $result && count($result) > 0 ? $result[0] : (object) [
             'cho_xac_nhan' => 0,
-            'da_xac_nhan' => 0, 
+            'da_xac_nhan' => 0,
             'da_thanh_toan' => 0,
             'da_huy' => 0,
             'tong_dat_phong' => 0,
@@ -413,27 +415,22 @@ class TaiKhoanController
             AND hdt.ma_hoa_don = ?
             AND hdp.ma_phong = ?
             AND hdt.trang_thai = ?
-            AND hdp.check_out < NOW()
         ";
 
         try {
             $result = \HotelBooking\Facades\DB::query($sql, [
-                $userId, 
-                $maHoaDon, 
-                $maPhong, 
-                TrangThaiHoaDon::DA_THANH_TOAN
+                $userId,
+                $maHoaDon,
+                $maPhong,
+                TrangThaiHoaDon::DA_TRA_PHONG
             ]);
 
             if (!$result || !is_array($result) || count($result) === 0) {
                 return false;
             }
-
             $row = $result[0];
-            if (!is_object($row)) {
-                return false;
-            }
 
-            return isset($row->count) && $row->count > 0;
+            return isset($row['count']) && $row['count'] > 0;
         } catch (Exception $e) {
             return false;
         }
@@ -454,7 +451,7 @@ class TaiKhoanController
             $errors[] = 'Thiếu thông tin hóa đơn';
         }
 
-        if (!in_array($data['diem_so'], [1, 2, 3, 4, 5])) {
+        if ($data['diem_danh_gia'] < 1 || $data['diem_danh_gia'] > 5) {
             $errors[] = 'Điểm số phải từ 1 đến 5';
         }
 
@@ -462,8 +459,8 @@ class TaiKhoanController
             $errors[] = 'Vui lòng nhập nội dung đánh giá';
         }
 
-        if (mb_strlen($data['noi_dung'], 'UTF-8') < 10) {
-            $errors[] = 'Nội dung đánh giá phải ít nhất 10 ký tự';
+        if (mb_strlen($data['noi_dung'], 'UTF-8') < 2) {
+            $errors[] = 'Nội dung đánh giá phải ít nhất 2 ký tự';
         }
 
         return $errors;
@@ -489,7 +486,7 @@ class TaiKhoanController
 
         // Lấy chi tiết hóa đơn từ Model
         $hoaDonDetails = HoaDon::getInvoiceDetails($maHoaDon);
-        
+
         if (!$hoaDonDetails) {
             header('Content-Type: application/json');
             echo json_encode(['error' => 'Invoice not found']);
@@ -514,7 +511,7 @@ class TaiKhoanController
                 $room['so_gio'] = round($soGioChinhXac, 1);
                 $room['tien_phong'] = round($room['gia_hien_tai'] * $soGioChinhXac);
                 $tongTienPhong += $room['tien_phong'];
-                
+
                 // Format dates for display
                 $room['check_in_formatted'] = date('d/m/Y H:i', strtotime($room['check_in']));
                 $room['check_out_formatted'] = date('d/m/Y H:i', strtotime($room['check_out']));

@@ -3,7 +3,7 @@ $title = 'Lịch sử đánh giá - Ocean Pearl Hotel';
 ob_start();
 ?>
 
-<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50">
+<div class="min-h-screen bg-gray-50">
     <!-- Header -->
     <div class="bg-gradient-to-r from-blue-600 to-teal-600 py-12">
         <div class="max-w-7xl mx-auto px-4">
@@ -14,7 +14,7 @@ ob_start();
 
     <div class="max-w-7xl mx-auto px-4 py-8">
         <!-- Navigation -->
-        <div class="bg-white rounded-lg shadow-sm p-1 mb-8">
+        <div class="bg-white rounded-lg shadow-xs border border-gray-50 p-1 mb-8">
             <div class="flex flex-wrap gap-2">
                 <a href="/tai-khoan" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md">
                     <i class="fas fa-tachometer-alt mr-2"></i>Tổng quan
@@ -35,7 +35,7 @@ ob_start();
         <!-- Reviews List -->
         <?php if (isEmpty($reviews)): ?>
             <!-- Empty State -->
-            <div class="bg-white rounded-xl shadow-lg p-8 text-center">
+            <div class="bg-white rounded-xl shadow-xs border border-gray-50 p-8 text-center">
                 <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <i class="fas fa-star text-gray-400 text-3xl"></i>
                 </div>
@@ -51,7 +51,7 @@ ob_start();
         <?php else: ?>
             <div class="space-y-6">
                 <?php foreach ($reviews as $review): ?>
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="bg-white rounded-xl shadow-xs border border-gray-50 overflow-hidden">
                         <!-- Review Header -->
                         <div class="p-6 border-b border-gray-100">
                             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
@@ -74,13 +74,14 @@ ob_start();
                                     <div class="flex items-center">
                                         <?php for ($i = 1; $i <= 5; $i++): ?>
                                             <i
-                                                class="fas fa-star <?= $i <= $review->diem_so ? 'text-yellow-400' : 'text-gray-300' ?> text-sm"></i>
+                                                class="fas fa-star <?= $i <= $review->diem_danh_gia ? 'text-yellow-400' : 'text-gray-300' ?> text-sm"></i>
                                         <?php endfor; ?>
-                                        <span class="ml-2 text-sm font-medium text-gray-700"><?= $review->diem_so ?>/5</span>
+                                        <span
+                                            class="ml-2 text-sm font-medium text-gray-700"><?= $review->diem_danh_gia ?>/5</span>
                                     </div>
 
                                     <span class="text-sm text-gray-500">
-                                        <?= date('d/m/Y', strtotime($review->ngay_tao)) ?>
+                                        <?= !empty($review->ngay_gui) ? date('d/m/Y', strtotime($review->ngay_gui)) : '' ?>
                                     </span>
                                 </div>
                             </div>
@@ -100,9 +101,10 @@ ob_start();
                                     <div class="flex items-center space-x-4">
                                         <span class="flex items-center">
                                             <i class="fas fa-clock mr-1"></i>
-                                            Đánh giá vào <?= date('H:i d/m/Y', strtotime($review->ngay_tao)) ?>
+                                            Đánh giá vào
+                                            <?= !empty($review->ngay_gui) ? date('H:i d/m/Y', strtotime($review->ngay_gui)) : '' ?>
                                         </span>
-                                        <?php if (isNotEmpty($review->ngay_cap_nhat) && $review->ngay_cap_nhat !== $review->ngay_tao): ?>
+                                        <?php if (property_exists($review, 'ngay_cap_nhat') && !empty($review->ngay_cap_nhat) && $review->ngay_cap_nhat !== $review->ngay_gui): ?>
                                             <span class="flex items-center">
                                                 <i class="fas fa-edit mr-1"></i>
                                                 Cập nhật <?= date('d/m/Y', strtotime($review->ngay_cap_nhat)) ?>
@@ -113,7 +115,7 @@ ob_start();
                                     <!-- Actions -->
                                     <div class="flex items-center space-x-2">
                                         <button
-                                            onclick="editReview(<?= $review->ma_danh_gia ?>, <?= $review->diem_so ?>, '<?= addslashes($review->noi_dung) ?>')"
+                                            onclick="editReview(<?= $review->ma_danh_gia ?>, <?= $review->diem_danh_gia ?>, '<?= addslashes($review->noi_dung) ?>')"
                                             class="text-blue-600 hover:text-blue-800 font-medium">
                                             <i class="fas fa-edit mr-1"></i>
                                             Sửa
@@ -133,12 +135,17 @@ ob_start();
             </div>
 
             <!-- Summary Stats -->
-            <div class="bg-white rounded-xl shadow-lg p-6 mt-8">
+            <div class="bg-white rounded-xl shadow-xs border border-gray-50 p-6 mt-8">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">Thống kê đánh giá</h3>
                 <?php
                 $totalReviews = count($reviews);
-                $averageRating = $totalReviews > 0 ? array_sum(array_column($reviews, 'diem_so')) / $totalReviews : 0;
-                $ratingCounts = array_count_values(array_column($reviews, 'diem_so'));
+                $diemDanhGiaArr = array_filter(array_map(function ($r) {
+                    return $r->diem_danh_gia;
+                }, $reviews), function ($v) {
+                    return is_numeric($v);
+                });
+                $averageRating = $totalReviews > 0 ? array_sum($diemDanhGiaArr) / $totalReviews : 0;
+                $ratingCounts = count(array_values($diemDanhGiaArr));
                 ?>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -209,12 +216,13 @@ ob_start();
                                 </button>
                             <?php endfor; ?>
                         </div>
-                        <input type="hidden" id="edit_diem_so" name="diem_so" required>
+                        <input type="hidden" id="edit_diem_danh_gia" name="diem_danh_gia" required>
                     </div>
 
                     <div class="mb-6">
-                        <label for="edit_noi_dung" class="block text-sm font-medium text-gray-700 mb-2">Nội dung đánh
-                            giá</label>
+                        <label for="edit_noi_dung" class="block text-sm font-medium text-gray-700 mb-2">
+                            Nội dung đánh giá
+                        </label>
                         <textarea id="edit_noi_dung" name="noi_dung" rows="4" required
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
                     </div>
@@ -238,7 +246,7 @@ ob_start();
 <script>
     function editReview(maDanhGia, diemSo, noiDung) {
         document.getElementById('edit_ma_danh_gia').value = maDanhGia;
-        document.getElementById('edit_diem_so').value = diemSo;
+        document.getElementById('edit_diem_danh_gia').value = diemSo;
         document.getElementById('edit_noi_dung').value = noiDung;
 
         // Set stars
@@ -281,7 +289,7 @@ ob_start();
     document.querySelectorAll('.edit-star-btn').forEach((star, index) => {
         star.addEventListener('click', function () {
             const rating = this.dataset.rating;
-            document.getElementById('edit_diem_so').value = rating;
+            document.getElementById('edit_diem_danh_gia').value = rating;
 
             // Update visual stars
             document.querySelectorAll('.edit-star-btn').forEach((s, i) => {

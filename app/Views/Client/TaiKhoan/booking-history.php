@@ -57,7 +57,7 @@ ob_start();
     background: #94a3b8;
 }
 </style>
-
+<?= flash_get('error') ?>
 <div class="bg-gray-50">
     <!-- Header -->
     <div class="bg-gradient-to-r from-blue-600 to-teal-600 py-12">
@@ -147,12 +147,14 @@ ob_start();
                                         'cho_xac_nhan' => 'bg-yellow-100 text-yellow-800',
                                         'da_xac_nhan' => 'bg-blue-100 text-blue-800',
                                         'da_thanh_toan' => 'bg-green-100 text-green-800',
+                                        'da_tra_phong' => 'bg-teal-100 text-teal-800',
                                         'da_huy' => 'bg-red-100 text-red-800'
                                     ];
                                     $statusLabels = [
                                         'cho_xac_nhan' => 'Chờ xác nhận',
                                         'da_xac_nhan' => 'Đã xác nhận',
                                         'da_thanh_toan' => 'Đã thanh toán',
+                                        'da_tra_phong' => 'Đã trả phòng',
                                         'da_huy' => 'Đã hủy'
                                     ];
                                     $colorClass = $statusColors[$trangThai] ?? 'bg-gray-100 text-gray-800';
@@ -261,12 +263,12 @@ ob_start();
                                             </button>
                                         <?php endif; ?>
 
-                                        <?php if ($trangThai === 'da_thanh_toan' && $checkOut && new DateTime($checkOut) < new DateTime()): ?>
+                                        <?php if ($trangThai === 'da_tra_phong'): ?>
                                             <button
                                                 onclick="showReviewModal(<?= $maHoaDon ?>, <?= $maPhong ?>, '<?= htmlspecialchars($tenPhong) ?>')"
                                                 class="w-full bg-yellow-500 text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-yellow-600 transition-colors">
                                                 <i class="fas fa-star mr-1"></i>
-                                                Đánh giá
+                                                Đánh giá phòng
                                             </button>
                                         <?php endif; ?>
 
@@ -306,7 +308,21 @@ ob_start();
                     </button>
                 </div>
 
-                <form id="reviewForm" action="/tai-khoan/danh-gia" method="POST">
+                <form id="reviewForm" action="/tai-khoan/gui-danh-gia" method="POST">
+                    <?php if (flash_has('error')): ?>
+                        <?php $errors = explode('<br>', flash_get('error')); ?>
+                        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>
+                                <span>Lỗi gửi đánh giá:</span>
+                            </div>
+                            <ul class="list-disc pl-6 text-sm">
+                                <?php foreach ($errors as $err): ?>
+                                    <?php if (trim($err)): ?><li><?= htmlspecialchars($err) ?></li><?php endif; ?>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    <?php endif; ?>
                     <input type="hidden" id="review_ma_hoa_don" name="ma_hoa_don">
                     <input type="hidden" id="review_ma_phong" name="ma_phong">
 
@@ -324,7 +340,7 @@ ob_start();
                                 </button>
                             <?php endfor; ?>
                         </div>
-                        <input type="hidden" id="diem_so" name="diem_so" required>
+                        <input type="hidden" id="diem_danh_gia" name="diem_danh_gia" required>
                     </div>
 
                     <div class="mb-6">
@@ -457,7 +473,7 @@ ob_start();
     document.querySelectorAll('.star-btn').forEach((star, index) => {
         star.addEventListener('click', function () {
             const rating = this.dataset.rating;
-            document.getElementById('diem_so').value = rating;
+            document.getElementById('diem_danh_gia').value = rating;
 
             // Update visual stars
             document.querySelectorAll('.star-btn').forEach((s, i) => {
@@ -545,14 +561,16 @@ ob_start();
             'cho_xac_nhan': 'Chờ xác nhận',
             'da_xac_nhan': 'Đã xác nhận', 
             'da_thanh_toan': 'Đã thanh toán',
-            'da_huy': 'Đã hủy'
+            'da_huy': 'Đã hủy',
+            'da_tra_phong': 'Đã trả phòng'
         };
 
         const statusColors = {
             'cho_xac_nhan': 'bg-yellow-100 text-yellow-800',
             'da_xac_nhan': 'bg-blue-100 text-blue-800',
             'da_thanh_toan': 'bg-green-100 text-green-800',
-            'da_huy': 'bg-red-100 text-red-800'
+            'da_huy': 'bg-red-100 text-red-800',
+            'da_tra_phong': 'bg-teal-100 text-teal-800'
         };
 
         let roomsHtml = '';
