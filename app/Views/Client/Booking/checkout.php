@@ -518,6 +518,10 @@ ob_start();
                                 Hỗ trợ 24/7
                             </li>
                         </ul>
+                        
+                        <div class="mt-8 p-6 bg-white border border-slate-200 rounded-xl">
+                            <img src="https://img.vietqr.io/image/mbbank-900013069999-compact.jpg?amount=5000&addInfo=DUYEN%20XIN%205000%20NHE" class="rounded" />
+                        </div>
                     </div>
                 </div>
             </div>
