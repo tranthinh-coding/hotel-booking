@@ -6,16 +6,8 @@ ob_start();
 <!-- Modern clean CSS -->
 <style>
     .room-card {
-        backdrop-filter: blur(20px);
         background: rgba(255, 255, 255, 0.98);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .room-card:hover {
-        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
-        transform: translateY(-2px);
+        border: 1px solid rgb(238 238 238)
     }
 
     .glass-effect {
@@ -35,7 +27,7 @@ ob_start();
         background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
         border: none;
         box-shadow: 0 4px 14px rgba(14, 165, 233, 0.2);
-        transition: all 0.3s ease;
+        transition: all 0.12s ease;
     }
 
     .btn-primary:hover {
@@ -84,7 +76,7 @@ ob_start();
         border-radius: 16px;
         padding: 20px;
         text-align: center;
-        transition: all 0.3s ease;
+        transition: all 0.12s ease;
     }
 
     .stat-card:hover {

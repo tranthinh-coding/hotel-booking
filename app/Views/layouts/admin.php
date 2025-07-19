@@ -22,7 +22,7 @@
         }
 
         .sidebar-link {
-            transition: all 0.3s ease;
+            transition: all 0.12s ease;
         }
 
         .sidebar-link:hover {
@@ -40,7 +40,7 @@
             transform: translateY(-10px);
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s ease;
+            transition: all 0.12s ease;
         }
 
         .dropdown:hover .dropdown-menu {
@@ -59,7 +59,7 @@
 
         .image-upload-zone {
             border: 2px dashed #d1d5db;
-            transition: all 0.3s ease;
+            transition: all 0.12s ease;
         }
 
         .image-upload-zone:hover {
@@ -73,7 +73,7 @@
         }
 
         .room-card {
-            transition: all 0.3s ease;
+            transition: all 0.12s ease;
         }
 
         .room-card:hover {
@@ -210,16 +210,14 @@
                     </a>
 
                     <!-- Quản lý phòng -->
+                    <?php $role = auth_check() ? user()->phan_quyen : null; ?>
                     <div class="space-y-1">
-                        <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-4 py-2">Quản lý
-                            phòng</div>
-                        <a href="/admin/phong"
-                            class="sidebar-link flex items-center px-4 py-3 text-gray-700 rounded-lg">
+                        <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-4 py-2">Quản lý phòng</div>
+                        <a href="/admin/phong" class="sidebar-link flex items-center px-4 py-3 text-gray-700 rounded-lg">
                             <i class="fas fa-bed mr-3 text-lg"></i>
                             <span>Danh sách phòng</span>
                         </a>
-                        <a href="/admin/loai-phong"
-                            class="sidebar-link flex items-center px-4 py-3 text-gray-700 rounded-lg">
+                        <a href="/admin/loai-phong" class="sidebar-link flex items-center px-4 py-3 text-gray-700 rounded-lg">
                             <i class="fas fa-home mr-3 text-lg"></i>
                             <span>Loại phòng</span>
                         </a>
@@ -227,10 +225,8 @@
 
                     <!-- Đặt phòng -->
                     <div class="space-y-1">
-                        <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-4 py-2">Đặt phòng
-                        </div>
-                        <a href="/admin/hoa-don"
-                            class="sidebar-link flex items-center px-4 py-3 text-gray-700 rounded-lg">
+                        <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-4 py-2">Đặt phòng</div>
+                        <a href="/admin/hoa-don" class="sidebar-link flex items-center px-4 py-3 text-gray-700 rounded-lg">
                             <i class="fas fa-receipt mr-3 text-lg"></i>
                             <span>Hóa đơn</span>
                         </a>
@@ -238,10 +234,8 @@
 
                     <!-- Dịch vụ -->
                     <div class="space-y-1">
-                        <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-4 py-2">Dịch vụ
-                        </div>
-                        <a href="/admin/dich-vu"
-                            class="sidebar-link flex items-center px-4 py-3 text-gray-700 rounded-lg">
+                        <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-4 py-2">Dịch vụ</div>
+                        <a href="/admin/dich-vu" class="sidebar-link flex items-center px-4 py-3 text-gray-700 rounded-lg">
                             <i class="fas fa-concierge-bell mr-3 text-lg"></i>
                             <span>Danh sách dịch vụ</span>
                         </a>
@@ -249,39 +243,36 @@
 
                     <!-- Nội dung -->
                     <div class="space-y-1">
-                        <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-4 py-2">Nội dung
-                        </div>
-                        <a href="/admin/tin-tuc"
-                            class="sidebar-link flex items-center px-4 py-3 text-gray-700 rounded-lg">
+                        <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-4 py-2">Nội dung</div>
+                        <a href="/admin/tin-tuc" class="sidebar-link flex items-center px-4 py-3 text-gray-700 rounded-lg">
                             <i class="fas fa-newspaper mr-3 text-lg"></i>
                             <span>Tin tức</span>
                         </a>
-                        <a href="/admin/danh-gia"
-                            class="sidebar-link flex items-center px-4 py-3 text-gray-700 rounded-lg">
+                        <?php if ($role === HotelBooking\Enums\PhanQuyen::QUAN_LY): ?>
+                        <a href="/admin/danh-gia" class="sidebar-link flex items-center px-4 py-3 text-gray-700 rounded-lg">
                             <i class="fas fa-star mr-3 text-lg"></i>
                             <span>Đánh giá</span>
                         </a>
-                        <a href="/admin/lien-he"
-                            class="sidebar-link flex items-center px-4 py-3 text-gray-700 rounded-lg">
+                        <a href="/admin/lien-he" class="sidebar-link flex items-center px-4 py-3 text-gray-700 rounded-lg">
                             <i class="fas fa-envelope mr-3 text-lg"></i>
                             <span>Liên hệ</span>
                         </a>
+                        <?php endif; ?>
                     </div>
 
                     <!-- Người dùng -->
                     <div class="space-y-1">
-                        <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-4 py-2">Hệ thống
-                        </div>
-                        <a href="/admin/tai-khoan"
-                            class="sidebar-link flex items-center px-4 py-3 text-gray-700 rounded-lg">
+                        <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-4 py-2">Hệ thống</div>
+                        <a href="/admin/tai-khoan" class="sidebar-link flex items-center px-4 py-3 text-gray-700 rounded-lg">
                             <i class="fas fa-users mr-3 text-lg"></i>
                             <span>Tài khoản</span>
                         </a>
-                        <a href="/admin/thong-ke"
-                            class="sidebar-link flex items-center px-4 py-3 text-gray-700 rounded-lg">
+                        <?php if ($role === HotelBooking\Enums\PhanQuyen::QUAN_LY): ?>
+                        <a href="/admin/thong-ke" class="sidebar-link flex items-center px-4 py-3 text-gray-700 rounded-lg">
                             <i class="fas fa-chart-bar mr-3 text-lg"></i>
                             <span>Thống kê</span>
                         </a>
+                        <?php endif; ?>
                     </div>
                 </nav>
             </div>
@@ -368,7 +359,7 @@
 
         // Auto-hide alerts after 5 seconds
         setTimeout(() => {
-            const alerts = document.querySelectorAll('.bg-green-50, .bg-red-50, .bg-yellow-50, .bg-blue-50');
+            const alerts = document.querySelectorAll('.alert');
             alerts.forEach(alert => {
                 alert.style.transition = 'opacity 0.5s ease-out';
                 alert.style.opacity = '0';

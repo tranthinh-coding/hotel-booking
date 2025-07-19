@@ -19,7 +19,7 @@ ob_start();
     .form-input {
         border: 2px solid #e2e8f0;
         border-radius: 12px;
-        transition: all 0.3s ease;
+        transition: all 0.12s ease;
         background: rgba(255, 255, 255, 0.9);
     }
 
@@ -32,7 +32,7 @@ ob_start();
 
     .btn-primary {
         background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-        transition: all 0.3s ease;
+        transition: all 0.12s ease;
         border: none;
     }
 
@@ -43,7 +43,7 @@ ob_start();
 
     .btn-secondary {
         background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        transition: all 0.3s ease;
+        transition: all 0.12s ease;
         border: none;
     }
 
@@ -54,7 +54,7 @@ ob_start();
 
     .btn-danger {
         background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        transition: all 0.3s ease;
+        transition: all 0.12s ease;
         border: none;
     }
 
@@ -68,7 +68,7 @@ ob_start();
         background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
         border: 1px solid #e2e8f0;
         border-radius: 16px;
-        transition: all 0.3s ease;
+        transition: all 0.12s ease;
         animation: slideInUp 0.5s ease-out;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
@@ -81,7 +81,7 @@ ob_start();
     }
 
     .progress-step {
-        transition: all 0.3s ease;
+        transition: all 0.12s ease;
         border-radius: 50%;
         width: 60px;
         height: 60px;
@@ -126,7 +126,7 @@ ob_start();
         border: 1px solid #e2e8f0;
         border-radius: 20px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.012);
-        transition: all 0.3s ease;
+        transition: all 0.12s ease;
     }
 
     .section-card:hover {
@@ -298,7 +298,7 @@ ob_start();
                         <div id="roomsContainer">
                             <?php
                             // Nếu có oldPhongs thì render lại toàn bộ danh sách phòng đã chọn
-                            if (!empty($oldPhongs) && is_array($oldPhongs)) {
+                            if (!isEmpty($oldPhongs) && is_array($oldPhongs)) {
                                 foreach ($oldPhongs as $i => $oldPhong) {
                             ?>
                             <div class="room-item p-6 mb-6" data-room-index="<?= $i ?>">

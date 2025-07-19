@@ -24,7 +24,7 @@ ob_start();
         background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
         border: none;
         box-shadow: 0 4px 14px rgba(14, 165, 233, 0.2);
-        transition: all 0.3s ease;
+        transition: all 0.12s ease;
     }
 
     .btn-primary:hover {
@@ -37,7 +37,7 @@ ob_start();
         background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         border: none;
         box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2);
-        transition: all 0.3s ease;
+        transition: all 0.12s ease;
     }
 
     .btn-secondary:hover {

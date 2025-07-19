@@ -577,7 +577,7 @@ include __DIR__ . '/../../layouts/admin.php';
 
     /* Image container styles */
     .room-image {
-        transition: all 0.3s ease;
+        transition: all 0.12s ease;
     }
 
     .room-image:hover {

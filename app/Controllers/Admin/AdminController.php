@@ -160,13 +160,14 @@ class AdminController
                 ];
 
                 foreach ($activitiesResult as $activity) {
-                    $timeString = !empty($activity['thoi_gian_dat']) ? date('d/m/Y H:i', strtotime($activity['thoi_gian_dat'])) : '';
+                    $timeString = !isEmpty($activity['thoi_gian_dat']) ? date('d/m/Y H:i', strtotime($activity['thoi_gian_dat'])) : '';
                     $recentActivities[] = [
                         'title' => 'Đơn đặt phòng #' . $activity['ma_hoa_don'] . ' - ' . ($statusLabels[$activity['trang_thai']] ?? 'Không xác định'),
                         'subtitle' => 'Khách hàng: ' . ($activity['khach_hang'] ?? 'N/A') . ' - ' . number_format($activity['tong_tien']) . '₫',
                         'time' => $timeString,
                         'icon' => 'calendar-check',
-                        'color' => $statusColors[$activity['trang_thai']] ?? 'gray'
+                        'color' => $statusColors[$activity['trang_thai']] ?? 'gray',
+                        'url' => '/admin/hoa-don/show?id=' . $activity['ma_hoa_don']
                     ];
                 }
             }

@@ -53,18 +53,18 @@ ob_start();
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Services Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <?php if (isNotEmpty($services)): ?>
-                <?php foreach ($services as $service): ?>
+            <?php if (isNotEmpty($dichVus)): ?>
+                <?php foreach ($dichVus as $dichVu): ?>
                     <div
                         class="bg-white rounded-2xl shadow-sm overflow-hidden group hover:shadow-md transition-all duration-300">
                         <!-- Service Image -->
                         <div class="h-64 bg-gradient-to-br from-blue-100 to-cyan-100 relative overflow-hidden">
-                            <?php if (isNotEmpty($service['hinh_anh'])): ?>
+                            <?php if (isNotEmpty($dichVu->hinh_anh)): ?>
                                 <?php
                                 // Construct proper image URL
-                                $imageUrl = '/uploads/' . $service['hinh_anh'];
+                                $imageUrl = '/uploads/' . $dichVu->hinh_anh;
                                 ?>
-                                <img src="<?= htmlspecialchars($imageUrl) ?>" alt="<?= htmlspecialchars($service['ten_dich_vu']) ?>"
+                                <img src="<?= htmlspecialchars($imageUrl) ?>" alt="<?= htmlspecialchars($dichVu->ten_dich_vu) ?>"
                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                                     onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
                                 <div class="w-full h-full flex items-center justify-center hidden">
@@ -80,7 +80,7 @@ ob_start();
                             <div class="absolute top-4 right-4">
                                 <div class="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full">
                                     <span class="text-blue-600 font-bold text-lg">
-                                        <?= number_format($service['gia']) ?>₫
+                                        <?= number_format($dichVu->gia) ?>₫
                                     </span>
                                 </div>
                             </div>
@@ -89,13 +89,13 @@ ob_start();
                         <!-- Service Content -->
                         <div class="p-6">
                             <h3 class="text-xl font-bold text-gray-800 mb-3 group-hover:text-blue-600 transition-colors">
-                                <?= htmlspecialchars($service['ten_dich_vu']) ?>
+                                <?= htmlspecialchars($dichVu->ten_dich_vu) ?>
                             </h3>
 
                             <!-- Service Description -->
                             <p class="text-gray-600 mb-4 line-clamp-3">
-                                <?php if (isNotEmpty($service['mo_ta'])): ?>
-                                    <?= htmlspecialchars($service['mo_ta']) ?>
+                                <?php if (isNotEmpty($dichVu->mo_ta)): ?>
+                                    <?= htmlspecialchars($dichVu->mo_ta) ?>
                                 <?php else: ?>
                                     Dịch vụ chất lượng cao được cung cấp bởi Ocean Pearl Hotel với đội ngũ nhân viên chuyên nghiệp.
                                 <?php endif; ?>

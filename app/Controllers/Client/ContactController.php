@@ -30,13 +30,13 @@ class ContactController
 
         // Validate
         $errors = [];
-        if (empty($hoTen)) $errors[] = 'Vui lòng nhập họ tên.';
-        if (empty($email)) $errors[] = 'Vui lòng nhập email.';
-        if (empty($chuDe)) $errors[] = 'Vui lòng chọn chủ đề.';
-        if (empty($noiDung)) $errors[] = 'Vui lòng nhập nội dung.';
-        if (empty($dongY)) $errors[] = 'Bạn cần đồng ý với chính sách.';
+        if (isEmpty($hoTen)) $errors[] = 'Vui lòng nhập họ tên.';
+        if (isEmpty($email)) $errors[] = 'Vui lòng nhập email.';
+        if (isEmpty($chuDe)) $errors[] = 'Vui lòng chọn chủ đề.';
+        if (isEmpty($noiDung)) $errors[] = 'Vui lòng nhập nội dung.';
+        if (isEmpty($dongY)) $errors[] = 'Bạn cần đồng ý với chính sách.';
 
-        if (!empty($errors)) {
+        if (!isEmpty($errors)) {
             set_old_input();
             flash_error(implode('<br>', $errors));
             back();

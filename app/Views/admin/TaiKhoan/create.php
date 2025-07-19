@@ -4,7 +4,7 @@ $pageTitle = 'Thêm Tài khoản';
 ob_start();
 ?>
 
-<div class="max-w-4xl mx-auto space-y-6">
+<div class="max-w-7xl mx-auto space-y-6">
     <!-- Breadcrumb -->
     <div>
         <nav class="text-sm text-gray-500">
@@ -132,25 +132,19 @@ ob_start();
                     <label for="phan_quyen" class="block text-sm font-medium text-gray-700 mb-2">
                         Vai trò <span class="text-red-500">*</span>
                     </label>
+                    <?php $currentUser = auth_check() ? user() : null; ?>
                     <select id="phan_quyen" name="phan_quyen" required
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <option value="">Chọn vai trò</option>
                         <option value="Khách hàng" <?= old('phan_quyen') === 'Khách hàng' ? 'selected' : '' ?>>Khách hàng</option>
+                        <?php if ($currentUser && $currentUser->phan_quyen === 'Quản lý'): ?>
                         <option value="Lễ tân" <?= old('phan_quyen') === 'Lễ tân' ? 'selected' : '' ?>>Lễ tân</option>
                         <option value="Quản lý" <?= old('phan_quyen') === 'Quản lý' ? 'selected' : '' ?>>Quản lý</option>
+                        <?php endif; ?>
                     </select>
                     <?php if (has_error('phan_quyen')): ?>
                         <p class="text-red-500 text-sm mt-1"><?= get_error('phan_quyen') ?></p>
                     <?php endif; ?>
-                </div>
-                
-                <div class="mt-4 p-4 bg-blue-50 rounded-lg">
-                    <h4 class="font-medium text-blue-800 mb-2">Quyền hạn từng vai trò:</h4>
-                    <ul class="text-sm text-blue-700 space-y-1">
-                        <li><strong>Khách hàng:</strong> Đặt phòng, xem lịch sử, đánh giá</li>
-                        <li><strong>Lễ tân:</strong> Quản lý đặt phòng, check-in/out, xem báo cáo</li>
-                        <li><strong>Quản lý:</strong> Toàn quyền quản trị hệ thống</li>
-                    </ul>
                 </div>
             </div>
 

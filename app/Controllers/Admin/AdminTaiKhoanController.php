@@ -109,19 +109,23 @@ class AdminTaiKhoanController
 
     public function store()
     {
+        $user = TaiKhoan::find($_SESSION['user_id']);
+        $phan_quyen = post('phan_quyen', PhanQuyen::KHACH_HANG);
+        // Lễ tân chỉ được tạo tài khoản khách hàng
+        if ($user->phan_quyen === PhanQuyen::LE_TAN && $phan_quyen !== PhanQuyen::KHACH_HANG) {
+            redirect('/admin/tai-khoan?error=forbidden');
+        }
         $data = [
             'ho_ten' => post('ho_ten', ''),
             'mail' => post('mail', ''),
             'so_cccd' => post('so_cccd', ''),
             'sdt' => post('sdt', ''),
-            'phan_quyen' => post('phan_quyen', PhanQuyen::KHACH_HANG),
+            'phan_quyen' => $phan_quyen,
             'ngay_tao' => date('Y-m-d H:i:s')
         ];
-
         if (isNotEmpty($_POST['mat_khau'])) {
             $data['mat_khau'] = password_hash($_POST['mat_khau'], PASSWORD_DEFAULT);
         }
-
         TaiKhoan::create($data);
         redirect('/admin/tai-khoan?success=created');
     }
@@ -144,28 +148,33 @@ class AdminTaiKhoanController
 
     public function update()
     {
+        $user = TaiKhoan::find($_SESSION['user_id']);
         $id = get('id');
         if (!$id) {
             redirect('/admin/tai-khoan?error=missing_id');
         }
-
         $taiKhoan = TaiKhoan::find($id);
         if (!$taiKhoan) {
             redirect('/admin/tai-khoan?error=notfound');
         }
-
+        $phan_quyen = post('phan_quyen', $taiKhoan->phan_quyen);
+        // Lễ tân chỉ được cập nhật tài khoản khách hàng
+        if ($user->phan_quyen === PhanQuyen::LE_TAN && $taiKhoan->phan_quyen !== PhanQuyen::KHACH_HANG) {
+            redirect('/admin/tai-khoan?error=forbidden');
+        }
+        if ($user->phan_quyen === PhanQuyen::LE_TAN && $phan_quyen !== PhanQuyen::KHACH_HANG) {
+            redirect('/admin/tai-khoan?error=forbidden');
+        }
         $data = [
             'ho_ten' => post('ho_ten', $taiKhoan->ho_ten),
             'mail' => post('mail', $taiKhoan->mail),
             'so_cccd' => post('so_cccd', $taiKhoan->so_cccd),
             'sdt' => post('sdt', $taiKhoan->sdt),
-            'phan_quyen' => post('phan_quyen', $taiKhoan->phan_quyen)
+            'phan_quyen' => $phan_quyen
         ];
-
         if (isNotEmpty($_POST['mat_khau'])) {
             $data['mat_khau'] = password_hash($_POST['mat_khau'], PASSWORD_DEFAULT);
         }
-
         $taiKhoan->update($data);
         redirect('/admin/tai-khoan?success=updated');
     }
