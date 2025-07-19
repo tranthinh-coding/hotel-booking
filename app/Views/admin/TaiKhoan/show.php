@@ -123,12 +123,10 @@ ob_start();
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Tóm tắt hoạt động</h3>
                     <div class="grid grid-cols-2 gap-4">
                         <div class="text-center">
-                            <div class="text-2xl font-bold text-blue-600">0</div>
+                            <div class="text-2xl font-bold text-blue-600">
+                                <?= count($hoaDons) ?>
+                            </div>
                             <div class="text-sm text-gray-600">Đặt phòng</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-2xl font-bold text-green-600">0</div>
-                            <div class="text-sm text-gray-600">Giao dịch</div>
                         </div>
                     </div>
                 </div>
@@ -138,11 +136,42 @@ ob_start();
 
     <!-- Recent Activity (if applicable) -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 class="text-lg font-medium text-gray-900 mb-4">Hoạt động gần đây</h3>
-        <div class="text-center py-8 text-gray-500">
-            <i class="fas fa-history text-4xl mb-3"></i>
-            <p>Chưa có hoạt động nào</p>
-        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Danh sách hoá đơn của khách hàng</h3>
+        <?php if (isNotEmpty($hoaDons)): ?>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Mã hoá đơn</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Check-in</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Check-out</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tổng tiền</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <?php foreach ($hoaDons as $hoaDon): ?>
+                            <tr>
+                                <td class="px-4 py-2 text-sm text-gray-900">#<?= $hoaDon->ma_hoa_don ?></td>
+                                <td class="px-4 py-2 text-sm text-gray-700"><?= date('d/m/Y H:i', $hoaDon->check_in) ?></td>
+                                <td class="px-4 py-2 text-sm text-gray-700"><?= date('d/m/Y H:i', $hoaDon->check_out) ?></td>
+                                <td class="px-4 py-2 text-sm text-blue-600 font-semibold"><?= number_format($hoaDon->tong_tien) ?> VNĐ</td>
+                                <td class="px-4 py-2 text-sm">
+                                    <span class="inline-block px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                        <?= \HotelBooking\Enums\TrangThaiHoaDon::getLabel($hoaDon->trang_thai) ?>
+                                    </span>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php else: ?>
+            <div class="text-center py-8 text-gray-500">
+                <i class="fas fa-history text-4xl mb-3"></i>
+                <p>Chưa có hoá đơn nào</p>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 

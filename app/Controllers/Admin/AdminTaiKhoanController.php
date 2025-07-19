@@ -5,6 +5,7 @@ namespace HotelBooking\Controllers\Admin;
 use HotelBooking\Models\TaiKhoan;
 use HotelBooking\Enums\PhanQuyen;
 use HotelBooking\Enums\TrangThaiTaiKhoan;
+use HotelBooking\Models\HoaDon;
 
 class AdminTaiKhoanController
 {
@@ -99,7 +100,9 @@ class AdminTaiKhoanController
             redirect('/admin/tai-khoan?error=notfound');
         }
 
-        view('Admin.TaiKhoan.show', ['taiKhoan' => $taiKhoan]);
+        $hoaDons = HoaDon::where('ma_khach_hang', $id)->get();
+
+        view('Admin.TaiKhoan.show', ['taiKhoan' => $taiKhoan, 'hoaDons' => $hoaDons]);
     }
 
     public function create()
