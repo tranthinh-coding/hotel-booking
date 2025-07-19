@@ -15,7 +15,7 @@ class HomeController
     {
         // Get data for homepage
         $danhGias = DanhGia::all();
-        $phongs = Phong::all();
+        $phongs = DB::table('phong')->limit(15)->get();
         $loaiPhongs = LoaiPhong::all();
 
         view('Client.Home.home', [

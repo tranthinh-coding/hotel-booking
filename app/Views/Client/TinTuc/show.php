@@ -3,68 +3,6 @@ $title = isset($tinTuc) ? safe_htmlspecialchars($tinTuc->tieu_de) . ' - Ocean Pe
 ob_start();
 ?>
 
-<!-- Hero Section -->
-<div class="relative h-9                        <p class="text-ocean-100 mb-6 leading-relaxed">
-                            Khách sạn 5 sao với dịch vụ chuyên nghiệp và vị trí thuận tiện tại Hà Nội.
-                        </p>g-gradient-to-r from-ocean-600 via-ocean-700 to-teal-600 overflow-hidden">
-    <?php if (isset($tinTuc) && isNotEmpty($tinTuc->anh_dai_dien)): ?>
-        <img src="<?= safe_htmlspecialchars($tinTuc->anh_dai_dien) ?>" alt="<?= safe_htmlspecialchars($tinTuc->tieu_de) ?>"
-            class="absolute inset-0 w-full h-full object-cover opacity-30">
-    <?php endif; ?>
-
-    <!-- Overlay -->
-    <div class="absolute inset-0 bg-black/40"></div>
-
-    <div class="relative h-full flex items-center">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="fade-in-up">
-                <!-- Breadcrumb -->
-                <nav class="flex items-center space-x-2 text-ocean-100 mb-6">
-                    <a href="/" class="hover:text-white transition-colors">Trang chủ</a>
-                    <i class="fas fa-chevron-right text-xs"></i>
-                    <a href="/tin-tuc" class="hover:text-white transition-colors">Tin tức</a>
-                    <i class="fas fa-chevron-right text-xs"></i>
-                    <span class="text-white">Bài viết</span>
-                </nav>
-
-                <?php if (isset($tinTuc)): ?>
-                    <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 text-shadow max-w-4xl">
-                        <?= safe_htmlspecialchars($tinTuc->tieu_de) ?>
-                    </h1>
-
-                    <!-- Meta Info -->
-                    <div class="flex flex-wrap items-center gap-6 text-ocean-100">
-                        <span class="flex items-center">
-                            <i class="fas fa-calendar-alt mr-2"></i>
-                            <?= date('d/m/Y', strtotime($tinTuc->ngay_dang ?? date('Y-m-d H:i:s'))) ?>
-                        </span>
-                        <span class="flex items-center">
-                            <i class="fas fa-clock mr-2"></i>
-                            <?= date('H:i', strtotime($tinTuc->ngay_dang ?? date('Y-m-d H:i:s'))) ?>
-                        </span>
-                        <span class="flex items-center">
-                            <i class="fas fa-eye mr-2"></i>
-                            <?= number_format($tinTuc->luot_xem ?? 0) ?> lượt xem
-                        </span>
-                    </div>
-                <?php else: ?>
-                    <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 text-shadow">
-                        Tin tức không tìm thấy
-                    </h1>
-                <?php endif; ?>
-            </div>
-        </div>
-    </div>
-
-    <!-- Wave decoration -->
-    <div class="absolute bottom-0 left-0 right-0">
-        <svg viewBox="0 0 1200 120" class="w-full h-12 fill-current text-white">
-            <path
-                d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z">
-            </path>
-        </svg>
-    </div>
-</div>
 
 <div class="bg-gray-50 min-h-screen -mt-1">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

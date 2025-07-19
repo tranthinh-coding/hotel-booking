@@ -183,6 +183,56 @@ ob_start();
     </div>
 </section>
 
+<section class="py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">
+                Phòng nổi bật
+            </h2>
+            <p class="text-lg text-gray-600">Khám phá các phòng được yêu thích nhất tại Ocean Pearl Hotel</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+            <?php if (isNotEmpty($phongs)): ?>
+                <?php foreach ($phongs as $phong): ?>
+                    <?php
+                      $phong = (object) $phong;
+                    ?>
+                    <div class="gentle-card rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all">
+                        <a href="/phong/show?id=<?= $phong->ma_phong ?>" class="block">
+                            <div class="h-48 bg-gray-200 flex items-center justify-center">
+                                <?php if (isNotEmpty($phong->anh_bia)): ?>
+                                    <img src="<?= getFileUrl($phong->anh_bia) ?>" alt="<?= htmlspecialchars($phong->ten_phong) ?>" class="w-full h-full object-cover">
+                                <?php else: ?>
+                                    <i class="fas fa-bed text-5xl text-gray-400"></i>
+                                <?php endif; ?>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="text-xl font-semibold text-gray-900 mb-2"><?= htmlspecialchars($phong->ten_phong) ?></h3>
+                                <div class="text-sm text-gray-600 mb-2">
+                                    <?= htmlspecialchars($phong->ten_loai_phong ?? '') ?>
+                                </div>
+                                <div class="text-blue-600 font-bold text-lg mb-2">
+                                    <?= number_format($phong->gia) ?> VNĐ
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="inline-block px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                        <?= \HotelBooking\Enums\TrangThaiPhong::getLabel($phong->trang_thai) ?>
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <div class="col-span-full text-center text-gray-500 py-12">
+                    <i class="fas fa-bed text-4xl mb-3"></i>
+                    <p>Chưa có phòng nào để hiển thị</p>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</section>
+
 <!-- Experience Section -->
 <section class="py-24 bg-gradient-to-r from-blue-600 to-cyan-600 relative overflow-hidden">
     <div class="absolute inset-0 opacity-10">
