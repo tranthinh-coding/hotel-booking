@@ -998,10 +998,6 @@ ob_start();
                                     </div>
                                 </div>
 
-                                <p class="room-description">
-                                    <?= htmlspecialchars($phong->mo_ta ?? 'Phòng nghỉ cao cấp với đầy đủ tiện nghi hiện đại, view biển tuyệt đẹp và không gian thoáng mát.') ?>
-                                </p>
-
                                 <div class="room-features">
                                     <div class="room-feature">
                                         <i class="fas fa-wifi"></i>
@@ -1024,7 +1020,6 @@ ob_start();
                                 <div class="room-footer">
                                     <div class="room-price-display">
                                         <div class="room-price-amount"><?= number_format($phong->gia, 0, ',', '.') ?>đ</div>
-                                        <div class="room-price-unit">mỗi đêm</div>
                                     </div>
                                     <div class="room-actions">
                                         <a href="/phong/show?id=<?= $phong->ma_phong ?>" class="room-btn btn-outline">
