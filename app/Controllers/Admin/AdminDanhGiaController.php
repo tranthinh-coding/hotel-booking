@@ -47,14 +47,14 @@ class AdminDanhGiaController
         // Apply rating filter
         if (!isEmpty($rating)) {
             $danhGias = array_filter($danhGias, function($dg) use ($rating) {
-                return $dg->diem_so == $rating;
+                return $dg->diem_danh_gia == $rating;
             });
         }
 
         // Apply sorting
         usort($danhGias, function($a, $b) use ($sort) {
-            if ($sort === 'diem_so') {
-                return $b->diem_so - $a->diem_so;
+            if ($sort === 'diem_danh_gia') {
+                return $b->diem_danh_gia - $a->diem_danh_gia;
             } elseif ($sort === 'noi_dung') {
                 return strcmp($a->noi_dung ?? '', $b->noi_dung ?? '');
             } else {
@@ -64,13 +64,13 @@ class AdminDanhGiaController
 
         // Calculate statistics
         $totalReviews = count($allDanhGias);
-        $avgRating = $totalReviews > 0 ? array_sum(array_column($allDanhGias, 'diem_so')) / $totalReviews : 0;
+        $avgRating = $totalReviews > 0 ? array_sum(array_column($allDanhGias, 'diem_danh_gia')) / $totalReviews : 0;
         
         $stats = [
             'total' => $totalReviews,
             'average_rating' => round($avgRating, 1),
-            'five_star' => count(array_filter($allDanhGias, fn($dg) => $dg->diem_so == 5)),
-            'four_star' => count(array_filter($allDanhGias, fn($dg) => $dg->diem_so == 4)),
+            'five_star' => count(array_filter($allDanhGias, fn($dg) => $dg->diem_danh_gia == 5)),
+            'four_star' => count(array_filter($allDanhGias, fn($dg) => $dg->diem_danh_gia == 4)),
         ];
 
         view('Admin.DanhGia.index', [
@@ -107,7 +107,7 @@ class AdminDanhGiaController
         $data = [
             'ma_tai_khoan' => post('ma_tai_khoan'),
             'ma_phong' => post('ma_phong'),
-            'diem_so' => post('diem_so', 5),
+            'diem_danh_gia' => post('diem_danh_gia', 5),
             'noi_dung' => post('noi_dung', ''),
             'ngay_danh_gia' => date('Y-m-d H:i:s')
         ];
@@ -149,7 +149,7 @@ class AdminDanhGiaController
         $data = [
             'ma_tai_khoan' => post('ma_tai_khoan', $danhGia->ma_tai_khoan),
             'ma_phong' => post('ma_phong', $danhGia->ma_phong),
-            'diem_so' => post('diem_so', $danhGia->diem_so),
+            'diem_danh_gia' => post('diem_danh_gia', $danhGia->diem_danh_gia),
             'noi_dung' => post('noi_dung', $danhGia->noi_dung)
         ];
 

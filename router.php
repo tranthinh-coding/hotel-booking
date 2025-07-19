@@ -138,8 +138,6 @@ Route::post('/admin/hoa-don/update', 'HotelBooking\Controllers\Admin\AdminHoaDon
 // Admin - Quản lý đánh giá
 Route::get('/admin/danh-gia', 'HotelBooking\Controllers\Admin\AdminDanhGiaController', 'index');
 Route::get('/admin/danh-gia/show', 'HotelBooking\Controllers\Admin\AdminDanhGiaController', 'show');
-Route::get('/admin/danh-gia/edit', 'HotelBooking\Controllers\Admin\AdminDanhGiaController', 'edit');
-Route::post('/admin/danh-gia/update', 'HotelBooking\Controllers\Admin\AdminDanhGiaController', 'update');
 
 // Admin - Quản lý liên hệ
 Route::get('/admin/lien-he', 'HotelBooking\Controllers\Admin\AdminLienHeController', 'index');

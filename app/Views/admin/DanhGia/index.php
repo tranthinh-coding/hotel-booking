@@ -136,8 +136,7 @@ ob_start();
                     <select name="sort"
                         class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <option value="ngay_danh_gia" <?= ($_GET['sort'] ?? '') === 'ngay_danh_gia' ? 'selected' : '' ?>>Ngày đánh giá</option>
-                        <option value="diem_so" <?= ($_GET['sort'] ?? '') === 'diem_so' ? 'selected' : '' ?>>Điểm số</option>
-                        <option value="noi_dung" <?= ($_GET['sort'] ?? '') === 'noi_dung' ? 'selected' : '' ?>>Nội dung</option>
+                        <option value="diem_danh_gia" <?= ($_GET['sort'] ?? '') === 'diem_danh_gia' ? 'selected' : '' ?>>Điểm số</option>
                     </select>
                 </div>
             </div>
@@ -203,7 +202,7 @@ ob_start();
                                         </div>
                                         <div class="ml-4">
                                             <div class="text-sm font-medium text-gray-900">
-                                                Khách hàng #<?= $danhGia->ma_tai_khoan ?>
+                                                Khách hàng #<?= $danhGia->ma_khach_hang ?>
                                             </div>
                                         </div>
                                     </div>
@@ -214,9 +213,9 @@ ob_start();
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
                                         <?php for ($i = 1; $i <= 5; $i++): ?>
-                                            <i class="fas fa-star <?= $i <= $danhGia->diem_so ? 'text-yellow-400' : 'text-gray-300' ?>"></i>
+                                            <i class="fas fa-star <?= $i <= $danhGia->diem_danh_gia ? 'text-yellow-400' : 'text-gray-300' ?>"></i>
                                         <?php endfor; ?>
-                                        <span class="ml-2 text-sm text-gray-600">(<?= $danhGia->diem_so ?>)</span>
+                                        <span class="ml-2 text-sm text-gray-600">(<?= $danhGia->diem_danh_gia ?>)</span>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
@@ -232,10 +231,6 @@ ob_start();
                                         <a href="/admin/danh-gia/show?id=<?= $danhGia->ma_danh_gia ?>" 
                                            class="text-blue-600 hover:text-blue-900">
                                             <i class="fas fa-eye mr-1"></i>Xem
-                                        </a>
-                                        <a href="/admin/danh-gia/edit?id=<?= $danhGia->ma_danh_gia ?>" 
-                                           class="text-green-600 hover:text-green-900">
-                                            <i class="fas fa-edit mr-1"></i>Sửa
                                         </a>
                                     </div>
                                 </td>
