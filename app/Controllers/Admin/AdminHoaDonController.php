@@ -310,6 +310,14 @@ class AdminHoaDonController
             redirect('/admin/hoa-don?error=notfound');
         }
 
+        $dataUpdate = [
+            'ma_nhan_vien' => post('ma_nhan_vien', $hoaDon->ma_nhan_vien),
+            'ma_khach_hang' => post('ma_khach_hang', $hoaDon->ma_khach_hang),
+            'ghi_chu' => post('ghi_chu', $hoaDon->ghi_chu),
+            'trang_thai' => post('trang_thai', $hoaDon->trang_thai)
+        ];
+        $hoaDon->update($dataUpdate);
+
         // Chỉ cho phép cập nhật thời gian phòng và thông tin cơ bản hóa đơn
         $existingRooms = post('existing_rooms', []);
         foreach ($existingRooms as $roomData) {
@@ -330,16 +338,8 @@ class AdminHoaDonController
             }
         }
 
-        // Sau khi cập nhật thời gian phòng, luôn reload lại dữ liệu hóa đơn từ DB và tính lại tổng tiền
-        $hoaDon = HoaDon::find($id);
-        if ($hoaDon) {
-            $totals = HoaDon::calculateTotalWithHours($id);
-            $hoaDon->update(['tong_tien' => $totals['tong_tien']]);
-        }
-
-        redirect('/admin/hoa-don/show?id=' . $id . '&success=updated');
-        // Đảm bảo dịch vụ đã xóa không còn trong DB
-        // (Đã xử lý ở bước xóa phòng, nhưng kiểm tra lại nếu cần)
+        $totals = HoaDon::calculateTotalWithHours($id);
+        $hoaDon->update(['tong_tien' => $totals['tong_tien']]);
 
         redirect('/admin/hoa-don/show?id=' . $id . '&success=updated');
     }

@@ -171,43 +171,43 @@ ob_start();
                                 </div>
                             </div>
                             <!-- Dịch vụ cho phòng này -->
+                            <?php if (isNotEmpty($dichVus)): ?>
                             <div class="bg-slate-50 rounded-lg p-4 mb-2">
                                 <h5 class="font-semibold text-gray-900 mb-2">Dịch vụ bổ sung cho phòng này</h5>
                                 <div id="servicesContainer_<?= $index ?>">
-                                    <?php if (isNotEmpty($dichVus)): ?>
-                                        <?php foreach ($dichVus as $svcIndex => $hdDichVu): ?>
-                                            <?php if ($hdDichVu->ma_hd_phong == $hdPhong->ma_hd_phong): ?>
-                                                <?php $dichVu = \HotelBooking\Models\DichVu::find($hdDichVu->ma_dich_vu); ?>
-                                                <div class="service-item border border-gray-200 rounded-lg p-2 mb-2">
-                                                    <input type="hidden" name="existing_services[<?= $svcIndex ?>][ma_hd_dich_vu]" value="<?= $hdDichVu->ma_hd_dich_vu ?>">
-                                                    <input type="hidden" name="existing_services[<?= $svcIndex ?>][ma_hd_phong]" value="<?= $hdPhong->ma_hd_phong ?>">
-                                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                                        <div>
-                                                            <label class="block text-sm font-medium text-gray-700 mb-1">Dịch vụ</label>
-                                                            <select disabled name="existing_services[<?= $svcIndex ?>][ma_dich_vu]"
-                                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" <?= $isDisabled ? 'disabled' : '' ?>
-                                                                    onchange="updateTotal()">
-                                                                <?php foreach($allDichVus as $dv): ?>
-                                                                    <option value="<?= $dv->ma_dich_vu ?>" <?= $dv->ma_dich_vu == $hdDichVu->ma_dich_vu ? 'selected' : '' ?> data-price="<?= $dv->gia ?>">
-                                                                        <?= htmlspecialchars($dv->ten_dich_vu) ?> - <?= number_format($dv->gia, 0, ',', '.') ?>₫
-                                                                    </option>
-                                                                <?php endforeach; ?>
-                                                            </select>
-                                                        </div>
-                                                        <div>
-                                                            <label class="block text-sm font-medium text-gray-700 mb-1">Số lượng</label>
-                                                            <input type="number" name="existing_services[<?= $svcIndex ?>][so_luong]" min="1" 
-                                                                   value="<?= $hdDichVu->so_luong ?? 1 ?>"
-                                                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" <?= $isDisabled ? 'disabled' : '' ?>
-                                                                   onchange="updateTotal()">
-                                                        </div>
+                                    <?php foreach ($dichVus as $svcIndex => $hdDichVu): ?>
+                                        <?php if ($hdDichVu->ma_hd_phong == $hdPhong->ma_hd_phong): ?>
+                                            <?php $dichVu = \HotelBooking\Models\DichVu::find($hdDichVu->ma_dich_vu); ?>
+                                            <div class="service-item border border-gray-200 rounded-lg p-2 mb-2">
+                                                <input type="hidden" name="existing_services[<?= $svcIndex ?>][ma_hd_dich_vu]" value="<?= $hdDichVu->ma_hd_dich_vu ?>">
+                                                <input type="hidden" name="existing_services[<?= $svcIndex ?>][ma_hd_phong]" value="<?= $hdPhong->ma_hd_phong ?>">
+                                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                                    <div>
+                                                        <label class="block text-sm font-medium text-gray-700 mb-1">Dịch vụ</label>
+                                                        <select disabled name="existing_services[<?= $svcIndex ?>][ma_dich_vu]"
+                                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" <?= $isDisabled ? 'disabled' : '' ?>
+                                                                onchange="updateTotal()">
+                                                            <?php foreach($allDichVus as $dv): ?>
+                                                                <option value="<?= $dv->ma_dich_vu ?>" <?= $dv->ma_dich_vu == $hdDichVu->ma_dich_vu ? 'selected' : '' ?> data-price="<?= $dv->gia ?>">
+                                                                    <?= htmlspecialchars($dv->ten_dich_vu) ?> - <?= number_format($dv->gia, 0, ',', '.') ?>₫
+                                                                </option>
+                                                            <?php endforeach; ?>
+                                                        </select>
+                                                    </div>
+                                                    <div>
+                                                        <label class="block text-sm font-medium text-gray-700 mb-1">Số lượng</label>
+                                                        <input type="number" name="existing_services[<?= $svcIndex ?>][so_luong]" min="1" 
+                                                                value="<?= $hdDichVu->so_luong ?? 1 ?>"
+                                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" <?= $isDisabled ? 'disabled' : '' ?>
+                                                                onchange="updateTotal()">
                                                     </div>
                                                 </div>
-                                            <?php endif; ?>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
                                 </div>
                             </div>
+                            <?php endif; ?>
                         </div>
                     <?php endforeach; ?>
                 <?php endif; ?>
