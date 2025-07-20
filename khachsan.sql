@@ -20,7 +20,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 -- Table structure for danh_gia
 -- ----------------------------
-DROP TABLE IF EXISTS `danh_gia`;
+-- DROP TABLE IF EXISTS `danh_gia`;
 CREATE TABLE `danh_gia`  (
   `ma_danh_gia` int NOT NULL AUTO_INCREMENT,
   `ma_hoa_don` int NOT NULL,
@@ -47,7 +47,7 @@ INSERT INTO `danh_gia` VALUES (2, 10, 1, 7, ' fd f', 5, '2025-07-19 21:33:10');
 -- ----------------------------
 -- Table structure for dich_vu
 -- ----------------------------
-DROP TABLE IF EXISTS `dich_vu`;
+-- DROP TABLE IF EXISTS `dich_vu`;
 CREATE TABLE `dich_vu`  (
   `ma_dich_vu` int NOT NULL AUTO_INCREMENT,
   `ten_dich_vu` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -65,7 +65,7 @@ INSERT INTO `dich_vu` VALUES (1, 'Giặt ủi', 20000, 'hoat_dong', '68753cc9dc7
 -- ----------------------------
 -- Table structure for hinh_anh
 -- ----------------------------
-DROP TABLE IF EXISTS `hinh_anh`;
+-- DROP TABLE IF EXISTS `hinh_anh`;
 CREATE TABLE `hinh_anh`  (
   `ma_hinh_anh` int NOT NULL AUTO_INCREMENT,
   `anh` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -97,7 +97,7 @@ INSERT INTO `hinh_anh` VALUES (22, '687c9c513c190_1752996945.jpeg', 3);
 -- ----------------------------
 -- Table structure for hoa_don_dich_vu
 -- ----------------------------
-DROP TABLE IF EXISTS `hoa_don_dich_vu`;
+-- DROP TABLE IF EXISTS `hoa_don_dich_vu`;
 CREATE TABLE `hoa_don_dich_vu`  (
   `ma_hd_dich_vu` int NOT NULL AUTO_INCREMENT,
   `ma_dich_vu` int NOT NULL,
@@ -127,7 +127,7 @@ INSERT INTO `hoa_don_dich_vu` VALUES (8, 1, 13, 20000, 10, '2025-07-20 16:04:05'
 -- ----------------------------
 -- Table structure for hoa_don_phong
 -- ----------------------------
-DROP TABLE IF EXISTS `hoa_don_phong`;
+-- DROP TABLE IF EXISTS `hoa_don_phong`;
 CREATE TABLE `hoa_don_phong`  (
   `ma_hd_phong` int NOT NULL AUTO_INCREMENT,
   `check_in` datetime NOT NULL,
@@ -158,7 +158,7 @@ INSERT INTO `hoa_don_phong` VALUES (10, '2025-08-04 16:03:00', '2025-08-04 18:36
 -- ----------------------------
 -- Table structure for hoa_don_tong
 -- ----------------------------
-DROP TABLE IF EXISTS `hoa_don_tong`;
+-- DROP TABLE IF EXISTS `hoa_don_tong`;
 CREATE TABLE `hoa_don_tong`  (
   `ma_hoa_don` int NOT NULL AUTO_INCREMENT,
   `ma_nhan_vien` int NULL DEFAULT NULL,
@@ -192,7 +192,7 @@ INSERT INTO `hoa_don_tong` VALUES (13, NULL, 2, '2025-07-20 16:04:05', 'cho_xac_
 -- ----------------------------
 -- Table structure for lien_he
 -- ----------------------------
-DROP TABLE IF EXISTS `lien_he`;
+-- DROP TABLE IF EXISTS `lien_he`;
 CREATE TABLE `lien_he`  (
   `ma_lien_he` int NOT NULL AUTO_INCREMENT,
   `ho_ten` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -223,7 +223,7 @@ INSERT INTO `lien_he` VALUES (6, 'Võ Thị Mai', 'mai.vo@email.com', NULL, 'kha
 -- ----------------------------
 -- Table structure for loai_phong
 -- ----------------------------
-DROP TABLE IF EXISTS `loai_phong`;
+-- DROP TABLE IF EXISTS `loai_phong`;
 CREATE TABLE `loai_phong`  (
   `ma_loai_phong` int NOT NULL AUTO_INCREMENT,
   `hinh_anh` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
@@ -243,7 +243,7 @@ INSERT INTO `loai_phong` VALUES (3, '687538f8506bd_1752512760.jpeg', 'Phổ thô
 -- ----------------------------
 -- Table structure for phong
 -- ----------------------------
-DROP TABLE IF EXISTS `phong`;
+-- DROP TABLE IF EXISTS `phong`;
 CREATE TABLE `phong`  (
   `ma_phong` int NOT NULL AUTO_INCREMENT,
   `ten_phong` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -268,7 +268,7 @@ INSERT INTO `phong` VALUES (4, 'Deluxe Room 10132', '', 'Ngừng hoạt động'
 -- ----------------------------
 -- Table structure for tai_khoan
 -- ----------------------------
-DROP TABLE IF EXISTS `tai_khoan`;
+-- DROP TABLE IF EXISTS `tai_khoan`;
 CREATE TABLE `tai_khoan`  (
   `ma_tai_khoan` int NOT NULL AUTO_INCREMENT,
   `ho_ten` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -293,7 +293,7 @@ INSERT INTO `tai_khoan` VALUES (8, 'Lễ Tân', '12312321321', '123123123', 'let
 -- ----------------------------
 -- Table structure for tin_tuc
 -- ----------------------------
-DROP TABLE IF EXISTS `tin_tuc`;
+-- DROP TABLE IF EXISTS `tin_tuc`;
 CREATE TABLE `tin_tuc`  (
   `ma_tin_tuc` int NOT NULL AUTO_INCREMENT,
   `ma_tai_khoan` int NOT NULL,
@@ -313,4 +313,4 @@ CREATE TABLE `tin_tuc`  (
 -- ----------------------------
 INSERT INTO `tin_tuc` VALUES (2, 2, 'Khám phá các điểm đến hàng đầu theo cách bạn thích ở Việt Nam', '2025-07-16 01:35:56', 'published', 'Điểm đến phổ biến với du khách từ Việt Nam', '687701fc42022_1752629756.jpg', 12);
 
-SET FOREIGN_KEY_CHECKS = 1;
+SET FOREIGN_KEY_CHECKS = 0;
