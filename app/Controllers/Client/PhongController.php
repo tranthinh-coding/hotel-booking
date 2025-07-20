@@ -6,7 +6,6 @@ use HotelBooking\Facades\DB;
 use HotelBooking\Models\Phong;
 use HotelBooking\Models\LoaiPhong;
 use HotelBooking\Models\HinhAnh;
-use HotelBooking\Models\HoaDon;
 
 class PhongController
 {

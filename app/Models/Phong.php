@@ -43,27 +43,40 @@ class Phong extends Model
     {
         // Validate input dates
         if (isEmpty($checkin) || isEmpty($checkout)) {
-            return static::all();
+            return static::whereRaw("
+                ma_phong NOT IN (
+                    SELECT DISTINCT hdp.ma_phong FROM hoa_don_tong hdt
+                    JOIN hoa_don_phong hdp ON hdt.ma_hoa_don = hdp.ma_hoa_don
+                    WHERE hdt.trang_thai NOT IN ('" . \HotelBooking\Enums\TrangThaiHoaDon::DA_TRA_PHONG . "', '" . \HotelBooking\Enums\TrangThaiHoaDon::DA_HUY . "')
+                )
+                AND trang_thai = '" . \HotelBooking\Enums\TrangThaiPhong::DANG_HOAT_DONG . "'" . ($roomType ? " AND ma_loai_phong = '$roomType'" : ""))
+            ->get();
         }
 
-        // Convert to proper date format
         $checkinDate = date('Y-m-d', strtotime($checkin));
         $checkoutDate = date('Y-m-d', strtotime($checkout));
 
-        // Validate date range
         if ($checkinDate >= $checkoutDate) {
-            return static::all();
+            return static::whereRaw("
+                ma_phong NOT IN (
+                    SELECT DISTINCT hdp.ma_phong FROM hoa_don_tong hdt
+                    JOIN hoa_don_phong hdp ON hdt.ma_hoa_don = hdp.ma_hoa_don
+                    WHERE hdt.trang_thai NOT IN ('" . \HotelBooking\Enums\TrangThaiHoaDon::DA_TRA_PHONG . "', '" . \HotelBooking\Enums\TrangThaiHoaDon::DA_HUY . "')
+                )
+                AND trang_thai = '" . \HotelBooking\Enums\TrangThaiPhong::DANG_HOAT_DONG . "'" . ($roomType ? " AND ma_loai_phong = '$roomType'" : ""))
+            ->get();
         }
 
-        // Query to find available rooms with room type and image info
         return static::whereRaw("
             ma_phong NOT IN (
-                SELECT DISTINCT ma_phong 
-                FROM hoa_don_phong 
-                WHERE check_in < '$checkoutDate' 
-                AND check_out > '$checkinDate'
+                SELECT DISTINCT hdp.ma_phong FROM hoa_don_tong hdt
+                JOIN hoa_don_phong hdp ON hdt.ma_hoa_don = hdp.ma_hoa_don
+                WHERE hdt.trang_thai NOT IN ('" . \HotelBooking\Enums\TrangThaiHoaDon::DA_TRA_PHONG . "', '" . \HotelBooking\Enums\TrangThaiHoaDon::DA_HUY . "')
+                AND hdp.check_in < '$checkoutDate' 
+                AND hdp.check_out > '$checkinDate'
             )
-        " . ($roomType ? " AND ma_loai_phong = '$roomType'" : ""))->get();
+            AND trang_thai = '" . \HotelBooking\Enums\TrangThaiPhong::DANG_HOAT_DONG . "'" . ($roomType ? " AND ma_loai_phong = '$roomType'" : "")
+        )->get();
     }
 
     /**
