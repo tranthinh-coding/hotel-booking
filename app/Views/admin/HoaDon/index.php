@@ -215,8 +215,10 @@ ob_start();
                                         <?= htmlspecialchars($statusLabel) ?>
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <?= htmlspecialchars($hoaDon->so_phong ?: 'Chưa có phòng') ?>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 max-w-md">
+                                    <p class="max-w-md line-clamp-1">
+                                        <?= htmlspecialchars($hoaDon->so_phong ?: 'Chưa có phòng') ?>
+                                    </p>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex space-x-2">

@@ -260,6 +260,7 @@
                         <?php endif; ?>
                     </div>
 
+                    <?php if ($role === HotelBooking\Enums\PhanQuyen::QUAN_LY): ?>
                     <!-- Người dùng -->
                     <div class="space-y-1">
                         <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-4 py-2">Hệ thống</div>
@@ -267,13 +268,12 @@
                             <i class="fas fa-users mr-3 text-lg"></i>
                             <span>Tài khoản</span>
                         </a>
-                        <?php if ($role === HotelBooking\Enums\PhanQuyen::QUAN_LY): ?>
                         <a href="/admin/thong-ke" class="sidebar-link flex items-center px-4 py-3 text-gray-700 rounded-lg">
                             <i class="fas fa-chart-bar mr-3 text-lg"></i>
                             <span>Thống kê</span>
                         </a>
-                        <?php endif; ?>
                     </div>
+                    <?php endif; ?>
                 </nav>
             </div>
         </aside>

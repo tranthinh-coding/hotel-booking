@@ -299,18 +299,14 @@ ob_start();
                                             class="text-blue-600 hover:text-blue-900">
                                             <i class="fas fa-eye mr-1"></i>Xem
                                         </a>
-                                        <?php if ($taiKhoan->phan_quyen === 'Khách hàng') { ?>
                                         <a href="/admin/tai-khoan/edit?id=<?= $taiKhoan->ma_tai_khoan ?>"
                                             class="text-green-600 hover:text-green-900">
                                             <i class="fas fa-edit mr-1"></i>Sửa
                                         </a>
-                                        <?php } ?>
-                                        <?php if ($taiKhoan->phan_quyen === 'Khách hàng') { ?>
                                         <button onclick="changeAccountStatus(<?= $taiKhoan->ma_tai_khoan ?>)"
                                             class="text-orange-600 hover:text-orange-900">
                                             <i class="fas fa-sync mr-1"></i>Đổi trạng thái
                                         </button>
-                                        <?php } ?>
                                     </div>
                                 </td>
                             </tr>
