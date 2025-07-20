@@ -35,13 +35,13 @@ class AdminPhongController
         $loaiPhong = get('loai_phong', '');
         $trangThai = get('trang_thai', '');
         $sort = get('sort', 'ten_phong');
-        
+
         // Use optimized search with JOIN query
         $phongs = Phong::searchWithRoomType($search, $loaiPhong, $trangThai, $sort);
-        
+
         // Get room statistics using optimized query
         $statsData = Phong::getRoomStatistics();
-        
+
         // Format statistics data
         $stats = [
             'total' => 0,
@@ -50,7 +50,7 @@ class AdminPhongController
             'maintenance' => 0,
             'deactivated' => 0
         ];
-        
+
         foreach ($statsData as $stat) {
             $stats['total'] += $stat['so_luong'];
             switch ($stat['trang_thai']) {
@@ -68,10 +68,10 @@ class AdminPhongController
                     break;
             }
         }
-        
+
         // Get room types for filter
         $loaiPhongs = LoaiPhong::all();
-        
+
         view('Admin.Phong.index', [
             'phongs' => $phongs,
             'stats' => $stats,
@@ -89,15 +89,16 @@ class AdminPhongController
     {
         // Validation
         $errors = [];
-        
+
         $tenPhong = trim(post('ten_phong', ''));
         $maLoaiPhong = post('ma_loai_phong', null);
         $gia = post('gia', 0);
-        
+        $anhBia = saveFile($_FILES['anh_bia'] ?? null);
+
         if (isEmpty($tenPhong)) {
             $errors[] = 'Tên phòng không được để trống';
         }
-        
+
         if (isEmpty($maLoaiPhong)) {
             $errors[] = 'Vui lòng chọn loại phòng';
         } else {
@@ -107,13 +108,13 @@ class AdminPhongController
                 $errors[] = 'Loại phòng không tồn tại';
             }
         }
-        
+
         // Kiểm tra tên phòng đã tồn tại
         $existingRoom = Phong::where('ten_phong', '=', $tenPhong)->get();
         if (count($existingRoom) > 0) {
             $errors[] = 'Tên phòng đã tồn tại';
         }
-        
+
         if (isNotEmpty($errors)) {
             $errorMessage = implode(', ', $errors);
             redirect('/admin/phong/create?error=validation&message=' . urlencode($errorMessage));
@@ -123,9 +124,10 @@ class AdminPhongController
         $data = [
             'ten_phong' => $tenPhong,
             'mo_ta' => post('mo_ta', ''),
-            'gia' => (int)$gia,
-            'ma_loai_phong' => (int)$maLoaiPhong,
-            'trang_thai' => post('trang_thai', \HotelBooking\Enums\TrangThaiPhong::DANG_HOAT_DONG)
+            'gia' => (int) $gia,
+            'ma_loai_phong' => (int) $maLoaiPhong,
+            'trang_thai' => post('trang_thai', \HotelBooking\Enums\TrangThaiPhong::DANG_HOAT_DONG),
+            'anh_bia' => $anhBia
         ];
 
         try {
@@ -137,7 +139,7 @@ class AdminPhongController
             if (isset($_FILES['hinh_anh']) && is_array($_FILES['hinh_anh']['name'])) {
                 $uploadedImages = [];
                 $fileCount = count($_FILES['hinh_anh']['name']);
-                
+
                 for ($i = 0; $i < $fileCount; $i++) {
                     if ($_FILES['hinh_anh']['size'][$i] > 0) {
                         // Tạo file array cho từng ảnh
@@ -148,7 +150,7 @@ class AdminPhongController
                             'error' => $_FILES['hinh_anh']['error'][$i],
                             'size' => $_FILES['hinh_anh']['size'][$i]
                         ];
-                        
+
                         $validation = validateImageFile($fileArray);
                         if (!$validation['valid']) {
                             // Nếu có lỗi ảnh, xóa phòng đã tạo và các ảnh đã upload
@@ -166,10 +168,10 @@ class AdminPhongController
                         $fileName = saveFile($fileArray);
                         if ($fileName) {
                             $uploadedImages[] = $fileName;
-                            
+
                             // Lưu vào bảng hinh_anh
                             HinhAnh::create([
-                                'ma_phong' => (int)$maPhong,
+                                'ma_phong' => (int) $maPhong,
                                 'anh' => $fileName
                             ]);
                         }
@@ -205,9 +207,9 @@ class AdminPhongController
         }
 
         $loaiPhongs = LoaiPhong::all();
-        
+
         view('Admin.Phong.edit', [
-            'phong' => $phong, 
+            'phong' => $phong,
             'loaiPhongs' => $loaiPhongs ?: []
         ]);
     }
@@ -260,7 +262,7 @@ class AdminPhongController
         $hinhAnhs = HinhAnh::getByPhong($phong->ma_phong);
 
         view('Admin.Phong.show', [
-            'phong' => $phong, 
+            'phong' => $phong,
             'loaiPhong' => $loaiPhong,
             'hinhAnhs' => $hinhAnhs
         ]);
@@ -301,7 +303,7 @@ class AdminPhongController
         if (!$id) {
             redirect('/admin/phong?error=missing_id');
         }
-        
+
         $phong = Phong::find($id);
         if (!$phong) {
             redirect('/admin/phong?error=notfound');
@@ -311,7 +313,7 @@ class AdminPhongController
         try {
             // Update room status to "Ngừng hoạt động" instead of deleting
             $phong->update(['trang_thai' => \HotelBooking\Enums\TrangThaiPhong::NGUNG_HOAT_DONG]);
-            
+
             redirect('/admin/phong?success=deactivated');
         } catch (Exception $e) {
             redirect('/admin/phong?error=deactivate_failed');
@@ -327,7 +329,7 @@ class AdminPhongController
         if (!$id) {
             redirect('/admin/phong?error=missing_id');
         }
-        
+
         $phong = Phong::find($id);
         if (!$phong) {
             redirect('/admin/phong?error=notfound');
@@ -337,7 +339,7 @@ class AdminPhongController
         try {
             // Set room status back to "Đang hoạt động"
             $phong->update(['trang_thai' => \HotelBooking\Enums\TrangThaiPhong::DANG_HOAT_DONG]);
-            
+
             redirect('/admin/phong?success=reactivated');
         } catch (Exception $e) {
             redirect('/admin/phong?error=reactivate_failed');
@@ -351,7 +353,7 @@ class AdminPhongController
     {
         try {
             $maPhong = post('ma_phong');
-            
+
             if (!$maPhong) {
                 redirect('/admin/phong?error=missing_id');
                 return;
@@ -368,9 +370,9 @@ class AdminPhongController
             if (isset($_FILES['images']) && is_array($_FILES['images']['name'])) {
                 $uploadedCount = 0;
                 $errors = [];
-                
+
                 $fileCount = count($_FILES['images']['name']);
-                
+
                 for ($i = 0; $i < $fileCount; $i++) {
                     if ($_FILES['images']['size'][$i] > 0) {
                         // Create file array for each image
@@ -381,7 +383,7 @@ class AdminPhongController
                             'error' => $_FILES['images']['error'][$i],
                             'size' => $_FILES['images']['size'][$i]
                         ];
-                        
+
                         $validation = validateImageFile($fileArray);
                         if (!$validation['valid']) {
                             $errors[] = $validation['error'] . " (File: " . $fileArray['name'] . ")";
@@ -399,7 +401,7 @@ class AdminPhongController
                         }
                     }
                 }
-                
+
                 if ($uploadedCount > 0) {
                     $message = "Đã thêm {$uploadedCount} hình ảnh thành công";
                     if (isNotEmpty($errors)) {
@@ -427,8 +429,7 @@ class AdminPhongController
                 ]);
 
                 redirect("/admin/phong/show?id={$maPhong}&success=image_added");
-            }
-            else {
+            } else {
                 redirect("/admin/phong/show?id={$maPhong}&error=upload_failed");
             }
 
@@ -446,7 +447,7 @@ class AdminPhongController
         try {
             $imageId = post('image_id');
             $maPhong = post('ma_phong');
-            
+
             if (!$imageId) {
                 redirect("/admin/phong/show?id={$maPhong}&error=missing_image_id");
                 return;

@@ -13,26 +13,25 @@ class PhongController
     public function index()
     {
         // Get search parameters
-        $checkin = $_GET['checkin'] ?? '';
-        $checkout = $_GET['checkout'] ?? '';
-        $guests = $_GET['guests'] ?? 1;
-        $roomType = $_GET['room_type'] ?? '';
+        $checkin = get('checkin', '');
+        $checkout = get('checkout', '');
+        $guests = get('guests', 1);
+        $roomType = get('room_type', '');
 
-        // Get available rooms based on search criteria
+        // Lấy danh sách phòng theo điều kiện tìm kiếm
         if (isNotEmpty($checkin) && isNotEmpty($checkout)) {
             $phongs = Phong::searchAvailable($checkin, $checkout, $guests, $roomType);
         } else {
-            // If no search criteria, show all active rooms (exclude deactivated)
             $query = Phong::newQuery();
             if (isNotEmpty($roomType)) {
                 $query = $query->where('ma_loai_phong', '=', $roomType);
             }
-            // Exclude deactivated rooms from client view
-            $query = $query->where('trang_thai', '!=', \HotelBooking\Enums\TrangThaiPhong::NGUNG_HOAT_DONG);
+
+            $query = $query->where('trang_thai', '=', \HotelBooking\Enums\TrangThaiPhong::DANG_HOAT_DONG);
             $phongs = $query->get();
         }
 
-        // Get all room types for filter dropdown
+        // Lấy danh sách loại phòng
         $loaiPhongs = LoaiPhong::all();
 
         view('Client.Phong.index', [
@@ -61,10 +60,10 @@ class PhongController
             return;
         }
 
-        // Get room images
+        // Lấy hình ảnh phòng
         $hinhAnhPhong = HinhAnh::getByPhong($id);
         
-        // Get room type info
+        // Thông tin loại phòng
         $loaiPhong = null;
         if (isNotEmpty($phong->ma_loai_phong)) {
             $loaiPhong = LoaiPhong::find($phong->ma_loai_phong);
