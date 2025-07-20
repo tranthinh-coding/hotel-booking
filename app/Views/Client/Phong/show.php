@@ -1,6 +1,13 @@
 <?php
 $title = 'Chi tiết phòng - Ocean Pearl Hotel';
 ob_start();
+
+$danhSachHinhAnh = array_merge(
+    [
+        getFileUrl($phong->anh_bia)
+    ],
+    array_map(fn($hinhAnh) => $hinhAnh->getImageUrl(), $hinhAnhPhong)
+);
 ?>
 
 <!-- Modern clean CSS -->
@@ -122,24 +129,36 @@ ob_start();
                             alt="<?= htmlspecialchars($phong->ten_phong ?? '') ?>"
                             class="w-full h-96 object-cover transition-all duration-300">
 
+                        <!-- Nút chuyển ảnh -->
+                        <button id="prev-image" type="button"
+                            class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/40 text-white rounded-full p-2 hover:bg-black/70 z-10"
+                            style="display:none">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button id="next-image" type="button"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 bg-black/40 text-white rounded-full p-2 hover:bg-black/70 z-10"
+                            style="display:none">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+
                         <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-6">
                             <h2 class="text-2xl font-bold text-white mb-2">
                                 <?= htmlspecialchars($phong->ten_phong ?? '') ?>
                             </h2>
-                            <p class="text-white/90">Phòng cao cấp với đầy đủ tiện nghi hiện đại</p>
                         </div>
                     </div>
                     <!-- Ảnh phòng -->
-                    <?php if (count($hinhAnhPhong) > 1): ?>
+                    <?php if (count($danhSachHinhAnh) > 0): ?>
                         <div class="p-6 bg-slate-50">
-                            <h4 class="font-semibold text-slate-800 mb-4">Hình ảnh phòng (<?= count($hinhAnhPhong) ?> ảnh)
+                            <h4 class="font-semibold text-slate-800 mb-4">Hình ảnh phòng (<?= count($danhSachHinhAnh) ?>
+                                ảnh)
                             </h4>
                             <div class="grid grid-cols-4 md:grid-cols-6 gap-3">
-                                <?php foreach ($hinhAnhPhong as $index => $hinhAnh): ?>
+                                <?php foreach ($danhSachHinhAnh as $index => $hinhAnh): ?>
                                     <div class="relative cursor-pointer group">
-                                        <img src="<?= $hinhAnh->getImageUrl() ?>" alt="Hình ảnh phòng <?= $index + 1 ?>"
+                                        <img src="<?= $hinhAnh ?>" alt="Hình ảnh phòng <?= $index + 1 ?>"
                                             class="thumbnail w-full h-20 object-cover rounded-lg border-2 border-transparent group-hover:border-blue-500 transition-all duration-200 <?= $index === 0 ? 'border-blue-500' : '' ?>"
-                                            onclick="changeMainImage('<?= $hinhAnh->getImageUrl() ?>', this)">
+                                            onclick="showImage(<?= $index ?>)">
                                     </div>
                                 <?php endforeach; ?>
                             </div>
@@ -184,7 +203,8 @@ ob_start();
                                     </span>
                                 </div>
                                 <div class="text-slate-700">
-                                    <?= nl2br(htmlspecialchars($danhGia->noi_dung ?? $danhGia->nhan_xet ?? '')) ?></div>
+                                    <?= nl2br(htmlspecialchars($danhGia->noi_dung ?? $danhGia->nhan_xet ?? '')) ?>
+                                </div>
                             </div>
                         <?php endforeach; ?>
                     <?php else: ?>
@@ -359,26 +379,60 @@ ob_start();
 
 <!-- Enhanced JavaScript -->
 <script>
-    // Function to change main image
-    function changeMainImage(imageUrl, thumbnailElement) {
+    // Hình ảnh phòng
+    const imageUrls = [
+        <?=
+            implode(", ", array_map(fn($url) => "'" . $url . "'", $danhSachHinhAnh));
+        ?>
+    ];
+    let currentImageIndex = 0;
+    let autoChangeTimer = null;
+
+    function showImage(index) {
         const mainImage = document.getElementById('main-image');
         const thumbnails = document.querySelectorAll('.thumbnail');
 
-        // Update main image
-        mainImage.src = imageUrl;
-        console.log('Main image changed to:', imageUrl);
-
-        // Update thumbnail active state
-        thumbnails.forEach(thumb => {
+        currentImageIndex = index;
+        mainImage.src = imageUrls[index];
+        console.log('Showing image:', mainImage.src, imageUrls);
+        thumbnails.forEach((thumb, i) => {
             thumb.classList.remove('border-blue-500');
             thumb.classList.add('border-transparent');
+            if (i == currentImageIndex) {
+                thumb.classList.remove('border-transparent');
+                thumb.classList.add('border-blue-500');
+            }
         });
+        resetAutoChange();
+    }
 
-        thumbnailElement.classList.remove('border-transparent');
-        thumbnailElement.classList.add('border-blue-500');
+    function nextImage() {
+        const newIndex = (currentImageIndex + 1) % imageUrls.length;
+        showImage(newIndex);
+    }
+
+    function prevImage() {
+        const newIndex = (currentImageIndex - 1 + imageUrls.length) % imageUrls.length;
+        showImage(newIndex);
+    }
+
+    function resetAutoChange() {
+        if (autoChangeTimer) clearTimeout(autoChangeTimer);
+        autoChangeTimer = setTimeout(() => {
+            nextImage();
+        }, 5000);
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+        // Hiển thị nút nếu có nhiều ảnh
+        if (imageUrls.length > 1) {
+            document.getElementById('prev-image').style.display = '';
+            document.getElementById('next-image').style.display = '';
+        }
+        document.getElementById('prev-image').addEventListener('click', prevImage);
+        document.getElementById('next-image').addEventListener('click', nextImage);
+        showImage(0);
+
         const checkinInput = document.getElementById('ngay_nhan_phong');
         const checkoutInput = document.getElementById('ngay_tra_phong');
         const hourlyRate = <?= $phong->gia ?? 0 ?>;
