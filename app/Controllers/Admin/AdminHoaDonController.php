@@ -288,13 +288,14 @@ class AdminHoaDonController
         }
 
         $hoaDon = HoaDon::find($id);
-        $taiKhoans = TaiKhoan::all();
+        $nhanViens = TaiKhoan::where('phan_quyen', '=', PhanQuyen::LE_TAN)->get();
+        $khachHangs = TaiKhoan::where('phan_quyen', '=', PhanQuyen::KHACH_HANG)->get();
 
         if (!$hoaDon) {
             redirect('/admin/hoa-don?error=notfound');
         }
 
-        view('Admin.HoaDon.edit', ['hoaDon' => $hoaDon, 'taiKhoans' => $taiKhoans]);
+        view('Admin.HoaDon.edit', ['hoaDon' => $hoaDon, 'nhanViens' => $nhanViens, 'khachHangs' => $khachHangs]);
     }
 
     public function update()

@@ -10,13 +10,6 @@ $nhanVien = $hoaDon->getNhanVien();
 $phongs = $hoaDon->getPhongs();
 $dichVus = $hoaDon->getDichVus();
 
-// Lấy dữ liệu cho form
-$khachHangs = array_filter($taiKhoans, function($tk) {
-    return $tk->phan_quyen === 'Khách hàng';
-});
-$nhanViens = array_filter($taiKhoans, function($tk) {
-    return in_array($tk->phan_quyen, ['Quản lý', 'Nhân viên']);
-});
 $allPhongs = \HotelBooking\Models\Phong::all();
 $allDichVus = \HotelBooking\Models\DichVu::all();
 
@@ -135,12 +128,11 @@ ob_start();
         <!-- Room Management -->
         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-semibold text-gray-900">Quản lý phòng</h3>
+                <h3 class="text-lg font-semibold text-gray-900">Quản lý phòng & dịch vụ</h3>
                 <button type="button" onclick="addRoom()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
                     <i class="fas fa-plus mr-2"></i>Thêm phòng
                 </button>
             </div>
-            
             <div id="roomsContainer">
                 <?php if (isNotEmpty($phongs)): ?>
                     <?php foreach ($phongs as $index => $hdPhong): ?>
@@ -155,7 +147,7 @@ ob_start();
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Phòng <span class="text-red-500">*</span></label>
                                     <select name="existing_rooms[<?= $index ?>][ma_phong]" required
@@ -180,55 +172,46 @@ ob_start();
                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" <?= $isDisabled ? 'disabled' : '' ?>>
                                 </div>
                             </div>
-                        </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </div>
-        </div>
-
-        <!-- Service Management -->
-        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-semibold text-gray-900">Quản lý dịch vụ</h3>
-                <button type="button" onclick="addService()" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
-                    <i class="fas fa-plus mr-2"></i>Thêm dịch vụ
-                </button>
-            </div>
-            
-            <div id="servicesContainer">
-                <?php if (isNotEmpty($dichVus)): ?>
-                    <?php foreach ($dichVus as $index => $hdDichVu): ?>
-                        <?php $dichVu = \HotelBooking\Models\DichVu::find($hdDichVu->ma_dich_vu); ?>
-                        <div class="service-item border border-gray-200 rounded-lg p-4 mb-4">
-                            <input type="hidden" name="existing_services[<?= $index ?>][ma_hd_dich_vu]" value="<?= $hdDichVu->ma_hd_dich_vu ?>">
-                            <div class="flex justify-between items-center mb-4">
-                                <h4 class="font-medium text-gray-900">
-                                    Dịch vụ <?= $dichVu ? htmlspecialchars($dichVu->ten_dich_vu) : '#' . $hdDichVu->ma_dich_vu ?>
-                                </h4>
-                                <button type="button" onclick="removeService(this)" class="text-red-600 hover:text-red-800">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Dịch vụ</label>
-                                    <select name="existing_services[<?= $index ?>][ma_dich_vu]"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" <?= $isDisabled ? 'disabled' : '' ?>
-                                            onchange="updateTotal()">
-                                        <?php foreach($allDichVus as $dv): ?>
-                                            <option value="<?= $dv->ma_dich_vu ?>" <?= $dv->ma_dich_vu == $hdDichVu->ma_dich_vu ? 'selected' : '' ?> data-price="<?= $dv->gia ?>">
-                                                <?= htmlspecialchars($dv->ten_dich_vu) ?> - <?= number_format($dv->gia, 0, ',', '.') ?>₫
-                                            </option>
+                            <!-- Dịch vụ cho phòng này -->
+                            <div class="bg-slate-50 rounded-lg p-4 mb-2">
+                                <h5 class="font-semibold text-gray-900 mb-2">Dịch vụ bổ sung cho phòng này</h5>
+                                <div id="servicesContainer_<?= $index ?>">
+                                    <?php if (isNotEmpty($dichVus)): ?>
+                                        <?php foreach ($dichVus as $svcIndex => $hdDichVu): ?>
+                                            <?php if ($hdDichVu->ma_hd_phong == $hdPhong->ma_hd_phong): ?>
+                                                <?php $dichVu = \HotelBooking\Models\DichVu::find($hdDichVu->ma_dich_vu); ?>
+                                                <div class="service-item border border-gray-200 rounded-lg p-2 mb-2">
+                                                    <input type="hidden" name="existing_services[<?= $svcIndex ?>][ma_hd_dich_vu]" value="<?= $hdDichVu->ma_hd_dich_vu ?>">
+                                                    <input type="hidden" name="existing_services[<?= $svcIndex ?>][ma_hd_phong]" value="<?= $hdPhong->ma_hd_phong ?>">
+                                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                                        <div>
+                                                            <label class="block text-sm font-medium text-gray-700 mb-1">Dịch vụ</label>
+                                                            <select name="existing_services[<?= $svcIndex ?>][ma_dich_vu]"
+                                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" <?= $isDisabled ? 'disabled' : '' ?>
+                                                                    onchange="updateTotal()">
+                                                                <?php foreach($allDichVus as $dv): ?>
+                                                                    <option value="<?= $dv->ma_dich_vu ?>" <?= $dv->ma_dich_vu == $hdDichVu->ma_dich_vu ? 'selected' : '' ?> data-price="<?= $dv->gia ?>">
+                                                                        <?= htmlspecialchars($dv->ten_dich_vu) ?> - <?= number_format($dv->gia, 0, ',', '.') ?>₫
+                                                                    </option>
+                                                                <?php endforeach; ?>
+                                                            </select>
+                                                        </div>
+                                                        <div>
+                                                            <label class="block text-sm font-medium text-gray-700 mb-1">Số lượng</label>
+                                                            <input type="number" name="existing_services[<?= $svcIndex ?>][so_luong]" min="1" 
+                                                                   value="<?= $hdDichVu->so_luong ?? 1 ?>"
+                                                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" <?= $isDisabled ? 'disabled' : '' ?>
+                                                                   onchange="updateTotal()">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            <?php endif; ?>
                                         <?php endforeach; ?>
-                                    </select>
+                                    <?php endif; ?>
                                 </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Số lượng</label>
-                                    <input type="number" name="existing_services[<?= $index ?>][so_luong]" min="1" 
-                                           value="<?= $hdDichVu->so_luong ?? 1 ?>"
-                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" <?= $isDisabled ? 'disabled' : '' ?>
-                                           onchange="updateTotal()">
-                                </div>
+                                <button type="button" onclick="addServiceToRoom(<?= $index ?>)" class="bg-purple-600 text-white px-3 py-1 rounded-lg hover:bg-purple-700 transition-colors mb-2">
+                                    <i class="fas fa-plus mr-1"></i>Thêm dịch vụ cho phòng này
+                                </button>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -330,20 +313,15 @@ function removeRoom(button) {
     }
 }
 
-function addService() {
-    const container = document.getElementById('servicesContainer');
+function addServiceToRoom(roomIdx) {
+    const container = document.getElementById('servicesContainer_' + roomIdx);
+    const svcIdx = serviceIndex++;
     const serviceHtml = `
-        <div class="service-item border border-gray-200 rounded-lg p-4 mb-4">
-            <div class="flex justify-between items-center mb-4">
-                <h4 class="font-medium text-gray-900">Dịch vụ ${serviceIndex + 1}</h4>
-                <button type="button" onclick="removeService(this)" class="text-red-600 hover:text-red-800">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="service-item border border-gray-200 rounded-lg p-2 mb-2">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Dịch vụ</label>
-                    <select name="new_services[${serviceIndex}][ma_dich_vu]"
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Dịch vụ</label>
+                    <select name="new_services[${svcIdx}][ma_dich_vu]"
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             onchange="updateTotal()">
                         <option value="">-- Chọn dịch vụ --</option>
@@ -355,16 +333,16 @@ function addService() {
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Số lượng</label>
-                    <input type="number" name="new_services[${serviceIndex}][so_luong]" min="1" value="1"
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Số lượng</label>
+                    <input type="number" name="new_services[${svcIdx}][so_luong]" min="1" value="1"
                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                            onchange="updateTotal()">
                 </div>
             </div>
+            <input type="hidden" name="new_services[${svcIdx}][ma_hd_phong]" value="<?= isset($phongs[$roomIdx]) ? $phongs[$roomIdx]->ma_hd_phong : '' ?>">
         </div>
     `;
     container.insertAdjacentHTML('beforeend', serviceHtml);
-    serviceIndex++;
 }
 
 function removeService(button) {

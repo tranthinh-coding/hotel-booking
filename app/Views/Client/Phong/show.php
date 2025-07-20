@@ -306,21 +306,6 @@ $danhSachHinhAnh = array_merge(
                                 class="form-input w-full px-4 py-3" required>
                         </div>
 
-                        <!-- Number of guests -->
-                        <div>
-                            <label for="so_nguoi" class="block text-sm font-semibold text-slate-700 mb-3">
-                                <i class="fas fa-users mr-2 text-blue-500"></i>
-                                Số khách
-                            </label> <select id="so_nguoi" name="so_nguoi" class="form-input w-full px-4 py-3" required>
-                                <?php
-                                $maxGuests = $loaiPhong->suc_chua ?? $phong->suc_chua ?? 4;
-                                for ($i = 1; $i <= $maxGuests; $i++):
-                                    ?>
-                                    <option value="<?= $i ?>"><?= $i ?>     <?= $i == 1 ? 'khách' : 'khách' ?></option>
-                                <?php endfor; ?>
-                            </select>
-                        </div>
-
                         <!-- Price Breakdown -->
                         <div class="price-card">
                             <h4 class="font-semibold text-slate-800 mb-4">Chi tiết giá</h4>
