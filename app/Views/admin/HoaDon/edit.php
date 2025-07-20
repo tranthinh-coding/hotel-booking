@@ -65,6 +65,7 @@ ob_start();
     <!-- Main Form -->
     <form method="POST" action="/admin/hoa-don/update?id=<?= $hoaDon->ma_hoa_don ?>" class="space-y-6">
         <input type="hidden" name="id" value="<?= $hoaDon->ma_hoa_don ?>">
+        <div id="deletedServicesContainer"></div>
         <?php if ($isDisabled): ?>
         <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
             <div class="flex items-center">
@@ -129,9 +130,9 @@ ob_start();
         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-semibold text-gray-900">Quản lý phòng & dịch vụ</h3>
-                <button type="button" onclick="addRoom()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                <!-- <button type="button" onclick="addRoom()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
                     <i class="fas fa-plus mr-2"></i>Thêm phòng
-                </button>
+                </button> -->
             </div>
             <div id="roomsContainer">
                 <?php if (isNotEmpty($phongs)): ?>
@@ -143,14 +144,11 @@ ob_start();
                                 <h4 class="font-medium text-gray-900">
                                     Phòng <?= $phong ? htmlspecialchars($phong->ten_phong) : '#' . $hdPhong->ma_phong ?>
                                 </h4>
-                                <button type="button" onclick="removeRoom(this)" class="text-red-600 hover:text-red-800">
-                                    <i class="fas fa-trash"></i>
-                                </button>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Phòng <span class="text-red-500">*</span></label>
-                                    <select name="existing_rooms[<?= $index ?>][ma_phong]" required
+                                    <select disabled name="existing_rooms[<?= $index ?>][ma_phong]" required
                                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" <?= $isDisabled ? 'disabled' : '' ?>>
                                         <?php foreach($allPhongs as $p): ?>
                                             <option value="<?= $p->ma_phong ?>" <?= $p->ma_phong == $hdPhong->ma_phong ? 'selected' : '' ?> data-price="<?= $p->gia ?>">
@@ -186,7 +184,7 @@ ob_start();
                                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                                                         <div>
                                                             <label class="block text-sm font-medium text-gray-700 mb-1">Dịch vụ</label>
-                                                            <select name="existing_services[<?= $svcIndex ?>][ma_dich_vu]"
+                                                            <select disabled name="existing_services[<?= $svcIndex ?>][ma_dich_vu]"
                                                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" <?= $isDisabled ? 'disabled' : '' ?>
                                                                     onchange="updateTotal()">
                                                                 <?php foreach($allDichVus as $dv): ?>
@@ -209,9 +207,6 @@ ob_start();
                                         <?php endforeach; ?>
                                     <?php endif; ?>
                                 </div>
-                                <button type="button" onclick="addServiceToRoom(<?= $index ?>)" class="bg-purple-600 text-white px-3 py-1 rounded-lg hover:bg-purple-700 transition-colors mb-2">
-                                    <i class="fas fa-plus mr-1"></i>Thêm dịch vụ cho phòng này
-                                </button>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -262,94 +257,6 @@ ob_start();
 let roomIndex = <?= count($phongs) ?>;
 let serviceIndex = <?= count($dichVus) ?>;
 
-function addRoom() {
-    const container = document.getElementById('roomsContainer');
-    const roomHtml = `
-        <div class="room-item border border-gray-200 rounded-lg p-4 mb-4">
-            <div class="flex justify-between items-center mb-4">
-                <h4 class="font-medium text-gray-900">Phòng ${roomIndex + 1}</h4>
-                <button type="button" onclick="removeRoom(this)" class="text-red-600 hover:text-red-800">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Phòng <span class="text-red-500">*</span></label>
-                    <select name="new_rooms[${roomIndex}][ma_phong]" required
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">-- Chọn phòng --</option>
-                        <?php foreach($allPhongs as $p): ?>
-                            <option value="<?= $p->ma_phong ?>" data-price="<?= $p->gia ?>">
-                                <?= htmlspecialchars($p->ten_phong) ?> - <?= number_format($p->gia, 0, ',', '.') ?>₫/giờ
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Check-in <span class="text-red-500">*</span></label>
-                    <input type="datetime-local" name="new_rooms[${roomIndex}][check_in]" required
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Check-out <span class="text-red-500">*</span></label>
-                    <input type="datetime-local" name="new_rooms[${roomIndex}][check_out]" required
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                </div>
-            </div>
-        </div>
-    `;
-    container.insertAdjacentHTML('beforeend', roomHtml);
-    roomIndex++;
-    updateTotal();
-}
-
-function removeRoom(button) {
-    const roomItem = button.closest('.room-item');
-    if (document.querySelectorAll('.room-item').length > 1) {
-        roomItem.remove();
-        updateTotal();
-    } else {
-        alert('Phải có ít nhất một phòng!');
-    }
-}
-
-function addServiceToRoom(roomIdx) {
-    const container = document.getElementById('servicesContainer_' + roomIdx);
-    const svcIdx = serviceIndex++;
-    const serviceHtml = `
-        <div class="service-item border border-gray-200 rounded-lg p-2 mb-2">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Dịch vụ</label>
-                    <select name="new_services[${svcIdx}][ma_dich_vu]"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            onchange="updateTotal()">
-                        <option value="">-- Chọn dịch vụ --</option>
-                        <?php foreach($allDichVus as $dv): ?>
-                            <option value="<?= $dv->ma_dich_vu ?>" data-price="<?= $dv->gia ?>">
-                                <?= htmlspecialchars($dv->ten_dich_vu) ?> - <?= number_format($dv->gia, 0, ',', '.') ?>₫
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Số lượng</label>
-                    <input type="number" name="new_services[${svcIdx}][so_luong]" min="1" value="1"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                           onchange="updateTotal()">
-                </div>
-            </div>
-            <input type="hidden" name="new_services[${svcIdx}][ma_hd_phong]" value="<?= isset($phongs[$roomIdx]) ? $phongs[$roomIdx]->ma_hd_phong : '' ?>">
-        </div>
-    `;
-    container.insertAdjacentHTML('beforeend', serviceHtml);
-}
-
-function removeService(button) {
-    button.closest('.service-item').remove();
-    updateTotal();
-}
-
 function updateTotal() {
     let roomTotal = 0;
     let serviceTotal = 0;
@@ -359,18 +266,15 @@ function updateTotal() {
         const select = item.querySelector('select[name*="[ma_phong]"]');
         const checkin = item.querySelector('input[name*="[check_in]"]');
         const checkout = item.querySelector('input[name*="[check_out]"]');
-        
-        if (select.value && checkin.value && checkout.value) {
+        // Nếu là phòng cũ (có input hidden ma_hd_phong) thì lấy giá từ option đã render (giá cũ)
+        // Nếu là phòng mới thì lấy giá hiện tại
+        if (select && select.value && checkin.value && checkout.value) {
             const price = parseFloat(select.options[select.selectedIndex].dataset.price || 0);
             const checkinDate = new Date(checkin.value);
             const checkoutDate = new Date(checkout.value);
-            
             if (checkinDate < checkoutDate) {
-                // Calculate hours (exact decimal hours like backend)
                 const timeDiffMs = checkoutDate.getTime() - checkinDate.getTime();
                 const hoursExact = Math.max(1, timeDiffMs / (1000 * 60 * 60));
-                
-                // Round the total amount (like backend does)
                 roomTotal += Math.round(price * hoursExact);
             }
         }
@@ -380,24 +284,22 @@ function updateTotal() {
     document.querySelectorAll('.service-item').forEach(item => {
         const select = item.querySelector('select[name*="[ma_dich_vu]"]');
         const quantity = item.querySelector('input[name*="[so_luong]"]');
-        
-        if (select.value && quantity.value) {
+        // Nếu là dịch vụ cũ (có input hidden ma_hd_dich_vu) thì lấy giá từ option đã render (giá cũ)
+        // Nếu là dịch vụ mới thì lấy giá hiện tại
+        if (select && select.value && quantity.value) {
             const price = parseFloat(select.options[select.selectedIndex].dataset.price || 0);
             const qty = parseInt(quantity.value || 0);
             serviceTotal += price * qty;
         }
     });
 
-    // Update display
     document.getElementById('roomTotal').textContent = new Intl.NumberFormat('vi-VN').format(roomTotal) + '₫';
     document.getElementById('serviceTotal').textContent = new Intl.NumberFormat('vi-VN').format(serviceTotal) + '₫';
     document.getElementById('grandTotal').textContent = new Intl.NumberFormat('vi-VN').format(roomTotal + serviceTotal) + '₫';
 }
 
-// Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
     updateTotal();
-    document.addEventListener('change', updateTotal);
 });
 </script>
 

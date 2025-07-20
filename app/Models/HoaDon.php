@@ -150,7 +150,7 @@ class HoaDon extends Model
                 SUM(
                     CASE 
                         WHEN hdp.ma_hd_phong IS NOT NULL THEN 
-                            hdp.gia * CEIL(TIMESTAMPDIFF(SECOND, hdp.check_in, hdp.check_out) / 3600)
+                            ROUND(hdp.gia * GREATEST(1, TIMESTAMPDIFF(SECOND, hdp.check_in, hdp.check_out) / 3600))
                         ELSE 0 
                     END
                 ) as tong_tien_phong,
