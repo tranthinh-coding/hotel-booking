@@ -3,6 +3,7 @@
 namespace HotelBooking\Models;
 
 use HotelBooking\Enums\TrangThaiHoaDon;
+use HotelBooking\Facades\DB;
 
 /**
  * @property int $ma_hoa_don
@@ -33,7 +34,8 @@ class HoaDon extends Model
      */
     public function getNhanVien()
     {
-        if (!$this->ma_nhan_vien) return null;
+        if (!$this->ma_nhan_vien)
+            return null;
         return TaiKhoan::find($this->ma_nhan_vien);
     }
 
@@ -42,7 +44,8 @@ class HoaDon extends Model
      */
     public function getKhachHang()
     {
-        if (!$this->ma_khach_hang) return null;
+        if (!$this->ma_khach_hang)
+            return null;
         return TaiKhoan::find($this->ma_khach_hang);
     }
 
@@ -86,7 +89,7 @@ class HoaDon extends Model
                      hdt.thoi_gian_dat, hdt.trang_thai, hdt.tong_tien, hdt.ghi_chu, tk.ho_ten
             ORDER BY hdt.thoi_gian_dat DESC
         ";
-        
+
         return \HotelBooking\Facades\DB::query($sql);
     }
 
@@ -97,25 +100,25 @@ class HoaDon extends Model
     {
         $conditions = [];
         $params = [];
-        
+
         if (isNotEmpty($search)) {
             $conditions[] = "(hdt.ma_hoa_don LIKE ? OR tk.ho_ten LIKE ?)";
             $params[] = "%$search%";
             $params[] = "%$search%";
         }
-        
+
         if (isNotEmpty($status)) {
             $conditions[] = "hdt.trang_thai = ?";
             $params[] = $status;
         }
-        
+
         if (isNotEmpty($date)) {
             $conditions[] = "DATE(hdt.thoi_gian_dat) = ?";
             $params[] = $date;
         }
-        
+
         $whereClause = isNotEmpty($conditions) ? 'WHERE ' . implode(' AND ', $conditions) : '';
-        
+
         $sql = "
             SELECT 
                 hdt.ma_hoa_don,
@@ -136,7 +139,7 @@ class HoaDon extends Model
                      hdt.thoi_gian_dat, hdt.trang_thai, hdt.tong_tien, hdt.ghi_chu, tk.ho_ten
             ORDER BY hdt.thoi_gian_dat DESC
         ";
-        
+
         return \HotelBooking\Facades\DB::query($sql, $params);
     }
 
@@ -145,39 +148,23 @@ class HoaDon extends Model
      */
     public static function calculateTotalWithHours($maHoaDon)
     {
-        $sql = "
-            SELECT 
-                SUM(
-                    CASE 
-                        WHEN hdp.ma_hd_phong IS NOT NULL THEN 
-                            ROUND(hdp.gia * GREATEST(1, TIMESTAMPDIFF(SECOND, hdp.check_in, hdp.check_out) / 3600))
-                        ELSE 0 
-                    END
-                ) as tong_tien_phong,
-                SUM(
-                    CASE 
-                        WHEN hdv.ma_hd_dich_vu IS NOT NULL THEN 
-                            hdv.gia * hdv.so_luong
-                        ELSE 0 
-                    END
-                ) as tong_tien_dich_vu
-            FROM hoa_don_tong hdt
-            LEFT JOIN hoa_don_phong hdp ON hdt.ma_hoa_don = hdp.ma_hoa_don
-            LEFT JOIN hoa_don_dich_vu hdv ON hdt.ma_hoa_don = hdv.ma_hoa_don
-            WHERE hdt.ma_hoa_don = ?
-        ";
-        
-        $result = \HotelBooking\Facades\DB::queryOne($sql, [$maHoaDon]);
-        
-        if ($result) {
-            return [
-                'tong_tien_phong' => (float) ($result['tong_tien_phong'] ?? 0),
-                'tong_tien_dich_vu' => (float) ($result['tong_tien_dich_vu'] ?? 0),
-                'tong_tien' => (float) ($result['tong_tien_phong'] ?? 0) + (float) ($result['tong_tien_dich_vu'] ?? 0)
-            ];
-        }
-        
-        return ['tong_tien_phong' => 0, 'tong_tien_dich_vu' => 0, 'tong_tien' => 0];
+        $tongTienPhong = DB::table('hoa_don_phong')
+            ->where('ma_hoa_don', '=', $maHoaDon)
+            ->select(DB::raw("SUM(gia * ROUND(GREATEST(1, TIMESTAMPDIFF(SECOND, check_in, check_out) / 3600))) as tong_tien_phong"))
+            ->first();
+
+        $tongTienDichVu = DB::table('hoa_don_dich_vu')
+            ->where('ma_hoa_don', '=', $maHoaDon)
+            ->select(DB::raw("SUM(gia * so_luong) as tong_tien_dich_vu"))
+            ->first();
+
+        $tongTienPhong = +$tongTienPhong['tong_tien_phong'] ?? 0;
+        $tongTienDichVu = +$tongTienDichVu['tong_tien_dich_vu'] ?? 0;
+        return [
+            'tong_tien_phong' => $tongTienPhong,
+            'tong_tien_dich_vu' => $tongTienDichVu,
+            'tong_tien' => $tongTienPhong + $tongTienDichVu
+        ];
     }
 
     /**
@@ -197,9 +184,9 @@ class HoaDon extends Model
                 END) as revenue_today
             FROM hoa_don_tong
         ";
-        
+
         $result = \HotelBooking\Facades\DB::queryOne($sql);
-        
+
         return [
             'total' => (int) ($result['total'] ?? 0),
             'pending' => (int) ($result['pending'] ?? 0),
@@ -244,7 +231,7 @@ class HoaDon extends Model
                      hdt.thoi_gian_dat, hdt.trang_thai, hdt.ghi_chu, tk.ho_ten
             ORDER BY hdt.thoi_gian_dat DESC
         ";
-        
+
         return \HotelBooking\Facades\DB::query($sql);
     }
 
@@ -255,25 +242,25 @@ class HoaDon extends Model
     {
         $conditions = [];
         $params = [];
-        
+
         if (isNotEmpty($search)) {
             $conditions[] = "(hdt.ma_hoa_don LIKE ? OR tk.ho_ten LIKE ?)";
             $params[] = "%$search%";
             $params[] = "%$search%";
         }
-        
+
         if (isNotEmpty($status)) {
             $conditions[] = "hdt.trang_thai = ?";
             $params[] = $status;
         }
-        
+
         if (isNotEmpty($date)) {
             $conditions[] = "DATE(hdt.thoi_gian_dat) = ?";
             $params[] = $date;
         }
-        
+
         $whereClause = isNotEmpty($conditions) ? 'WHERE ' . implode(' AND ', $conditions) : '';
-        
+
         $sql = "
             SELECT 
                 hdt.ma_hoa_don,
@@ -306,7 +293,7 @@ class HoaDon extends Model
                      hdt.thoi_gian_dat, hdt.trang_thai, hdt.ghi_chu, tk.ho_ten
             ORDER BY hdt.thoi_gian_dat DESC
         ";
-        
+
         return \HotelBooking\Facades\DB::query($sql, $params);
     }
 
@@ -316,7 +303,7 @@ class HoaDon extends Model
     public function calculateTotal()
     {
         $total = 0;
-        
+
         // Tính tiền phòng
         $hoaDonPhongs = $this->getPhongs();
         foreach ($hoaDonPhongs as $hdPhong) {
@@ -326,7 +313,7 @@ class HoaDon extends Model
                 $total += $phong->gia * $soNgay;
             }
         }
-        
+
         // Tính tiền dịch vụ
         $dichVus = $this->getDichVus();
         foreach ($dichVus as $hdDichVu) {
@@ -335,7 +322,7 @@ class HoaDon extends Model
                 $total += $dichVu->gia * $hdDichVu->so_luong;
             }
         }
-        
+
         return $total;
     }
 
@@ -375,9 +362,9 @@ class HoaDon extends Model
             WHERE hd.ma_hoa_don = ?
             GROUP BY hd.ma_hoa_don
         ";
-        
+
         $result = \HotelBooking\Facades\DB::queryOne($sql, [$maHoaDon]);
-        
+
         if ($result) {
             // Parse rooms data
             $result['rooms_data'] = [];
@@ -419,7 +406,7 @@ class HoaDon extends Model
                 }
             }
         }
-        
+
         return $result;
     }
 }

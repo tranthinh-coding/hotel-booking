@@ -196,7 +196,7 @@ ob_start();
                                                     </div>
                                                     <div>
                                                         <label class="block text-sm font-medium text-gray-700 mb-1">Số lượng</label>
-                                                        <input type="number" name="existing_services[<?= $svcIndex ?>][so_luong]" min="1" 
+                                                        <input disabled type="number" name="existing_services[<?= $svcIndex ?>][so_luong]" min="1" 
                                                                 value="<?= $hdDichVu->so_luong ?? 1 ?>"
                                                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" <?= $isDisabled ? 'disabled' : '' ?>
                                                                 onchange="updateTotal()">

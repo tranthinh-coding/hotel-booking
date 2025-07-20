@@ -119,6 +119,7 @@ ob_start();
                 </div>
 
                 <!-- Activity Summary -->
+                <?php if ($taiKhoan->phan_quyen === \HotelBooking\Enums\PhanQuyen::KHACH_HANG): ?>
                 <div class="bg-gray-50 rounded-lg p-4">
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Tóm tắt hoạt động</h3>
                     <div class="grid grid-cols-2 gap-4">
@@ -130,10 +131,12 @@ ob_start();
                         </div>
                     </div>
                 </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
 
+    <?php if ($taiKhoan->phan_quyen === \HotelBooking\Enums\PhanQuyen::KHACH_HANG): ?>
     <!-- Recent Activity (if applicable) -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h3 class="text-lg font-medium text-gray-900 mb-4">Danh sách hoá đơn của khách hàng</h3>
@@ -173,6 +176,7 @@ ob_start();
             </div>
         <?php endif; ?>
     </div>
+    <?php endif; ?>
 </div>
 
 <?php
