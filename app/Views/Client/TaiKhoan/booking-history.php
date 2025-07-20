@@ -136,7 +136,7 @@ ob_start();
                                             <?= htmlspecialchars($tenPhong) ?>
                                         </h3>
                                         <p class="text-sm text-gray-500">
-                                            <?= htmlspecialchars($loaiPhong) ?> • Mã đặt: #<?= $maHoaDon ?>
+                                            <?= htmlspecialchars($loaiPhong) ?> • Mã hoá đơn: <span class="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">#<?= $maHoaDon ?></span>
                                         </p>
                                     </div>
                                 </div>
@@ -386,7 +386,7 @@ ob_start();
                     <p class="text-gray-700 mb-2">Bạn có chắc chắn muốn hủy đặt phòng?</p>
                     <p class="text-sm text-gray-600">
                         <strong>Phòng:</strong> <span id="cancel_room_name"></span><br>
-                        <strong>Mã đặt:</strong> #<span id="cancel_booking_id"></span>
+                        <strong>Mã hoá đơn:</strong> <span id="cancel_booking_id" class="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">#</span>
                     </p>
                     <div class="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                         <p class="text-sm text-yellow-800">
@@ -575,50 +575,55 @@ ob_start();
 
         let roomsHtml = '';
         if (booking.rooms_data && booking.rooms_data.length > 0) {
-            roomsHtml = booking.rooms_data.map(room => `
-                <div class="border border-gray-200 rounded-lg p-3 sm:p-4 mb-4">
-                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-3">
-                        <h4 class="font-medium text-gray-900 mb-1 sm:mb-0">${room.ten_phong}</h4>
-                        <span class="text-blue-600 font-semibold text-sm sm:text-base">${new Intl.NumberFormat('vi-VN').format(room.gia_hien_tai)}₫/giờ</span>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-sm mb-3">
-                        <div>
-                            <span class="text-gray-600">Check-in:</span>
-                            <div class="font-medium">${formatDateTime(room.check_in)}</div>
+            roomsHtml = booking.rooms_data.map(room => {
+                let roomServices = '';
+                if (booking.services_data && room.ma_hd_phong) {
+                    const services = booking.services_data.filter(sv => sv.ma_hd_phong == room.ma_hd_phong);
+                    if (services.length > 0) {
+                        roomServices = `
+                            <div class="bg-gray-50 rounded-lg p-3 mt-2">
+                                <h5 class="font-medium text-gray-900 mb-2">Dịch vụ bổ sung</h5>
+                                <div class="space-y-2">
+                                    ${services.map(service => `
+                                        <div class="flex justify-between items-center py-1">
+                                            <div class="flex-1 min-w-0">
+                                                <span class="text-gray-900 block truncate">${service.ten_dich_vu}</span>
+                                                <span class="text-gray-500 text-sm">Số lượng: ${service.so_luong}</span>
+                                            </div>
+                                            <span class="font-medium ml-2">${new Intl.NumberFormat('vi-VN').format(service.thanh_tien)}₫</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+                return `
+                    <div class="border border-gray-200 rounded-lg p-3 sm:p-4 mb-4">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-3">
+                            <h4 class="font-medium text-gray-900 mb-1 sm:mb-0">${room.ten_phong}</h4>
+                            <span class="text-blue-600 font-semibold text-sm sm:text-base">${new Intl.NumberFormat('vi-VN').format(room.gia_hien_tai)}₫/giờ</span>
                         </div>
-                        <div>
-                            <span class="text-gray-600">Check-out:</span>
-                            <div class="font-medium">${formatDateTime(room.check_out)}</div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-sm mb-3">
+                            <div>
+                                <span class="text-gray-600">Check-in:</span>
+                                <div class="font-medium">${formatDateTime(room.check_in)}</div>
+                            </div>
+                            <div>
+                                <span class="text-gray-600">Check-out:</span>
+                                <div class="font-medium">${formatDateTime(room.check_out)}</div>
+                            </div>
                         </div>
+                        <div class="flex justify-between items-center pt-3 border-t">
+                            <span class="text-gray-600">${room.so_gio.toFixed(1)} giờ</span>
+                            <span class="font-semibold text-base sm:text-lg">${new Intl.NumberFormat('vi-VN').format(room.tien_phong)}₫</span>
+                        </div>
+                        ${roomServices}
                     </div>
-                    <div class="flex justify-between items-center pt-3 border-t">
-                        <span class="text-gray-600">${room.so_gio.toFixed(1)} giờ</span>
-                        <span class="font-semibold text-base sm:text-lg">${new Intl.NumberFormat('vi-VN').format(room.tien_phong)}₫</span>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         } else {
             roomsHtml = '<p class="text-gray-500">Không có phòng nào được đặt</p>';
-        }
-
-        let servicesHtml = '';
-        if (booking.services_data && booking.services_data.length > 0) {
-            servicesHtml = `
-                <div class="bg-gray-50 rounded-lg p-3 sm:p-4">
-                    <h4 class="font-medium text-gray-900 mb-3">Dịch vụ bổ sung</h4>
-                    <div class="space-y-2">
-                        ${booking.services_data.map(service => `
-                            <div class="flex justify-between items-center py-1">
-                                <div class="flex-1 min-w-0">
-                                    <span class="text-gray-900 block truncate">${service.ten_dich_vu}</span>
-                                    <span class="text-gray-500 text-sm">Số lượng: ${service.so_luong}</span>
-                                </div>
-                                <span class="font-medium ml-2">${new Intl.NumberFormat('vi-VN').format(service.thanh_tien)}₫</span>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
         }
 
         const content = `
@@ -629,7 +634,7 @@ ob_start();
                         <div>
                             <h4 class="font-medium text-gray-900 mb-2">Thông tin đặt phòng</h4>
                             <div class="space-y-1 text-sm">
-                                <p><span class="text-gray-600">Mã đặt:</span> <span class="font-medium">#${booking.ma_hoa_don}</span></p>
+                                <p><span class="text-gray-600">Mã hoá đơn:</span> <span class="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">#${booking.ma_hoa_don}</span></p>
                                 <p><span class="text-gray-600">Ngày đặt:</span> <span class="font-medium">${formatDateTime(booking.thoi_gian_dat)}</span></p>
                                 <p><span class="text-gray-600">Trạng thái:</span> 
                                     <span class="inline-flex px-2 py-1 rounded-full text-xs font-medium ${statusColors[booking.trang_thai] || 'bg-gray-100 text-gray-800'}">
@@ -654,9 +659,6 @@ ob_start();
                     <h4 class="font-medium text-gray-900 mb-4">Chi tiết phòng đặt</h4>
                     ${roomsHtml}
                 </div>
-
-                <!-- Dịch vụ -->
-                ${servicesHtml}
 
                 <!-- Tổng kết -->
                 <div class="bg-blue-50 rounded-lg p-3 sm:p-4">

@@ -349,13 +349,11 @@ ob_start();
                                                     <label class="block text-sm font-medium text-slate-700 mb-2">Dịch vụ</label>
                                                     <select name="phongs[<?= $i ?>][dich_vu][<?= $j ?>][ma_dich_vu]" onchange="updateServicePrice(this)" class="form-input w-full px-3 py-2">
                                                         <option value="" disabled>-- Chọn dịch vụ --</option>
-                                                        <?php if (isset($dichVus) && $dichVus): ?>
-                                                            <?php foreach ($dichVus as $service): ?>
-                                                                <option value="<?= $service->ma_dich_vu ?? $service['ma_dich_vu'] ?>" data-price="<?= $service->gia ?? $service['gia'] ?>" <?= (isset($dv['ma_dich_vu']) && $dv['ma_dich_vu'] == ($service->ma_dich_vu ?? $service['ma_dich_vu'])) ? 'selected' : '' ?>>
-                                                                    <?= htmlspecialchars($service->ten_dich_vu ?? $service['ten_dich_vu']) ?> - <?= number_format($service->gia ?? $service['gia']) ?>₫
-                                                                </option>
-                                                            <?php endforeach; ?>
-                                                        <?php endif; ?>
+                                                        <?php foreach ($dichVus as $service): ?>
+                                                            <option value="<?= $service->ma_dich_vu ?? $service['ma_dich_vu'] ?>" data-price="<?= $service->gia ?? $service['gia'] ?>" <?= (isset($dv['ma_dich_vu']) && $dv['ma_dich_vu'] == ($service->ma_dich_vu ?? $service['ma_dich_vu'])) ? 'selected' : '' ?>>
+                                                                <?= htmlspecialchars($service->ten_dich_vu ?? $service['ten_dich_vu']) ?> - <?= number_format($service->gia ?? $service['gia']) ?>₫
+                                                            </option>
+                                                        <?php endforeach; ?>
                                                     </select>
                                                 </div>
                                                 <div>
@@ -426,24 +424,6 @@ ob_start();
                             <?php } ?>
                         </div>
                     </div>
-
-                    <!-- General Services -->
-                    <!-- <div class="section-card p-8">
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-2xl font-bold text-slate-800 flex items-center">
-                                <i class="fas fa-concierge-bell icon-gradient mr-3 text-xl"></i>
-                                Dịch vụ chung
-                            </h3>
-                            <button type="button" onclick="addGeneralService()"
-                                class="btn-primary text-white px-6 py-3 rounded-xl font-semibold">
-                                <i class="fas fa-plus mr-2"></i>Thêm dịch vụ
-                            </button>
-                        </div>
-
-                        <div id="generalServicesContainer">
-                            <p class="text-slate-600 text-center py-8">Chưa có dịch vụ chung nào được chọn</p>
-                        </div>
-                    </div> -->
 
                     <!-- Special Requests -->
                     <div class="section-card p-8">
@@ -550,13 +530,17 @@ ob_start();
     let generalServiceIndex = 0;
 
     // Data from server
-    const phongs = <?= json_encode($phongsArray ?? [], JSON_NUMERIC_CHECK) ?>;
-    const dichVus = <?= json_encode($dichVusArray ?? [], JSON_NUMERIC_CHECK) ?>;
+    const phongs = <?= json_encode(array_map(function($phong) {
+        return $phong->data;
+    }, $phongs), JSON_NUMERIC_CHECK) ?>;
+    const dichVus = <?= json_encode(array_map(function($dichVu) {
+        return $dichVu->data;
+    }, $dichVus), JSON_NUMERIC_CHECK) ?>;
 
     console.log('Phongs data:', phongs);
     console.log('DichVus data:', dichVus);
 
-    // Generate room options HTML
+    // Hiển thị thông tin phòng và dịch vụ đã chọn
     function generateRoomOptions() {
         let options = '<option value="">-- Chọn phòng --</option>';
         phongs.forEach(room => {
@@ -568,7 +552,7 @@ ob_start();
         return options;
     }
 
-    // Generate service options HTML
+    // Hiển thị thông tin dịch vụ
     function generateServiceOptions() {
         let options = '<option value="">-- Chọn dịch vụ --</option>';
         dichVus.forEach(service => {

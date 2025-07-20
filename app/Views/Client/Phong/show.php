@@ -116,53 +116,32 @@ ob_start();
             <div class="lg:col-span-2 space-y-8">
                 <!-- Hình ảnh -->
                 <div class="room-card rounded-3xl overflow-hidden">
-                    <?php if (isNotEmpty($hinhAnhPhong) && count($hinhAnhPhong) > 0): ?>
-                        <!-- Ảnh bìa -->
-                        <div class="relative">
-                            <img id="main-image" src="<?= getFileUrl($phong->anh_bia) ?>"
-                                alt="<?= htmlspecialchars($phong->ten_phong ?? '') ?>"
-                                class="w-full h-96 object-cover transition-all duration-300">
+                    <!-- Ảnh bìa -->
+                    <div class="relative">
+                        <img id="main-image" src="<?= getFileUrl($phong->anh_bia) ?>"
+                            alt="<?= htmlspecialchars($phong->ten_phong ?? '') ?>"
+                            class="w-full h-96 object-cover transition-all duration-300">
 
-                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-6">
-                                <h2 class="text-2xl font-bold text-white mb-2">
-                                    <?= htmlspecialchars($phong->ten_phong ?? '') ?>
-                                </h2>
-                                <p class="text-white/90">Phòng cao cấp với đầy đủ tiện nghi hiện đại</p>
-                            </div>
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-6">
+                            <h2 class="text-2xl font-bold text-white mb-2">
+                                <?= htmlspecialchars($phong->ten_phong ?? '') ?>
+                            </h2>
+                            <p class="text-white/90">Phòng cao cấp với đầy đủ tiện nghi hiện đại</p>
                         </div>
-
-                        <!-- Ảnh phòng -->
-                        <?php if (count($hinhAnhPhong) > 1): ?>
-                            <div class="p-6 bg-slate-50">
-                                <h4 class="font-semibold text-slate-800 mb-4">Hình ảnh phòng (<?= count($hinhAnhPhong) ?> ảnh)
-                                </h4>
-                                <div class="grid grid-cols-4 md:grid-cols-6 gap-3">
-                                    <?php foreach ($hinhAnhPhong as $index => $hinhAnh): ?>
-                                        <div class="relative cursor-pointer group">
-                                            <img src="<?= $hinhAnh->getImageUrl() ?>" alt="Hình ảnh phòng <?= $index + 1 ?>"
-                                                class="thumbnail w-full h-20 object-cover rounded-lg border-2 border-transparent group-hover:border-blue-500 transition-all duration-200 <?= $index === 0 ? 'border-blue-500' : '' ?>"
-                                                onclick="changeMainImage('<?= $hinhAnh->getImageUrl() ?>', this)">
-                                        </div>
-                                    <?php endforeach; ?>
-                                </div>
-                            </div>
-                        <?php endif; ?>
-                    <?php else: ?>
-                        <!-- Default Image -->
-                        <div class="relative">
-                            <img src="/assets/images/default-room.jpg"
-                                alt="<?= htmlspecialchars($phong->ten_phong ?? '') ?>" class="w-full h-96 object-cover">
-                            <div class="absolute top-6 left-6">
-                                <span
-                                    class="px-4 py-2 bg-green-500 text-white text-sm font-semibold rounded-full shadow-lg">
-                                    <?= htmlspecialchars($phong->trang_thai ?? 'available') === 'available' ? 'Đang hoạt động' : 'Đã đặt' ?>
-                                </span>
-                            </div>
-                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-6">
-                                <h2 class="text-2xl font-bold text-white mb-2">
-                                    <?= htmlspecialchars($phong->ten_phong ?? '') ?>
-                                </h2>
-                                <p class="text-white/90">Phòng cao cấp với đầy đủ tiện nghi hiện đại</p>
+                    </div>
+                    <!-- Ảnh phòng -->
+                    <?php if (count($hinhAnhPhong) > 1): ?>
+                        <div class="p-6 bg-slate-50">
+                            <h4 class="font-semibold text-slate-800 mb-4">Hình ảnh phòng (<?= count($hinhAnhPhong) ?> ảnh)
+                            </h4>
+                            <div class="grid grid-cols-4 md:grid-cols-6 gap-3">
+                                <?php foreach ($hinhAnhPhong as $index => $hinhAnh): ?>
+                                    <div class="relative cursor-pointer group">
+                                        <img src="<?= $hinhAnh->getImageUrl() ?>" alt="Hình ảnh phòng <?= $index + 1 ?>"
+                                            class="thumbnail w-full h-20 object-cover rounded-lg border-2 border-transparent group-hover:border-blue-500 transition-all duration-200 <?= $index === 0 ? 'border-blue-500' : '' ?>"
+                                            onclick="changeMainImage('<?= $hinhAnh->getImageUrl() ?>', this)">
+                                    </div>
+                                <?php endforeach; ?>
                             </div>
                         </div>
                     <?php endif; ?>

@@ -10,6 +10,7 @@ use HotelBooking\Models\Phong;
 use HotelBooking\Enums\TrangThaiHoaDon;
 use Exception;
 use HotelBooking\Facades\DB;
+use HotelBooking\Models\HoaDonDichVu;
 
 class TaiKhoanController
 {
@@ -64,6 +65,7 @@ class TaiKhoanController
                 hdp.check_in,
                 hdp.check_out,
                 hdp.gia as gia_phong,
+                hdp.ma_hd_phong as ma_hd_phong,
                 p.ten_phong,
                 p.ma_phong,
                 lp.ten as loai_phong
@@ -490,7 +492,6 @@ class TaiKhoanController
             return;
         }
 
-        // Tính toán thêm thông tin cần thiết
         $tongTienPhong = 0;
         if (isNotEmpty($hoaDonDetails['rooms_data'])) {
             foreach ($hoaDonDetails['rooms_data'] as &$room) {

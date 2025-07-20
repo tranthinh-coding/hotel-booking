@@ -363,8 +363,8 @@ class HoaDon extends Model
                 kh.ho_ten as ten_khach_hang,
                 kh.mail as email_khach_hang,
                 kh.sdt as sdt_khach_hang,
-                GROUP_CONCAT(DISTINCT CONCAT(p.ten_phong, '|', hdp.check_in, '|', hdp.check_out, '|', hdp.gia) SEPARATOR ';;') as phongs,
-                GROUP_CONCAT(DISTINCT CONCAT(dv.ten_dich_vu, '|', hddv.so_luong, '|', hddv.gia, '|', hddv.thoi_gian) SEPARATOR ';;') as dich_vus
+                GROUP_CONCAT(DISTINCT CONCAT(p.ten_phong, '|', hdp.check_in, '|', hdp.check_out, '|', hdp.gia, '|', hdp.ma_hd_phong) SEPARATOR ';;') as phongs,
+                GROUP_CONCAT(DISTINCT CONCAT(dv.ten_dich_vu, '|', hddv.so_luong, '|', hddv.gia, '|', hddv.thoi_gian, '|', hddv.ma_hd_phong) SEPARATOR ';;') as dich_vus
             FROM hoa_don_tong hd
             LEFT JOIN tai_khoan nv ON hd.ma_nhan_vien = nv.ma_tai_khoan
             LEFT JOIN tai_khoan kh ON hd.ma_khach_hang = kh.ma_tai_khoan
@@ -386,18 +386,19 @@ class HoaDon extends Model
                 foreach ($roomsStr as $roomStr) {
                     if (isNotEmpty($roomStr)) {
                         $parts = explode('|', $roomStr);
-                        if (count($parts) >= 4) {
+                        if (count($parts) >= 5) {
                             $result['rooms_data'][] = [
                                 'ten_phong' => $parts[0],
                                 'check_in' => $parts[1],
                                 'check_out' => $parts[2],
-                                'gia_hien_tai' => $parts[3]
+                                'gia_hien_tai' => $parts[3],
+                                'ma_hd_phong' => $parts[4]
                             ];
                         }
                     }
                 }
             }
-            
+
             // Parse services data
             $result['services_data'] = [];
             if (isNotEmpty($result['dich_vus'])) {
@@ -405,12 +406,13 @@ class HoaDon extends Model
                 foreach ($servicesStr as $serviceStr) {
                     if (isNotEmpty($serviceStr)) {
                         $parts = explode('|', $serviceStr);
-                        if (count($parts) >= 4) {
+                        if (count($parts) >= 5) {
                             $result['services_data'][] = [
                                 'ten_dich_vu' => $parts[0],
                                 'so_luong' => $parts[1],
                                 'gia_hien_tai' => $parts[2],
-                                'thoi_gian' => $parts[3]
+                                'thoi_gian' => $parts[3],
+                                'ma_hd_phong' => $parts[4]
                             ];
                         }
                     }
