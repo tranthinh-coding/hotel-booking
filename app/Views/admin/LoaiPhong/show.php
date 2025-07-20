@@ -255,7 +255,7 @@ ob_start();
                             </div>
                             <?php
                             $statusColors = [
-                                \HotelBooking\Enums\TrangThaiPhong::CON_TRONG => 'bg-green-100 text-green-800',
+                                \HotelBooking\Enums\TrangThaiPhong::DANG_HOAT_DONG => 'bg-green-100 text-green-800',
                                 \HotelBooking\Enums\TrangThaiPhong::DANG_DON_DEP => 'bg-blue-100 text-blue-800',
                                 \HotelBooking\Enums\TrangThaiPhong::BAO_TRI => 'bg-red-100 text-red-800',
                                 \HotelBooking\Enums\TrangThaiPhong::NGUNG_HOAT_DONG => 'bg-gray-100 text-gray-800'

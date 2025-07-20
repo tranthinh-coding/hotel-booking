@@ -269,7 +269,7 @@ class AdminLoaiPhongController
         // Get statistics for this room type using SQL queries
         $stats = [
             'total' => Phong::where('ma_loai_phong', $id)->count(),
-            'available' => Phong::where('ma_loai_phong', $id)->where('trang_thai', \HotelBooking\Enums\TrangThaiPhong::CON_TRONG)->count(),
+            'available' => Phong::where('ma_loai_phong', $id)->where('trang_thai', \HotelBooking\Enums\TrangThaiPhong::DANG_HOAT_DONG)->count(),
             'cleaning' => Phong::where('ma_loai_phong', $id)->where('trang_thai', \HotelBooking\Enums\TrangThaiPhong::DANG_DON_DEP)->count(),
             'maintenance' => Phong::where('ma_loai_phong', $id)->where('trang_thai', \HotelBooking\Enums\TrangThaiPhong::BAO_TRI)->count(),
             'deactivated' => Phong::where('ma_loai_phong', $id)->where('trang_thai', \HotelBooking\Enums\TrangThaiPhong::NGUNG_HOAT_DONG)->count()

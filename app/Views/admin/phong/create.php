@@ -130,7 +130,7 @@ ob_start();
                                 >
                                     <?php 
                                     $trangThaiList = \HotelBooking\Enums\TrangThaiPhong::all();
-                                    $selectedStatus = get('trang_thai', \HotelBooking\Enums\TrangThaiPhong::CON_TRONG);
+                                    $selectedStatus = get('trang_thai', \HotelBooking\Enums\TrangThaiPhong::DANG_HOAT_DONG);
                                     ?>
                                     <?php foreach($trangThaiList as $status): ?>
                                         <option value="<?= $status ?>" <?= $selectedStatus == $status ? 'selected' : '' ?>>
@@ -244,7 +244,7 @@ ob_start();
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-sm text-gray-600">Trạng thái:</span>
-                                <span id="preview-tranghai" class="text-sm px-2 py-1 rounded-full bg-green-100 text-green-800">Còn trống</span>
+                                <span id="preview-tranghai" class="text-sm px-2 py-1 rounded-full bg-green-100 text-green-800">Đang hoạt động</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-sm text-gray-600">Số ảnh:</span>
@@ -281,7 +281,7 @@ function updatePreview() {
     
     // Get selected trang thai
     const trangThaiSelect = document.getElementById('trang_thai');
-    const trangThai = trangThaiSelect.options[trangThaiSelect.selectedIndex].text || 'Còn trống';
+    const trangThai = trangThaiSelect.options[trangThaiSelect.selectedIndex].text || 'Đang hoạt động';
 
     document.getElementById('preview-ten').textContent = tenPhong;
     document.getElementById('preview-loai').textContent = loaiPhong === '-- Chọn loại phòng --' ? 'Loại phòng' : loaiPhong;
@@ -295,7 +295,7 @@ function updatePreview() {
     
     // Update status color
     statusElement.className = 'text-sm px-2 py-1 rounded-full ';
-    if (trangThai.includes('Còn trống')) {
+    if (trangThai.includes('Đang hoạt động')) {
         statusElement.className += 'bg-green-100 text-green-800';
     } else if (trangThai.includes('Bảo trì')) {
         statusElement.className += 'bg-yellow-100 text-yellow-800';

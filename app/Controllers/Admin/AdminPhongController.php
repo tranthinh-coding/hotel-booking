@@ -54,7 +54,7 @@ class AdminPhongController
         foreach ($statsData as $stat) {
             $stats['total'] += $stat['so_luong'];
             switch ($stat['trang_thai']) {
-                case \HotelBooking\Enums\TrangThaiPhong::CON_TRONG:
+                case \HotelBooking\Enums\TrangThaiPhong::DANG_HOAT_DONG:
                     $stats['available'] = $stat['so_luong'];
                     break;
                 case \HotelBooking\Enums\TrangThaiPhong::DANG_DON_DEP:
@@ -125,7 +125,7 @@ class AdminPhongController
             'mo_ta' => post('mo_ta', ''),
             'gia' => (int)$gia,
             'ma_loai_phong' => (int)$maLoaiPhong,
-            'trang_thai' => post('trang_thai', \HotelBooking\Enums\TrangThaiPhong::CON_TRONG)
+            'trang_thai' => post('trang_thai', \HotelBooking\Enums\TrangThaiPhong::DANG_HOAT_DONG)
         ];
 
         try {
@@ -335,8 +335,8 @@ class AdminPhongController
         }
 
         try {
-            // Set room status back to "Còn trống"
-            $phong->update(['trang_thai' => \HotelBooking\Enums\TrangThaiPhong::CON_TRONG]);
+            // Set room status back to "Đang hoạt động"
+            $phong->update(['trang_thai' => \HotelBooking\Enums\TrangThaiPhong::DANG_HOAT_DONG]);
             
             redirect('/admin/phong?success=reactivated');
         } catch (Exception $e) {

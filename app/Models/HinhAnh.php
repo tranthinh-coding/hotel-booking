@@ -35,15 +35,6 @@ class HinhAnh extends Model
     }
 
     /**
-     * Get main image for a room (first image)
-     */
-    public static function getMainImage($maPhong)
-    {
-        $images = static::where('ma_phong', '=', $maPhong)->get();
-        return count($images) ? $images[0] : null;
-    }
-
-    /**
      * Delete image and file
      */
     public function deleteWithFile()

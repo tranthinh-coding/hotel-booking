@@ -91,7 +91,7 @@ class AdminController
         try {
             $availableResult = \HotelBooking\Facades\DB::query(
                 "SELECT COUNT(*) as count FROM phong WHERE trang_thai = ?",
-                [TrangThaiPhong::CON_TRONG]
+                [TrangThaiPhong::DANG_HOAT_DONG]
             );
             if (is_array($availableResult) && isset($availableResult[0]['count'])) {
                 $availableRooms = (int)$availableResult[0]['count'];
@@ -149,14 +149,16 @@ class AdminController
                     TrangThaiHoaDon::CHO_XAC_NHAN => 'Chờ xác nhận',
                     TrangThaiHoaDon::DA_XAC_NHAN => 'Đã xác nhận',
                     TrangThaiHoaDon::DA_THANH_TOAN => 'Đã thanh toán',
-                    TrangThaiHoaDon::DA_HUY => 'Đã hủy'
+                    TrangThaiHoaDon::DA_HUY => 'Đã hủy',
+                    TrangThaiHoaDon::DA_TRA_PHONG => 'Đã trả phòng'
                 ];
                 
                 $statusColors = [
                     TrangThaiHoaDon::CHO_XAC_NHAN => 'yellow',
                     TrangThaiHoaDon::DA_XAC_NHAN => 'blue', 
                     TrangThaiHoaDon::DA_THANH_TOAN => 'green',
-                    TrangThaiHoaDon::DA_HUY => 'red'
+                    TrangThaiHoaDon::DA_HUY => 'red',
+                    TrangThaiHoaDon::DA_TRA_PHONG => 'teal'
                 ];
 
                 foreach ($activitiesResult as $activity) {

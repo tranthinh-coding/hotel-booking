@@ -155,7 +155,7 @@ ob_start();
                             <div class="absolute top-6 left-6">
                                 <span
                                     class="px-4 py-2 bg-green-500 text-white text-sm font-semibold rounded-full shadow-lg">
-                                    <?= htmlspecialchars($phong->trang_thai ?? 'available') === 'available' ? 'Còn trống' : 'Đã đặt' ?>
+                                    <?= htmlspecialchars($phong->trang_thai ?? 'available') === 'available' ? 'Đang hoạt động' : 'Đã đặt' ?>
                                 </span>
                             </div>
                             <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-6">

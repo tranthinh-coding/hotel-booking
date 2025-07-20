@@ -8,8 +8,8 @@ use HotelBooking\Models\HinhAnh;
 /**
  * @property string $ma_phong
  * @property string $ten_phong
- * @property string $loai_phong
- * @property float $gia_phong
+ * @property string $ma_loai_phong
+ * @property float $gia
  * @property string $mo_ta
  * @property string $trang_thai
  * @property string $anh_bia
@@ -85,8 +85,8 @@ class Phong extends Model
             WHERE p.trang_thai = ?
             ORDER BY p.ten_phong ASC
         ";
-        
-        return \HotelBooking\Facades\DB::query($sql, [\HotelBooking\Enums\TrangThaiPhong::CON_TRONG]);
+
+        return \HotelBooking\Facades\DB::query($sql, [\HotelBooking\Enums\TrangThaiPhong::DANG_HOAT_DONG]);
     }
 
     /**
@@ -103,7 +103,7 @@ class Phong extends Model
             LEFT JOIN loai_phong lp ON p.ma_loai_phong = lp.ma_loai_phong
             WHERE p.ma_phong = ?
         ";
-        
+
         return \HotelBooking\Facades\DB::queryOne($sql, [$maPhong]);
     }
 
@@ -126,8 +126,8 @@ class Phong extends Model
             GROUP BY lp.ma_loai_phong, lp.ten
             ORDER BY lp.ten ASC
         ";
-        
-        return \HotelBooking\Facades\DB::query($sql, [\HotelBooking\Enums\TrangThaiPhong::CON_TRONG]);
+
+        return \HotelBooking\Facades\DB::query($sql, [\HotelBooking\Enums\TrangThaiPhong::DANG_HOAT_DONG]);
     }
 
     /**
@@ -135,15 +135,16 @@ class Phong extends Model
      */
     public static function getRoomsPricesByIds($roomIds)
     {
-        if (isEmpty($roomIds)) return [];
-        
+        if (isEmpty($roomIds))
+            return [];
+
         $placeholders = str_repeat('?,', count($roomIds) - 1) . '?';
         $sql = "
             SELECT ma_phong, gia, trang_thai
             FROM phong 
             WHERE ma_phong IN ($placeholders)
         ";
-        
+
         return \HotelBooking\Facades\DB::query($sql, $roomIds);
     }
 
@@ -153,10 +154,10 @@ class Phong extends Model
     public static function updateRoomStatus($maPhong, $trangThai)
     {
         $sql = "UPDATE phong SET trang_thai = ? WHERE ma_phong = ?";
-        
+
         $conn = \HotelBooking\Facades\DB::connect();
         $stmt = $conn->prepare($sql);
-        
+
         if ($stmt) {
             $stmt->bind_param('ss', $trangThai, $maPhong);
             $result = $stmt->execute();
@@ -164,7 +165,7 @@ class Phong extends Model
             \HotelBooking\Facades\DB::close();
             return $result;
         }
-        
+
         \HotelBooking\Facades\DB::close();
         return false;
     }
@@ -174,31 +175,32 @@ class Phong extends Model
      */
     public static function batchUpdateRoomStatus($roomStatusPairs)
     {
-        if (isEmpty($roomStatusPairs)) return false;
-        
+        if (isEmpty($roomStatusPairs))
+            return false;
+
         $cases = [];
         $roomIds = [];
-        
+
         foreach ($roomStatusPairs as $maPhong => $trangThai) {
             $cases[] = "WHEN ? THEN ?";
             $roomIds[] = $maPhong;
             $roomIds[] = $trangThai;
         }
-        
+
         $allRoomIds = array_keys($roomStatusPairs);
         $placeholders = str_repeat('?,', count($allRoomIds) - 1) . '?';
-        
+
         $sql = "
             UPDATE phong 
             SET trang_thai = CASE ma_phong " . implode(' ', $cases) . " END
             WHERE ma_phong IN ($placeholders)
         ";
-        
+
         $params = array_merge($roomIds, $allRoomIds);
-        
+
         $conn = \HotelBooking\Facades\DB::connect();
         $stmt = $conn->prepare($sql);
-        
+
         if ($stmt) {
             $types = str_repeat('s', count($params));
             $stmt->bind_param($types, ...$params);
@@ -207,7 +209,7 @@ class Phong extends Model
             \HotelBooking\Facades\DB::close();
             return $result;
         }
-        
+
         \HotelBooking\Facades\DB::close();
         return false;
     }
@@ -224,10 +226,10 @@ class Phong extends Model
     {
         $checkinDate = date('Y-m-d', strtotime($checkin));
         $checkoutDate = date('Y-m-d', strtotime($checkout));
-        
+
         $conflictingBookings = HoaDonPhong::getConflictingBookings($checkinDate, $checkoutDate);
         $bookedRoomIds = array_column($conflictingBookings, 'ma_phong');
-        
+
         return !in_array($roomId, $bookedRoomIds);
     }
 
@@ -239,23 +241,6 @@ class Phong extends Model
         return HinhAnh::where('ma_phong', '=', $this->ma_phong)->get();
     }
 
-    /**
-     * Get main image for this room
-     */
-    public function getMainImage()
-    {
-        return HinhAnh::getMainImage($this->ma_phong);
-    }
-
-    /**
-     * Get main image URL for this room
-     */
-    public function getMainImageUrl()
-    {
-        $mainImage = $this->getMainImage();
-        return $mainImage ? $mainImage->getImageUrl() : null;
-    }
-    
     /**
      * Tìm kiếm phòng với thông tin loại phòng
      * @param string $search Từ khóa tìm kiếm
@@ -277,9 +262,9 @@ class Phong extends Model
             LEFT JOIN hinh_anh ha ON p.ma_phong = ha.ma_phong
             WHERE 1=1
         ";
-        
+
         $params = [];
-        
+
         // Add search condition
         if (isNotEmpty($search)) {
             $sql .= " AND (p.ten_phong LIKE ? OR p.mo_ta LIKE ? OR lp.ten LIKE ?)";
@@ -288,21 +273,21 @@ class Phong extends Model
             $params[] = $searchTerm;
             $params[] = $searchTerm;
         }
-        
+
         // Add room type filter
         if (isNotEmpty($loaiPhong)) {
             $sql .= " AND p.ma_loai_phong = ?";
             $params[] = $loaiPhong;
         }
-        
+
         // Add status filter
         if (isNotEmpty($trangThai)) {
             $sql .= " AND p.trang_thai = ?";
             $params[] = $trangThai;
         }
-        
+
         $sql .= " GROUP BY p.ma_phong";
-        
+
         // Add sorting
         $allowedSorts = ['ten_phong', 'gia', 'trang_thai', 'ten_loai_phong'];
         if (in_array($sort, $allowedSorts)) {
@@ -314,10 +299,10 @@ class Phong extends Model
         } else {
             $sql .= " ORDER BY p.ten_phong";
         }
-        
+
         return \HotelBooking\Facades\DB::query($sql, $params);
     }
-    
+
     /**
      * Lấy thống kê phòng theo trạng thái
      * @return array
@@ -332,10 +317,10 @@ class Phong extends Model
             FROM phong 
             GROUP BY trang_thai
         ";
-        
+
         return \HotelBooking\Facades\DB::query($sql);
     }
-    
+
     /**
      * Get the room type (LoaiPhong) for this room
      */

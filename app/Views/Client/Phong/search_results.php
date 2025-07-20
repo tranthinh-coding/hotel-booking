@@ -73,7 +73,7 @@ ob_start();
                                          alt="<?= htmlspecialchars($room->ten_phong) ?>" 
                                          class="w-full h-full object-cover">
                                     <div class="absolute top-4 left-4 bg-ocean-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                                        Còn trống
+                                        Đang hoạt động
                                     </div>
                                 </div>
                             </div>

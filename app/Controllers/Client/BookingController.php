@@ -23,7 +23,7 @@ class BookingController
         $user = user();
         $phongId = get('room_id') ?? get('phong_id');
         $phong = null;
-        
+
         if ($phongId) {
             $phong = Phong::find($phongId);
             if (!$phong) {
@@ -32,60 +32,23 @@ class BookingController
                 return;
             }
         }
-        
+
         // Get room type info if room exists
         $loaiPhong = null;
         if ($phong && isNotEmpty($phong->ma_loai_phong)) {
             $loaiPhong = LoaiPhong::find($phong->ma_loai_phong);
         }
-        
-        // Get all rooms for selection
-        $phongs = Phong::where('trang_thai', '!=', \HotelBooking\Enums\TrangThaiPhong::NGUNG_HOAT_DONG)->get();
 
-        // Get all services for selection
+        // Lấy danh sách phòng đang hoạt động
+        $phongs = Phong::where('trang_thai', '=', \HotelBooking\Enums\TrangThaiPhong::DANG_HOAT_DONG)->get();
+
+        // Lấy danh sách dịch vụ đang hoạt động
         $dichVus = DichVu::where('trang_thai', '!=', \HotelBooking\Enums\TrangThaiDichVu::NGUNG_HOAT_DONG)->get();
-
-        // Convert to arrays for JSON encoding
-        $phongsArray = [];
-        if ($phongs && count($phongs) > 0) {
-            foreach ($phongs as $p) {
-                $phongsArray[] = [
-                    'ma_phong' => $p->ma_phong,
-                    'ten_phong' => $p->ten_phong,
-                    'gia' => floatval($p->gia ?? 0)
-                ];
-            }
-        } else {
-            // Sample data for testing if no rooms in database
-            $phongsArray = [
-                ['ma_phong' => 'P001', 'ten_phong' => 'Phòng Standard 001', 'gia' => 500000],
-                ['ma_phong' => 'P002', 'ten_phong' => 'Phòng Deluxe 002', 'gia' => 800000],
-                ['ma_phong' => 'P003', 'ten_phong' => 'Phòng Suite 003', 'gia' => 1200000]
-            ];
-        }
-
-        $dichVusArray = [];
-        if ($dichVus && count($dichVus) > 0) {
-            foreach ($dichVus as $dv) {
-                $dichVusArray[] = [
-                    'ma_dich_vu' => $dv->ma_dich_vu,
-                    'ten_dich_vu' => $dv->ten_dich_vu,
-                    'gia' => floatval($dv->gia ?? 0)
-                ];
-            }
-        } else {
-            // Sample data for testing if no services in database
-            $dichVusArray = [
-                ['ma_dich_vu' => 'DV001', 'ten_dich_vu' => 'Massage thư giãn', 'gia' => 300000],
-                ['ma_dich_vu' => 'DV002', 'ten_dich_vu' => 'Dịch vụ giặt ủi', 'gia' => 50000],
-                ['ma_dich_vu' => 'DV003', 'ten_dich_vu' => 'Ăn sáng buffet', 'gia' => 200000]
-            ];
-        }
 
         // Ưu tiên lấy dữ liệu phòng từ session nếu có lỗi submit trước đó
         $oldPhongs = isset($_SESSION['old_phongs']) ? $_SESSION['old_phongs'] : null;
 
-        // Get booking details from GET params if provided
+        // Lấy dữ liệu đặt phòng từ session nếu có
         $bookingData = [
             'phong_id' => $phongId,
             'ngay_nhan_phong' => get('ngay_nhan_phong'),
@@ -98,8 +61,6 @@ class BookingController
             'loaiPhong' => $loaiPhong,
             'phongs' => $phongs,
             'dichVus' => $dichVus,
-            'phongsArray' => $phongsArray,
-            'dichVusArray' => $dichVusArray,
             'bookingData' => $bookingData,
             'user' => $user,
             'oldPhongs' => $oldPhongs
@@ -111,18 +72,6 @@ class BookingController
      */
     public function processCheckout()
     {
-        // Debug mode để xem dữ liệu được gửi
-        if (isset($_GET['debug'])) {
-            echo "<pre style='background:#000;color:#0f0;padding:20px;'>";
-            echo "=== FORM DATA DEBUG ===\n";
-            echo "POST Data:\n";
-            print_r($_POST);
-            echo "\nDịch vụ chung:\n";
-            print_r(post('dich_vu_chung', []));
-            echo "</pre>";
-            die();
-        }
-
         // Kiểm tra đăng nhập
         if (!isset($_SESSION['user_id'])) {
             flash_error('Vui lòng đăng nhập để đặt phòng');
@@ -132,13 +81,13 @@ class BookingController
 
         // Xử lý dữ liệu phòng - hỗ trợ cả form đơn và form array
         $phongs = post('phongs', []);
-        
+
         // Nếu không có phongs array, tạo từ dữ liệu đơn
         if (isEmpty($phongs)) {
             $maPhong = post('ma_phong');
             $ngayNhanPhong = post('ngay_nhan_phong');
             $ngayTraPhong = post('ngay_tra_phong');
-            
+
             if ($maPhong && $ngayNhanPhong && $ngayTraPhong) {
                 $phongs = [
                     [
@@ -150,7 +99,7 @@ class BookingController
                 ];
             }
         }
-        
+
         $dichVuChung = post('dich_vu_chung', []);
 
         // Validation
@@ -175,7 +124,7 @@ class BookingController
             $hoaDon->ghi_chu = post('ghi_chu', '');
             // Note: ho_ten, so_dien_thoai, email không có trong schema của hoa_don_tong
             // Có thể cần lưu trong bảng khác hoặc thêm vào schema
-            
+
             if (!$hoaDon->save()) {
                 throw new Exception('Không thể tạo hóa đơn');
             }
@@ -226,10 +175,12 @@ class BookingController
                 // Xử lý dịch vụ theo phòng
                 if (isset($phongData['dich_vu']) && is_array($phongData['dich_vu'])) {
                     foreach ($phongData['dich_vu'] as $dichVuData) {
-                        if (isEmpty($dichVuData['ma_dich_vu'])) continue;
+                        if (isEmpty($dichVuData['ma_dich_vu']))
+                            continue;
 
                         $dichVu = DichVu::find($dichVuData['ma_dich_vu']);
-                        if (!$dichVu) continue;
+                        if (!$dichVu)
+                            continue;
 
                         $soLuong = max(1, intval($dichVuData['so_luong'] ?? 1));
                         $thanhTien = $dichVu->gia * $soLuong;
@@ -252,10 +203,12 @@ class BookingController
             // Xử lý dịch vụ chung
             if (is_array($dichVuChung)) {
                 foreach ($dichVuChung as $dichVuData) {
-                    if (isEmpty($dichVuData['ma_dich_vu'])) continue;
+                    if (isEmpty($dichVuData['ma_dich_vu']))
+                        continue;
 
                     $dichVu = DichVu::find($dichVuData['ma_dich_vu']);
-                    if (!$dichVu) continue;
+                    if (!$dichVu)
+                        continue;
 
                     $soLuong = max(1, intval($dichVuData['so_luong'] ?? 1));
                     $thanhTien = $dichVu->gia * $soLuong;
@@ -349,16 +302,16 @@ class BookingController
     {
         $invoiceId = get('invoice');
         $hoaDon = null;
-        
+
         if ($invoiceId) {
             $hoaDon = HoaDon::find($invoiceId);
-            
+
             // Chỉ cho phép xem hóa đơn của chính mình
             if ($hoaDon && isset($_SESSION['user_id']) && $hoaDon->ma_tai_khoan != $_SESSION['user_id']) {
                 $hoaDon = null;
             }
         }
-        
+
         view('Client.Booking.success', [
             'hoaDon' => $hoaDon
         ]);
@@ -370,7 +323,7 @@ class BookingController
     public function showBookingForm($maPhong = null)
     {
         $phong = null;
-        
+
         if ($maPhong) {
             $phong = Phong::find($maPhong);
             if (!$phong) {
@@ -379,7 +332,7 @@ class BookingController
                 return;
             }
         }
-        
+
         if (!$phong && isset($_GET['room_id'])) {
             $phong = Phong::find($_GET['room_id']);
             if (!$phong) {
@@ -391,7 +344,7 @@ class BookingController
 
         $loaiPhongs = LoaiPhong::all();
         $phongs = Phong::all();
-        
+
         view('Client.Booking.form', [
             'phong' => $phong,
             'loaiPhongs' => $loaiPhongs,

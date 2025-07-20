@@ -40,7 +40,7 @@ class LoaiPhong extends Model
      */
     public function getAvailableRooms()
     {
-        return $this->phongs()->where('trang_thai', '=', TrangThaiPhong::CON_TRONG)->get();
+        return $this->phongs()->where('trang_thai', '=', TrangThaiPhong::DANG_HOAT_DONG)->get();
     }
 
     /**

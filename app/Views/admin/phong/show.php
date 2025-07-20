@@ -105,7 +105,7 @@ ob_start();
                     </span>
                     <?php
                     $statusColors = [
-                        \HotelBooking\Enums\TrangThaiPhong::CON_TRONG => 'bg-green-100 text-green-800',
+                        \HotelBooking\Enums\TrangThaiPhong::DANG_HOAT_DONG => 'bg-green-100 text-green-800',
                         \HotelBooking\Enums\TrangThaiPhong::DANG_DON_DEP => 'bg-blue-100 text-blue-800',
                         \HotelBooking\Enums\TrangThaiPhong::BAO_TRI => 'bg-red-100 text-red-800'
                     ];
@@ -534,7 +534,7 @@ ob_start();
     }
 
     function confirmReactivate(roomId) {
-        if (confirm('🟢 Bạn có chắc chắn muốn kích hoạt lại phòng này?\n\nPhòng sẽ được đánh dấu là "Còn trống" và có thể được đặt phòng trở lại.')) {
+        if (confirm('🟢 Bạn có chắc chắn muốn kích hoạt lại phòng này?\n\nPhòng sẽ được đánh dấu là "Đang hoạt động" và có thể được đặt phòng trở lại.')) {
             const form = document.createElement('form');
             form.method = 'POST';
             form.action = '/admin/phong/reactivate';

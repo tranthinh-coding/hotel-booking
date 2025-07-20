@@ -233,7 +233,7 @@ ob_start();
                         <!-- Badge trạng thái -->
                         <?php
                         $statusColors = [
-                            \HotelBooking\Enums\TrangThaiPhong::CON_TRONG => 'bg-green-500',
+                            \HotelBooking\Enums\TrangThaiPhong::DANG_HOAT_DONG => 'bg-green-500',
                             \HotelBooking\Enums\TrangThaiPhong::DANG_DON_DEP => 'bg-blue-500',
                             \HotelBooking\Enums\TrangThaiPhong::BAO_TRI => 'bg-yellow-500',
                             \HotelBooking\Enums\TrangThaiPhong::NGUNG_HOAT_DONG => 'bg-red-500'
@@ -403,7 +403,7 @@ ob_start();
     }
 
     function confirmReactivate(roomId) {
-        if (confirm('🟢 Bạn có chắc chắn muốn kích hoạt lại phòng này?\n\nPhòng sẽ được đánh dấu là "Còn trống" và có thể được đặt phòng trở lại.')) {
+        if (confirm('🟢 Bạn có chắc chắn muốn kích hoạt lại phòng này?\n\nPhòng sẽ được đánh dấu là "Đang hoạt động" và có thể được đặt phòng trở lại.')) {
             const form = document.createElement('form');
             form.method = 'POST';
             form.action = '/admin/phong/reactivate';
