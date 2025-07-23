@@ -25,7 +25,7 @@ ob_start();
                 </label>
                 <input type="password" 
                        id="password" 
-                       name="password" 
+                       name="new_password" 
                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                        required
                        placeholder="Nhập mật khẩu mới (tối thiểu 6 ký tự)"
@@ -33,12 +33,12 @@ ob_start();
             </div>
 
             <div>
-                <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-2">
+                <label for="confirm_password" class="block text-sm font-medium text-gray-700 mb-2">
                     <i class="fas fa-lock mr-1"></i> Xác nhận mật khẩu
                 </label>
                 <input type="password" 
-                       id="password_confirmation" 
-                       name="password_confirmation" 
+                       id="confirm_password" 
+                       name="confirm_password" 
                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                        required
                        placeholder="Nhập lại mật khẩu mới">
@@ -76,7 +76,7 @@ ob_start();
 
 <script>
 // Password confirmation validation
-document.getElementById('password_confirmation').addEventListener('input', function() {
+document.getElementById('confirm_password').addEventListener('input', function() {
     const password = document.getElementById('password').value;
     const confirmation = this.value;
     
@@ -87,8 +87,8 @@ document.getElementById('password_confirmation').addEventListener('input', funct
     }
 });
 
-document.getElementById('password').addEventListener('input', function() {
-    const confirmation = document.getElementById('password_confirmation');
+document.getElementById('new_password').addEventListener('input', function() {
+    const confirmation = document.getElementById('confirm_password');
     if (confirmation.value && this.value !== confirmation.value) {
         confirmation.setCustomValidity('Mật khẩu xác nhận không khớp');
     } else {
