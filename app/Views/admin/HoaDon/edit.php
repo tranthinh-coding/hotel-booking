@@ -2,7 +2,7 @@
 // Chặn cập nhật nếu hóa đơn đã hủy
 $title = 'Chỉnh sửa Hóa đơn #' . $hoaDon->ma_hoa_don . ' - Ocean Pearl Hotel Admin';
 $pageTitle = 'Chỉnh sửa Hóa đơn #' . $hoaDon->ma_hoa_don;
-$isDisabled = $hoaDon->trang_thai == 'da_huy';
+$isDisabled = $hoaDon->trang_thai == 'da_huy' || $hoaDon->trang_thai == 'da_tra_phong';
 
 // Lấy thông tin liên quan
 $khachHang = $hoaDon->getKhachHang();
