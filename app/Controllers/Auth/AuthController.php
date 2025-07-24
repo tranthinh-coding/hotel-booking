@@ -142,7 +142,7 @@ class AuthController
     {
         auth_logout();
         flash_success('Đăng xuất thành công');
-        redirect('/');
+        redirect('/login');
     }
 
     public function showChangePasswordForm()

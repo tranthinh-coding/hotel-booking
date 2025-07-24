@@ -54,17 +54,19 @@ ob_start();
         <!-- Services Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <?php if (isNotEmpty($dichVus)): ?>
-                <?php foreach ($dichVus as $dichVu): ?>
+                <?php foreach ($dichVus as $index => $dichVu): ?>
                     <div
-                        class="bg-white rounded-2xl shadow-sm overflow-hidden group hover:shadow-md transition-all duration-300">
+                        class="bg-white rounded-2xl shadow-sm overflow-hidden group hover:shadow-md transition-all duration-300"
+                        <?php
+                        if ($index == 1) {
+                            echo ' style="color: pink !important;" ';
+                        }
+                        ?>
+                    >
                         <!-- Service Image -->
                         <div class="h-64 bg-gradient-to-br from-blue-100 to-cyan-100 relative overflow-hidden">
                             <?php if (isNotEmpty($dichVu->hinh_anh)): ?>
-                                <?php
-                                // Construct proper image URL
-                                $imageUrl = '/uploads/' . $dichVu->hinh_anh;
-                                ?>
-                                <img src="<?= htmlspecialchars($imageUrl) ?>" alt="<?= htmlspecialchars($dichVu->ten_dich_vu) ?>"
+                                <img src="<?= getFileUrl($dichVu->hinh_anh) ?>" alt="<?= htmlspecialchars($dichVu->ten_dich_vu) ?>"
                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                                     onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
                                 <div class="w-full h-full flex items-center justify-center hidden">
